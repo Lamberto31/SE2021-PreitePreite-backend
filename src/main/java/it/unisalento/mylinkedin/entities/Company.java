@@ -22,11 +22,11 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     String name;
     @Column(length = 500)
     String description;
-    @Column(unique = true, length = 11)
+    @Column(unique = true, nullable = false ,length = 11)
     String p_iva;
     String address;
 

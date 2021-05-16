@@ -39,5 +39,5 @@ public class User {
     @Column(nullable = false)
     String type;
 
-    //TODO: relazioni, getter e setter e specializzazioni
+    //TODO: relazioni, costruttore, getter e setter e specializzazioni
 }

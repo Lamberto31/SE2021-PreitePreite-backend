@@ -24,6 +24,7 @@ public class ProfileImage {
     String description;
     Date pubblicationDate;
     //TODO: image path o blob?
+
     @ManyToOne()
     User user;
     @ManyToOne()

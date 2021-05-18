@@ -55,17 +55,17 @@ public class User {
     @Column(length = 500)
     String description;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user", targetEntity = ProfileImage.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<ProfileImage> profileImage;
-    @OneToMany
+    @OneToMany(mappedBy = "sender", targetEntity = Message.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Message> sentMessageList;
-    @OneToMany
+    @OneToMany(mappedBy = "receiver", targetEntity = Message.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Message> receivedMessageList;
-    @OneToMany
+    @OneToMany(mappedBy = "user", targetEntity = Comment.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Comment> commentList;
-    @OneToMany
+    @OneToMany(mappedBy = "user", targetEntity = UserInterestedPost.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<UserInterestedPost> userInterestedPostList;
-    @OneToMany
+    @OneToMany(mappedBy = "user", targetEntity = Post.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Post> postList;
 
     public int getId() {
@@ -171,6 +171,4 @@ public class User {
     public void setPostList(List<Post> postList) {
         this.postList = postList;
     }
-
-    //TODO: relazioni
 }

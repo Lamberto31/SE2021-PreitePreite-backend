@@ -17,9 +17,9 @@ public class StructureAttribute {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     Structure structure;
-    @ManyToOne
+    @ManyToOne(optional = false)
     Attribute attribute;
 
     public int getId() {

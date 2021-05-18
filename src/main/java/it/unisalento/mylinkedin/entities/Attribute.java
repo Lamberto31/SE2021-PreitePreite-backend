@@ -22,7 +22,7 @@ public class Attribute {
     String title;
     String type;
 
-    @OneToMany //TODO: mappedby e altri
+    @OneToMany(mappedBy = "attribute", targetEntity = StructureAttribute.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<StructureAttribute> structureAttributeList;
 
     public int getId() {

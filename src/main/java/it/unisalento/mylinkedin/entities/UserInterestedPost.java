@@ -16,9 +16,9 @@ public class UserInterestedPost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     User user;
-    @ManyToOne
+    @ManyToOne(optional = false)
     Post post;
 
     public int getId() {

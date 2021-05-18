@@ -30,14 +30,14 @@ public class Post {
     boolean isHidden;
     @Column(nullable = false)
     boolean isPrivate;
-    @Column(length = 1000, nullable = false)
+    @Column(length = 1000, nullable = false) //JSON
     String data;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     User user;
-    @OneToMany //TODO: mappedby e altri
+    @OneToMany(mappedBy = "post", targetEntity = UserInterestedPost.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<UserInterestedPost> userInterestedPostList;
-    @OneToMany //TODO: mappedby e altri
+    @OneToMany(mappedBy = "post", targetEntity = Comment.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Comment> commentList;
     @ManyToOne(optional = false)
     Structure structure;

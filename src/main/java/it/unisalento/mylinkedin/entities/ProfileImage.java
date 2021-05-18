@@ -23,7 +23,8 @@ public class ProfileImage {
     @Column(length = 500)
     String description;
     Date pubblicationDate;
-    //TODO: image path o blob?
+    @Column(unique = true, nullable = false)
+    String imagePath;
 
     @ManyToOne()
     User user;
@@ -52,6 +53,14 @@ public class ProfileImage {
 
     public void setPubblicationDate(Date pubblicationDate) {
         this.pubblicationDate = pubblicationDate;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public User getUser() {

@@ -30,10 +30,9 @@ public class Company {
     String p_iva;
     String address;
 
-    @OneToMany() //TODO: mappedby e altri
+    @OneToMany(mappedBy = "company", targetEntity = ProfileImage.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<ProfileImage> profileImageList;
-
-    @OneToMany //TODO: mappedby e altri
+    @OneToMany(mappedBy = "company", targetEntity = Offeror.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Offeror> offerorList;
 
     public int getId() {

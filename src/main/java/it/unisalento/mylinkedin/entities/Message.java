@@ -20,13 +20,13 @@ public class Message {
     int id;
 
     String text;
-    //TODO: attachment path o blob?
+    @Column(unique = true, nullable = false)
+    String imagePath;
     Date pubblicationDate;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     User sender;
-
-    @ManyToOne
+    @ManyToOne(optional = false)
     User receiver;
 
     public int getId() {
@@ -43,6 +43,14 @@ public class Message {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public Date getPubblicationDate() {

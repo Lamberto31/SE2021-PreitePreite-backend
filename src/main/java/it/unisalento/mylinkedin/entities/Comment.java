@@ -26,13 +26,13 @@ public class Comment {
     String text;
     Date pubblicationDate;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     User user;
-    @ManyToOne
+    @ManyToOne(optional = false)
     Post post;
     @ManyToOne
     Comment answeredComment;
-    @OneToMany
+    @OneToMany(mappedBy = "answeredComment", targetEntity = Comment.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Comment> answerCommentList;
 
     public int getId() {

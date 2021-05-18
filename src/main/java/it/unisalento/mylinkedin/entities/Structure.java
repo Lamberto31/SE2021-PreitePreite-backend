@@ -26,13 +26,15 @@ public class Structure {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
 
+    @Column(unique = true ,nullable = false)
     String title;
     String description;
+    @Column(nullable = false)
     String userCanPublish;
 
-    @OneToMany //TODO: mappedby e altri
+    @OneToMany(mappedBy = "structure", targetEntity = Post.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Post> post;
-    @OneToMany //TODO: mappedby e altri
+    @OneToMany(mappedBy = "structure", targetEntity = StructureAttribute.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<StructureAttribute> StructureAttributeList;
 
     public int getId() {

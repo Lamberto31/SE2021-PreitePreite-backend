@@ -24,7 +24,7 @@ public class Offeror extends User{
     @Column(nullable = false)
     String status;
 
-    @ManyToOne(optional = false)
+    @ManyToOne()
     Company company;
 
     public Date getRegistrationDate() {

@@ -51,6 +51,7 @@ public class User {
     String email;
     @Column(nullable = false)
     String password;
+    @Column(nullable = false)
     Date birthDate;
     @Column(length = 500)
     String description;

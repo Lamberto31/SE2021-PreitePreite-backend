@@ -5,6 +5,8 @@ import java.util.Date;
 
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 public class User {
 
     //Variabili statiche per tipo utente
@@ -36,8 +38,6 @@ public class User {
     Date birthDate;
     @Column(length = 500)
     String description;
-    @Column(nullable = false)
-    String type;
 
     //TODO: relazioni, costruttore, getter e setter e specializzazioni
 }

@@ -1,5 +1,7 @@
 package it.unisalento.mylinkedin.configurations;
 
+import java.text.SimpleDateFormat;
+
 public interface Constants {
 
     //Variabili statiche per tipo utente
@@ -16,4 +18,7 @@ public interface Constants {
     String CAN_PUBLISH_OFFEROR = "offeror";
     String CAN_PUBLISH_APPLICANT = "applicant";
     String CAN_PUBLISH_BOTH = "both";
+
+    //Formato data
+    String DATE_FORMAT = "dd/MM/yyyy HH:mm";
 }

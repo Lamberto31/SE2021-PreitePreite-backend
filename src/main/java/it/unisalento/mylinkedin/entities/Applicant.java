@@ -16,23 +16,23 @@ public class Applicant extends User{
 
     public Applicant(int id, String name, String surname, String email, String password, Date birthDate, String description, List<ProfileImage> profileImage, List<Message> sentMessageList, List<Message> receivedMessageList, List<Comment> commentList, List<UserInterestedPost> userInterestedPostList, List<Post> postList, Date registrationDate, String status, String fixedAttributes) {
         super(id, name, surname, email, password, birthDate, description, profileImage, sentMessageList, receivedMessageList, commentList, userInterestedPostList, postList);
-        RegistrationDate = registrationDate;
+        this.registrationDate = registrationDate;
         this.status = status;
         this.fixedAttributes = fixedAttributes;
     }
 
-    Date RegistrationDate;
+    Date registrationDate;
     @Column(nullable = false)
     String status;
     @Column(length = 1000) //JSON
     String fixedAttributes;
 
     public Date getRegistrationDate() {
-        return RegistrationDate;
+        return registrationDate;
     }
 
     public void setRegistrationDate(Date registrationDate) {
-        RegistrationDate = registrationDate;
+        this.registrationDate = registrationDate;
     }
 
     public String getStatus() {

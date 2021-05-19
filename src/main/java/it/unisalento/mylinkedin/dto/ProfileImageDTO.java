@@ -2,17 +2,16 @@ package it.unisalento.mylinkedin.dto;
 
 import it.unisalento.mylinkedin.configurations.Constants;
 
-import javax.validation.constraints.NotBlank;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class CommentDTO{
+public class ProfileImageDTO {
 
     int id;
-    @NotBlank
-    String text;
+    String description;
     String pubblicationDate;
+    String imagePath;
 
     public Date getPubblicationDate(String timezone) throws ParseException {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
@@ -32,13 +31,19 @@ public class CommentDTO{
         this.id = id;
     }
 
-    public String getText() {
-        return text;
+    public String getDescription() {
+        return description;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
 
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
 }

@@ -5,13 +5,11 @@ import it.unisalento.mylinkedin.configurations.Constants;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
 //TODO: Fare validator per confronto email e password
 public class UserDTO {
-    protected static final SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT);
 
     int id;
     @NotBlank
@@ -36,13 +34,13 @@ public class UserDTO {
     String passwordToVerify;
 
     public Date getBirthDate(String timezone) throws ParseException {
-        dateFormat.setTimeZone(TimeZone.getTimeZone(timezone));
-        return dateFormat.parse(this.birthDate);
+        Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
+        return Constants.SIMPLE_DATE_FORMAT.parse(this.birthDate);
     }
 
     public void setBirthDate(Date date, String timezone) {
-        dateFormat.setTimeZone(TimeZone.getTimeZone(timezone));
-        this.birthDate = dateFormat.format(date);
+        Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
+        this.birthDate = Constants.SIMPLE_DATE_FORMAT.format(date);
     }
 
     public int getId() {

@@ -7,12 +7,14 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class CommentDTO{
+public class PostDTO {
 
     int id;
-    @NotBlank
-    String text;
     String pubblicationDate;
+    boolean ishidden;
+    boolean isPrivate;
+    @NotBlank
+    String data; //JSON
 
     public Date getPubblicationDate(String timezone) throws ParseException {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
@@ -32,13 +34,27 @@ public class CommentDTO{
         this.id = id;
     }
 
-    public String getText() {
-        return text;
+    public boolean isIshidden() {
+        return ishidden;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setIshidden(boolean ishidden) {
+        this.ishidden = ishidden;
     }
 
+    public boolean isPrivate() {
+        return isPrivate;
+    }
 
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
 }

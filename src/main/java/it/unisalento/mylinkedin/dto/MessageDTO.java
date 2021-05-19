@@ -2,16 +2,16 @@ package it.unisalento.mylinkedin.dto;
 
 import it.unisalento.mylinkedin.configurations.Constants;
 
-import javax.validation.constraints.NotBlank;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class CommentDTO{
+//TODO: Validator per vedere se almeno una tra text e imagePath è NotBlank
+public class MessageDTO {
 
     int id;
-    @NotBlank
     String text;
+    String imagePath;
     String pubblicationDate;
 
     public Date getPubblicationDate(String timezone) throws ParseException {
@@ -40,5 +40,11 @@ public class CommentDTO{
         this.text = text;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
 
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
 }

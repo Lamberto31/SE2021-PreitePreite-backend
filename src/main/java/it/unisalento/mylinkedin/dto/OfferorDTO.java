@@ -6,11 +6,10 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class ApplicantDTO extends UserDTO{
+public class OfferorDTO extends UserDTO{
 
     String registrationDate;
     String status;
-    String fixedAttributes; //JSON
 
     public Date getRegistrationDate(String timezone) throws ParseException {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
@@ -28,13 +27,5 @@ public class ApplicantDTO extends UserDTO{
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getFixedAttributes() {
-        return fixedAttributes;
-    }
-
-    public void setFixedAttributes(String fixedAttributes) {
-        this.fixedAttributes = fixedAttributes;
     }
 }

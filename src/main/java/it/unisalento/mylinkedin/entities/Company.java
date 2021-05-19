@@ -8,11 +8,11 @@ public class Company {
 
     public Company() { }
 
-    public Company(int id, String name, String description, String p_iva, String address, List<ProfileImage> profileImageList, List<Offeror> offerorList) {
+    public Company(int id, String name, String description, String partitaIva, String address, List<ProfileImage> profileImageList, List<Offeror> offerorList) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.p_iva = p_iva;
+        this.partitaIva = partitaIva;
         this.address = address;
         this.profileImageList = profileImageList;
         this.offerorList = offerorList;
@@ -27,7 +27,7 @@ public class Company {
     @Column(length = 500)
     String description;
     @Column(unique = true, nullable = false ,length = 11)
-    String p_iva;
+    String partitaIva;
     String address;
 
     @OneToMany(mappedBy = "company", targetEntity = ProfileImage.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -59,12 +59,12 @@ public class Company {
         this.description = description;
     }
 
-    public String getP_iva() {
-        return p_iva;
+    public String getPartitaIva() {
+        return partitaIva;
     }
 
-    public void setP_iva(String p_iva) {
-        this.p_iva = p_iva;
+    public void setPartitaIva(String p_iva) {
+        this.partitaIva = p_iva;
     }
 
     public String getAddress() {

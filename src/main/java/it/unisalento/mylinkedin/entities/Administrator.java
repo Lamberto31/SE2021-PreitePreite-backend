@@ -1,12 +1,14 @@
 package it.unisalento.mylinkedin.entities;
 
+import it.unisalento.mylinkedin.configurations.Constants;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@DiscriminatorValue(User.TYPE_ADMIN)
+@DiscriminatorValue(Constants.TYPE_ADMIN)
 public class Administrator extends User{
 
     public Administrator() {}

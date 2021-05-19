@@ -1,5 +1,7 @@
 package it.unisalento.mylinkedin.entities;
 
+import it.unisalento.mylinkedin.configurations.Constants;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -8,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@DiscriminatorValue(User.TYPE_OFFEROR)
+@DiscriminatorValue(Constants.TYPE_OFFEROR)
 public class Offeror extends User{
 
     public Offeror() {}

@@ -6,11 +6,6 @@ import java.util.List;
 @Entity
 public class Structure {
 
-    //Variabili statiche per tipo utente
-    public final static String CAN_PUBLISH_OFFEROR = "offeror";
-    public final static String CAN_PUBLISH_APPLICANT = "applicant";
-    public final static String CAN_PUBLISH_BOTH = "both";
-
     public Structure() {}
 
     public Structure(int id, String title, String description, String userCanPublish, List<Post> post, List<StructureAttribute> structureAttributeList) {

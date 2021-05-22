@@ -1,6 +1,5 @@
 package it.unisalento.mylinkedin.dao;
 
-import it.unisalento.mylinkedin.entities.Administrator;
 import it.unisalento.mylinkedin.entities.Attribute;
 import org.springframework.data.jpa.repository.JpaRepository;
 

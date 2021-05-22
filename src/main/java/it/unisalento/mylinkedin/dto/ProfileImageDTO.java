@@ -2,6 +2,7 @@ package it.unisalento.mylinkedin.dto;
 
 import it.unisalento.mylinkedin.configurations.Constants;
 
+import javax.validation.constraints.NotBlank;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.TimeZone;
@@ -11,6 +12,7 @@ public class ProfileImageDTO {
     int id;
     String description;
     String pubblicationDate;
+    @NotBlank
     String imagePath;
 
     public Date getPubblicationDate(String timezone) throws ParseException {

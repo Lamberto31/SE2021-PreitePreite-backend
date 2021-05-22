@@ -1,6 +1,8 @@
 package it.unisalento.mylinkedin.dto;
 
 import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.validators.CheckValueInListConstraint;
+import it.unisalento.mylinkedin.validators.MatchTwoFieldsConstraint;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -8,7 +10,8 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.TimeZone;
 
-//TODO: Fare validator per confronto email e password
+@MatchTwoFieldsConstraint(field = "email", fieldMatch = "emailToVerify")
+@MatchTwoFieldsConstraint(field = "password", fieldMatch = "passwordToVerify")
 public class UserDTO {
 
     int id;
@@ -25,6 +28,7 @@ public class UserDTO {
     String birthDate;
     String description;
     @NotBlank
+    @CheckValueInListConstraint(feasibleList = {Constants.TYPE_ADMIN, Constants.TYPE_APPLICANT, Constants.TYPE_OFFEROR})
     String type;
 
     @NotBlank

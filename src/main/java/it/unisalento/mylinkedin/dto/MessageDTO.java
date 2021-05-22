@@ -1,12 +1,13 @@
 package it.unisalento.mylinkedin.dto;
 
 import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.validators.AtLeastOneNotNullConstraint;
 
 import java.text.ParseException;
 import java.util.Date;
 import java.util.TimeZone;
 
-//TODO: Validator per vedere se almeno una tra text e imagePath è NotBlank
+@AtLeastOneNotNullConstraint(fields = {"text", "imagePath"})
 public class MessageDTO {
 
     int id;

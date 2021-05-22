@@ -1,13 +1,16 @@
 package it.unisalento.mylinkedin.dto;
 
+import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.validators.CheckValueInListConstraint;
+
 import javax.validation.constraints.NotBlank;
-//TODO: validator per vedere se userCanPublish è uguale ad uno dei valori ammissibili
 public class StructureDTO {
 
     int id;
     @NotBlank
     String title;
     String description;
+    @CheckValueInListConstraint(feasibleList = {Constants.CAN_PUBLISH_APPLICANT, Constants.CAN_PUBLISH_APPLICANT, Constants.CAN_PUBLISH_BOTH})
     String userCanPublish;
 
     public int getId() {

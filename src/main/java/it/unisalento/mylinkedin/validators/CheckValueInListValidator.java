@@ -1,7 +1,5 @@
 package it.unisalento.mylinkedin.validators;
 
-import org.springframework.beans.BeanWrapperImpl;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 

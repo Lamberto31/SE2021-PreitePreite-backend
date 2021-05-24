@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
-    List<Post> findByPrivate(boolean isPrivate);
+    List<Post> findByIsPrivate(boolean isPrivate);
 
     @Modifying
     @Query("update Post p set p.isHidden = :isHidden where p.id = :id")

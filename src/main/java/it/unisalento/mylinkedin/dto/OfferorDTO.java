@@ -1,6 +1,7 @@
 package it.unisalento.mylinkedin.dto;
 
 import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.validators.CheckValueInListConstraint;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -9,6 +10,7 @@ import java.util.TimeZone;
 public class OfferorDTO extends UserDTO{
 
     String registrationDate;
+    @CheckValueInListConstraint(feasibleList = {Constants.REGISTRATION_PENDING, Constants.REGISTRATION_ACCEPTED, Constants.REGISTRATION_BLOCKED})
     String status;
 
     public Date getRegistrationDate(String timezone) throws ParseException {

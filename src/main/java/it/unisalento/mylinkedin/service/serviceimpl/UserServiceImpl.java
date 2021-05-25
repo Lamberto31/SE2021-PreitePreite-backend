@@ -4,9 +4,11 @@ import it.unisalento.mylinkedin.dao.UserRepository;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 //TODO: Definire tutti i metodi e mettere Transactional Annotation
+@Service
 public class UserServiceImpl implements IUserService {
 
     @Autowired

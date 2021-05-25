@@ -7,13 +7,16 @@ import it.unisalento.mylinkedin.entities.Post;
 import it.unisalento.mylinkedin.entities.Structure;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 //TODO: Definire tutti i metodi e mettere Transactional Annotation
+@Service
 public class PostServiceImpl implements IPostService {
 
     @Autowired
     PostRepository postRepository;
+
 
     @Override
     public List<Post> getAll() {

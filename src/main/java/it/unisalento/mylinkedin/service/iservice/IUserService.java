@@ -1,9 +1,6 @@
 package it.unisalento.mylinkedin.service.iservice;
 
-import it.unisalento.mylinkedin.entities.Applicant;
-import it.unisalento.mylinkedin.entities.Offeror;
-import it.unisalento.mylinkedin.entities.ProfileImage;
-import it.unisalento.mylinkedin.entities.User;
+import it.unisalento.mylinkedin.entities.*;
 
 import java.util.List;
 
@@ -28,6 +25,7 @@ public interface IUserService {
     //OFFEROR E APPLICANT
     void updateStatusRegistration(String status, int id);
 
+
     //PROFILE IMAGE
     List<ProfileImage> getAllProfileImage();
 
@@ -36,5 +34,27 @@ public interface IUserService {
     ProfileImage getProfileImageById(int id);
 
     void deleteProfileImage(int id);
+
+
+    //MESSAGE
+    List<Message> getAllMessage();
+
+    Message saveMessage(Message message);
+
+    Message getMessageById(int id);
+
+    void deleteMessage(int id);
+
+
+    //COMPANY
+    List<Company> getAllCompany();
+
+    Company saveCompany(Company company);
+
+    Company getCompanyById(int id);
+
+    void deleteCompany(int id);
+
+
 
 }

@@ -28,4 +28,13 @@ public interface IUserService {
     //OFFEROR E APPLICANT
     void updateStatusRegistration(String status, int id);
 
+    //PROFILE IMAGE
+    List<ProfileImage> getAllProfileImage();
+
+    ProfileImage saveProfileImage(ProfileImage profileImage);
+
+    ProfileImage getProfileImageById(int id);
+
+    void deleteProfileImage(int id);
+
 }

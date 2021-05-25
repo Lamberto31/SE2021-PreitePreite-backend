@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface StructureRepository extends JpaRepository<Structure, Integer> {
-    List<Structure> getByUserCanPublish(String userCanPublish);
+    List<Structure> findByUserCanPublish(String userCanPublish);
 }

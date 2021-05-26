@@ -1,6 +1,6 @@
 package it.unisalento.mylinkedin.service.serviceimpl;
 
-import it.unisalento.mylinkedin.dao.UserRepository;
+import it.unisalento.mylinkedin.dao.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.user.*;
@@ -9,12 +9,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-//TODO: Definire tutti i metodi e mettere Transactional Annotation
+//TODO: Mettere Transactional Annotation e definire metodi mancanti
 @Service
 public class UserServiceImpl implements IUserService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    AdministratorRepository administratorRepository;
+
+    @Autowired
+    ApplicantRepository applicantRepository;
+
+    @Autowired
+    OfferorRepository offerorRepository;
+
+    @Autowired
+    ProfileImageRepository profileImageRepository;
+
+    @Autowired
+    MessageRepository messageRepository;
+
+    @Autowired
+    CompanyRepository companyRepository;
 
 
     @Override
@@ -47,81 +65,109 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public User getByEmail(String email) throws UserNotFoundException {
+        //TODO: implementare
         return null;
     }
 
     @Override
     public List<Applicant> getApplicantByStatus(String status) throws UserNotFoundException {
+        //TODO: implementare
         return null;
     }
 
     @Override
     public List<Offeror> getOfferorByStatus(String status) throws UserNotFoundException {
+        //TODO: implementare
         return null;
     }
 
     @Override
     public void updateStatusRegistration(String status, int id) throws UserNotFoundException, InvalidValueException {
+        //TODO: implementare
 
     }
 
     @Override
     public List<ProfileImage> getAllProfileImage() {
-        return null;
+        return profileImageRepository.findAll();
     }
 
     @Override
     public ProfileImage saveProfileImage(ProfileImage profileImage) throws UserSavingException {
-        return null;
+        try {
+            return profileImageRepository.save(profileImage);
+        } catch (Exception e) {
+            throw new UserSavingException();
+        }
     }
 
     @Override
     public ProfileImage getProfileImageById(int id) throws ProfileImageNotFoundException {
-        return null;
+        return profileImageRepository.findById(id).orElseThrow(ProfileImageNotFoundException::new);
     }
 
     @Override
     public void deleteProfileImage(ProfileImage profileImage) throws ProfileImageNotFoundException {
-
+        try {
+            profileImageRepository.delete(profileImage);
+        } catch (Exception e) {
+            throw new ProfileImageNotFoundException();
+        }
     }
 
     @Override
     public List<Message> getAllMessage() {
-        return null;
+        return messageRepository.findAll();
     }
 
     @Override
     public Message saveMessage(Message message) throws MessageSavingException {
-        return null;
+        try {
+            return messageRepository.save(message);
+        } catch (Exception e) {
+            throw new MessageSavingException();
+        }
     }
 
     @Override
     public Message getMessageById(int id) throws MessageNotFoundException {
-        return null;
+        return messageRepository.findById(id).orElseThrow(MessageNotFoundException::new);
     }
 
     @Override
     public void deleteMessage(Message message) throws MessageNotFoundException {
-
+        try {
+            messageRepository.delete(message);
+        } catch (Exception e) {
+            throw new MessageNotFoundException();
+        }
     }
 
     @Override
     public List<Company> getAllCompany() {
-        return null;
+        return companyRepository.findAll();
     }
 
     @Override
     public Company saveCompany(Company company) throws CompanySavingException {
-        return null;
+        try {
+            return companyRepository.save(company);
+        } catch (Exception e) {
+            throw new CompanySavingException();
+        }
     }
 
     @Override
     public Company getCompanyById(int id) throws CompanyNotFoundException {
-        return null;
+        return companyRepository.findById(id).orElseThrow(CompanyNotFoundException::new);
     }
 
     @Override
     public void deleteCompany(Company company) throws CompanyNotFoundException {
-
+        try {
+            companyRepository.delete(company);
+        } catch (Exception e) {
+            throw new CompanyNotFoundException();
+        }
     }
 }

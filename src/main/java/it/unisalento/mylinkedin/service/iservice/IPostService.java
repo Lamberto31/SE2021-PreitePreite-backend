@@ -5,53 +5,55 @@ import it.unisalento.mylinkedin.entities.Attribute;
 import it.unisalento.mylinkedin.entities.Comment;
 import it.unisalento.mylinkedin.entities.Post;
 import it.unisalento.mylinkedin.entities.Structure;
+import it.unisalento.mylinkedin.exception.post.*;
+import it.unisalento.mylinkedin.exception.InvalidValueException;
 
 import java.util.List;
 
 public interface IPostService {
     List<Post> getAll();
 
-    Post save(Post post);
+    Post save(Post post) throws PostSavingException;
 
-    Post getById(int id);
+    Post getById(int id) throws PostNotFoundException;
 
-    void delete(int id);
+    void delete(int id) throws PostNotFoundException;
 
-    List<Post> getByIsPrivate(boolean isPrivate);
+    List<Post> getByIsPrivate(boolean isPrivate) throws PostNotFoundException;
 
-    void updateIsHidden(boolean isHidden, int id);
+    void updateIsHidden(boolean isHidden, int id) throws PostNotFoundException, InvalidValueException;
 
 
     //STRUCTURE
     List<Structure> getAllStructure();
 
-    Structure saveStructure(Structure structure);
+    Structure saveStructure(Structure structure) throws StructureSavingException;
 
-    Structure getStructureById(int id);
+    Structure getStructureById(int id) throws StructureNotFoundException;
 
-    void deleteStructure(int id);
+    void deleteStructure(int id) throws StructureNotFoundException;
 
-    List<Structure> getByUserCanPublish(String userCanPublish);
+    List<Structure> getByUserCanPublish(String userCanPublish) throws StructureNotFoundException;
 
 
     //ATTRIBUTE
     List<Attribute> getAllAttribute();
 
-    Attribute saveAttribute(Attribute attribute);
+    Attribute saveAttribute(Attribute attribute) throws AttributeSavingException;
 
-    Attribute getAttributeById(int id);
+    Attribute getAttributeById(int id) throws AttributeNotFoundException;
 
-    void deleteAttribute(int id);
+    void deleteAttribute(int id) throws AttributeNotFoundException;
 
 
     //COMMENT
     List<Comment> getAllComment();
 
-    Comment saveComment(Comment comment);
+    Comment saveComment(Comment comment) throws CommentSavingException;
 
-    Comment getCommentById(int id);
+    Comment getCommentById(int id) throws CommentNotFoundException;
 
-    void deleteComment(int id);
+    void deleteComment(int id) throws CommentNotFoundException;
 
 
 

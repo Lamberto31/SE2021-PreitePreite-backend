@@ -1,6 +1,7 @@
 package it.unisalento.mylinkedin.service.iservice;
 
 import it.unisalento.mylinkedin.entities.*;
+import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.user.*;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public interface IUserService {
     List<Offeror> getOfferorByStatus(String status) throws UserNotFoundException;
 
     //OFFEROR E APPLICANT
-    void updateStatusRegistration(String status, int id) throws UserNotFoundException, UserStatusInvalidException;
+    void updateStatusRegistration(String status, int id) throws UserNotFoundException, InvalidValueException;
 
 
     //PROFILE IMAGE

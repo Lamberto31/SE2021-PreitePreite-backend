@@ -6,14 +6,14 @@ import it.unisalento.mylinkedin.entities.Comment;
 import it.unisalento.mylinkedin.entities.Post;
 import it.unisalento.mylinkedin.entities.Structure;
 import it.unisalento.mylinkedin.exception.post.*;
-import it.unisalento.mylinkedin.exception.user.UserStatusInvalidException;
+import it.unisalento.mylinkedin.exception.InvalidValueException;
 
 import java.util.List;
 
 public interface IPostService {
     List<Post> getAll();
 
-    Post save(Post post) throws SavingPostException;
+    Post save(Post post) throws PostSavingException;
 
     Post getById(int id) throws PostNotFoundException;
 
@@ -21,13 +21,13 @@ public interface IPostService {
 
     List<Post> getByIsPrivate(boolean isPrivate) throws PostNotFoundException;
 
-    void updateIsHidden(boolean isHidden, int id) throws PostNotFoundException, UserStatusInvalidException;
+    void updateIsHidden(boolean isHidden, int id) throws PostNotFoundException, InvalidValueException;
 
 
     //STRUCTURE
     List<Structure> getAllStructure();
 
-    Structure saveStructure(Structure structure) throws SavingStructureException;
+    Structure saveStructure(Structure structure) throws StructureSavingException;
 
     Structure getStructureById(int id) throws StructureNotFoundException;
 
@@ -39,7 +39,7 @@ public interface IPostService {
     //ATTRIBUTE
     List<Attribute> getAllAttribute();
 
-    Attribute saveAttribute(Attribute attribute) throws SavingAttributeException;
+    Attribute saveAttribute(Attribute attribute) throws AttributeSavingException;
 
     Attribute getAttributeById(int id) throws AttributeNotFoundException;
 
@@ -49,7 +49,7 @@ public interface IPostService {
     //COMMENT
     List<Comment> getAllComment();
 
-    Comment saveComment(Comment comment) throws SavingCommentException;
+    Comment saveComment(Comment comment) throws CommentSavingException;
 
     Comment getCommentById(int id) throws CommentNotFoundException;
 

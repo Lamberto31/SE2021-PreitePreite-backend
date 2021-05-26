@@ -13,7 +13,7 @@ public interface IUserService {
 
     User getById(int id) throws UserNotFoundException;
 
-    void delete(int id) throws UserNotFoundException;
+    void delete(User user) throws UserNotFoundException;
 
     User getByEmail(String email) throws UserNotFoundException;
 

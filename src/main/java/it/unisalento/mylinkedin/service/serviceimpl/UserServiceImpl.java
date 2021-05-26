@@ -81,7 +81,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public void deleteProfileImage(int id) throws ProfileImageNotFoundException {
+    public void deleteProfileImage(ProfileImage profileImage) throws ProfileImageNotFoundException {
 
     }
 
@@ -101,7 +101,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public void deleteMessage(int id) throws MessageNotFoundException {
+    public void deleteMessage(Message message) throws MessageNotFoundException {
 
     }
 
@@ -121,7 +121,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public void deleteCompany(int id) throws CompanyNotFoundException {
+    public void deleteCompany(Company company) throws CompanyNotFoundException {
 
     }
 }

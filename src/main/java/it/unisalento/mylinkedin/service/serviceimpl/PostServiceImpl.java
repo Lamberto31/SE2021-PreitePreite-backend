@@ -34,7 +34,7 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(Post post) {
 
     }
 
@@ -64,7 +64,7 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public void deleteStructure(int id) {
+    public void deleteStructure(Structure structure) {
 
     }
 
@@ -89,7 +89,7 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public void deleteAttribute(int id) {
+    public void deleteAttribute(Attribute attribute) {
 
     }
 
@@ -109,7 +109,7 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public void deleteComment(int id) {
+    public void deleteComment(Comment comment) {
 
     }
 }

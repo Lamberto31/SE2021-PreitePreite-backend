@@ -17,7 +17,7 @@ public interface IPostService {
 
     Post getById(int id) throws PostNotFoundException;
 
-    void delete(int id) throws PostNotFoundException;
+    void delete(Post post) throws PostNotFoundException;
 
     List<Post> getByIsPrivate(boolean isPrivate) throws PostNotFoundException;
 
@@ -31,7 +31,7 @@ public interface IPostService {
 
     Structure getStructureById(int id) throws StructureNotFoundException;
 
-    void deleteStructure(int id) throws StructureNotFoundException;
+    void deleteStructure(Structure structure) throws StructureNotFoundException;
 
     List<Structure> getByUserCanPublish(String userCanPublish) throws StructureNotFoundException;
 
@@ -43,7 +43,7 @@ public interface IPostService {
 
     Attribute getAttributeById(int id) throws AttributeNotFoundException;
 
-    void deleteAttribute(int id) throws AttributeNotFoundException;
+    void deleteAttribute(Attribute attribute) throws AttributeNotFoundException;
 
 
     //COMMENT
@@ -53,8 +53,5 @@ public interface IPostService {
 
     Comment getCommentById(int id) throws CommentNotFoundException;
 
-    void deleteComment(int id) throws CommentNotFoundException;
-
-
-
+    void deleteComment(Comment comment) throws CommentNotFoundException;
 }

@@ -35,7 +35,7 @@ public interface IUserService {
 
     ProfileImage getProfileImageById(int id) throws ProfileImageNotFoundException;
 
-    void deleteProfileImage(int id) throws ProfileImageNotFoundException;
+    void deleteProfileImage(ProfileImage profileImage) throws ProfileImageNotFoundException;
 
 
     //MESSAGE
@@ -45,7 +45,7 @@ public interface IUserService {
 
     Message getMessageById(int id) throws MessageNotFoundException;
 
-    void deleteMessage(int id) throws MessageNotFoundException;
+    void deleteMessage(Message message) throws MessageNotFoundException;
 
 
     //COMPANY
@@ -55,8 +55,5 @@ public interface IUserService {
 
     Company getCompanyById(int id) throws CompanyNotFoundException;
 
-    void deleteCompany(int id) throws CompanyNotFoundException;
-
-
-
+    void deleteCompany(Company company) throws CompanyNotFoundException;
 }

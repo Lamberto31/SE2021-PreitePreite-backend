@@ -8,7 +8,7 @@ import java.util.List;
 public interface IUserService {
     List<User> getAll();
 
-    User save(User user) throws SavingUserException;
+    User save(User user) throws UserSavingException;
 
     User getById(int id) throws UserNotFoundException;
 
@@ -30,7 +30,7 @@ public interface IUserService {
     //PROFILE IMAGE
     List<ProfileImage> getAllProfileImage();
 
-    ProfileImage saveProfileImage(ProfileImage profileImage) throws SavingUserException;
+    ProfileImage saveProfileImage(ProfileImage profileImage) throws UserSavingException;
 
     ProfileImage getProfileImageById(int id) throws ProfileImageNotFoundException;
 
@@ -40,7 +40,7 @@ public interface IUserService {
     //MESSAGE
     List<Message> getAllMessage();
 
-    Message saveMessage(Message message) throws SavingMessageException;
+    Message saveMessage(Message message) throws MessageSavingException;
 
     Message getMessageById(int id) throws MessageNotFoundException;
 
@@ -50,7 +50,7 @@ public interface IUserService {
     //COMPANY
     List<Company> getAllCompany();
 
-    Company saveCompany(Company company) throws SavingCompanyException;
+    Company saveCompany(Company company) throws CompanySavingException;
 
     Company getCompanyById(int id) throws CompanyNotFoundException;
 

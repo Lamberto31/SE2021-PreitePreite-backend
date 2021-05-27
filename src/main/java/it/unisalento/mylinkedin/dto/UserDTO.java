@@ -113,10 +113,10 @@ public class UserDTO {
         this.passwordToVerify = passwordToVerify;
     }
 
-    public UserDTO convertToDto(User user) {
+    public UserDTO convertToDto(User entity) {
         ModelMapper modelMapper =  new ModelMapper();
-        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
-        userDTO.setBirthDate(user.getBirthDate(), Constants.timezone);
-        return userDTO;
+        UserDTO dto = modelMapper.map(entity, UserDTO.class);
+        dto.setBirthDate(entity.getBirthDate(), Constants.timezone);
+        return dto;
     }
 }

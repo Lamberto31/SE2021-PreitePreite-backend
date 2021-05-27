@@ -168,10 +168,10 @@ public class User {
         this.postList = postList;
     }
 
-    public User convertToEntity(UserDTO userDTO) throws ParseException {
+    public User convertToEntity(UserDTO dto) throws ParseException {
         ModelMapper modelMapper =  new ModelMapper();
-        User user = modelMapper.map(userDTO, User.class);
-        user.setBirthDate(userDTO.getBirthDate(Constants.timezone));
-        return user;
+        User entity = modelMapper.map(dto, User.class);
+        entity.setBirthDate(dto.getBirthDate(Constants.timezone));
+        return entity;
     }
 }

@@ -22,4 +22,5 @@ public interface Constants {
     //Formato data
     String DATE_FORMAT = "dd/MM/yyyy HH:mm";
     SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT);
+    String timezone = "Europe/Rome";
 }

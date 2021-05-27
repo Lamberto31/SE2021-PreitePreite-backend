@@ -122,7 +122,7 @@ public class PostServiceImpl implements IPostService {
     @Transactional(rollbackOn = StructureNotFoundException.class)
     public List<Structure> getByUserCanPublish(String userCanPublish) throws StructureNotFoundException {
         try {
-            return structureRepository.getByUserCanPublish(userCanPublish);
+            return structureRepository.findByUserCanPublish(userCanPublish);
         } catch (Exception e) {
             throw new StructureNotFoundException();
         }

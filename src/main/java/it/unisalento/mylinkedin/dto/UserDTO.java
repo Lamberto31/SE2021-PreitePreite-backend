@@ -113,7 +113,7 @@ public class UserDTO {
         this.passwordToVerify = passwordToVerify;
     }
 
-    private UserDTO convertToDto(User user) {
+    public UserDTO convertToDto(User user) {
         ModelMapper modelMapper =  new ModelMapper();
         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
         userDTO.setBirthDate(user.getBirthDate(), Constants.timezone);

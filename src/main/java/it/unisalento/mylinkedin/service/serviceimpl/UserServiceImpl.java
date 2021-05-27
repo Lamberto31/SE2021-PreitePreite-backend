@@ -8,8 +8,9 @@ import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
-//TODO: Mettere Transactional Annotation e definire metodi mancanti
+
 @Service
 public class UserServiceImpl implements IUserService {
 
@@ -36,11 +37,13 @@ public class UserServiceImpl implements IUserService {
 
 
     @Override
+    @Transactional
     public List<User> getAll() {
         return userRepository.findAll();
     }
 
     @Override
+    @Transactional(rollbackOn = UserSavingException.class)
     public User save(User user) throws UserSavingException {
         try {
             return userRepository.save(user);
@@ -50,11 +53,13 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional(rollbackOn = UserNotFoundException.class)
     public User getById(int id) throws UserNotFoundException {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
     @Override
+    @Transactional(rollbackOn = UserNotFoundException.class)
     public void delete(User user) throws UserNotFoundException {
         try {
             userRepository.delete(user);
@@ -64,6 +69,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional(rollbackOn = UserNotFoundException.class)
     public User getByEmail(String email) throws UserNotFoundException {
         try {
             return userRepository.findByEmail(email);
@@ -73,6 +79,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional(rollbackOn = UserNotFoundException.class)
     public List<Applicant> getApplicantByStatus(String status) throws UserNotFoundException {
         try {
             return applicantRepository.findByStatus(status);
@@ -82,6 +89,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional(rollbackOn = UserNotFoundException.class)
     public List<Offeror> getOfferorByStatus(String status) throws UserNotFoundException {
         try {
             return offerorRepository.findByStatus(status);
@@ -91,6 +99,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional(rollbackOn = UserNotFoundException.class)
     public void updateStatusRegistration(String status, int id) throws UserNotFoundException, InvalidValueException {
         try {
             applicantRepository.updateStatusRegistration(status, id);
@@ -100,25 +109,29 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional
     public List<ProfileImage> getAllProfileImage() {
         return profileImageRepository.findAll();
     }
 
     @Override
-    public ProfileImage saveProfileImage(ProfileImage profileImage) throws UserSavingException {
+    @Transactional(rollbackOn = ProfileImageSavingException.class)
+    public ProfileImage saveProfileImage(ProfileImage profileImage) throws ProfileImageSavingException {
         try {
             return profileImageRepository.save(profileImage);
         } catch (Exception e) {
-            throw new UserSavingException();
+            throw new ProfileImageSavingException();
         }
     }
 
     @Override
+    @Transactional(rollbackOn = ProfileImageNotFoundException.class)
     public ProfileImage getProfileImageById(int id) throws ProfileImageNotFoundException {
         return profileImageRepository.findById(id).orElseThrow(ProfileImageNotFoundException::new);
     }
 
     @Override
+    @Transactional(rollbackOn = ProfileImageNotFoundException.class)
     public void deleteProfileImage(ProfileImage profileImage) throws ProfileImageNotFoundException {
         try {
             profileImageRepository.delete(profileImage);
@@ -128,11 +141,13 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional
     public List<Message> getAllMessage() {
         return messageRepository.findAll();
     }
 
     @Override
+    @Transactional(rollbackOn = MessageSavingException.class)
     public Message saveMessage(Message message) throws MessageSavingException {
         try {
             return messageRepository.save(message);
@@ -142,11 +157,13 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional(rollbackOn = MessageNotFoundException.class)
     public Message getMessageById(int id) throws MessageNotFoundException {
         return messageRepository.findById(id).orElseThrow(MessageNotFoundException::new);
     }
 
     @Override
+    @Transactional(rollbackOn = MessageNotFoundException.class)
     public void deleteMessage(Message message) throws MessageNotFoundException {
         try {
             messageRepository.delete(message);
@@ -156,11 +173,13 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional
     public List<Company> getAllCompany() {
         return companyRepository.findAll();
     }
 
     @Override
+    @Transactional(rollbackOn = CompanySavingException.class)
     public Company saveCompany(Company company) throws CompanySavingException {
         try {
             return companyRepository.save(company);
@@ -170,11 +189,13 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional(rollbackOn = CompanyNotFoundException.class)
     public Company getCompanyById(int id) throws CompanyNotFoundException {
         return companyRepository.findById(id).orElseThrow(CompanyNotFoundException::new);
     }
 
     @Override
+    @Transactional(rollbackOn = CompanyNotFoundException.class)
     public void deleteCompany(Company company) throws CompanyNotFoundException {
         try {
             companyRepository.delete(company);

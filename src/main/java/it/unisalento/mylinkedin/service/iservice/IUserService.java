@@ -31,7 +31,7 @@ public interface IUserService {
     //PROFILE IMAGE
     List<ProfileImage> getAllProfileImage();
 
-    ProfileImage saveProfileImage(ProfileImage profileImage) throws UserSavingException;
+    ProfileImage saveProfileImage(ProfileImage profileImage) throws ProfileImageSavingException;
 
     ProfileImage getProfileImageById(int id) throws ProfileImageNotFoundException;
 

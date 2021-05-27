@@ -1,7 +1,10 @@
 package it.unisalento.mylinkedin.dto;
 
 import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.entities.Message;
+import it.unisalento.mylinkedin.entities.User;
 import it.unisalento.mylinkedin.validators.AtLeastOneNotNullConstraint;
+import org.modelmapper.ModelMapper;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -47,5 +50,12 @@ public class MessageDTO {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public MessageDTO convertToDto(Message entity) {
+        ModelMapper modelMapper =  new ModelMapper();
+        MessageDTO dto = modelMapper.map(entity, MessageDTO.class);
+        dto.setPubblicationDate(entity.getPubblicationDate(), Constants.timezone);
+        return dto;
     }
 }

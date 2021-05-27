@@ -1,5 +1,10 @@
 package it.unisalento.mylinkedin.dto;
 
+import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.entities.Comment;
+import it.unisalento.mylinkedin.entities.Company;
+import org.modelmapper.ModelMapper;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -52,5 +57,10 @@ public class CompanyDTO {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public CompanyDTO convertToDto(Company entity) {
+        ModelMapper modelMapper =  new ModelMapper();
+        return modelMapper.map(entity, CompanyDTO.class);
     }
 }

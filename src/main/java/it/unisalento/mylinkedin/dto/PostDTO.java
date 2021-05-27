@@ -1,6 +1,9 @@
 package it.unisalento.mylinkedin.dto;
 
 import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.entities.Post;
+import it.unisalento.mylinkedin.entities.User;
+import org.modelmapper.ModelMapper;
 
 import javax.validation.constraints.NotBlank;
 import java.text.ParseException;
@@ -56,5 +59,12 @@ public class PostDTO {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public PostDTO convertToDto(Post entity) {
+        ModelMapper modelMapper =  new ModelMapper();
+        PostDTO dto = modelMapper.map(entity, PostDTO.class);
+        dto.setPubblicationDate(entity.getPubblicationDate(), Constants.timezone);
+        return dto;
     }
 }

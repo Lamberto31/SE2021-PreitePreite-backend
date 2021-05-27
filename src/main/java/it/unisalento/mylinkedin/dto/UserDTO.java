@@ -1,8 +1,10 @@
 package it.unisalento.mylinkedin.dto;
 
 import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.entities.User;
 import it.unisalento.mylinkedin.validators.CheckValueInListConstraint;
 import it.unisalento.mylinkedin.validators.MatchTwoFieldsConstraint;
+import org.modelmapper.ModelMapper;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -109,5 +111,12 @@ public class UserDTO {
 
     public void setPasswordToVerify(String passwordToVerify) {
         this.passwordToVerify = passwordToVerify;
+    }
+
+    public UserDTO convertToDto(User entity) {
+        ModelMapper modelMapper =  new ModelMapper();
+        UserDTO dto = modelMapper.map(entity, UserDTO.class);
+        dto.setBirthDate(entity.getBirthDate(), Constants.timezone);
+        return dto;
     }
 }

@@ -1,10 +1,13 @@
 package it.unisalento.mylinkedin.entities;
 
 import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.dto.OfferorDTO;
+import org.modelmapper.ModelMapper;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -49,5 +52,13 @@ public class Applicant extends User{
 
     public void setFixedAttributes(String fixedAttributes) {
         this.fixedAttributes = fixedAttributes;
+    }
+
+    public Offeror convertToEntity(OfferorDTO dto) throws ParseException {
+        ModelMapper modelMapper =  new ModelMapper();
+        Offeror entity = modelMapper.map(dto, Offeror.class);
+        entity.setBirthDate(dto.getBirthDate(Constants.timezone));
+        entity.setRegistrationDate(dto.getRegistrationDate(Constants.timezone));
+        return entity;
     }
 }

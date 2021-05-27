@@ -1,6 +1,11 @@
 package it.unisalento.mylinkedin.entities;
 
+import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.dto.UserDTO;
+import org.modelmapper.ModelMapper;
+
 import javax.persistence.*;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -161,5 +166,12 @@ public class User {
 
     public void setPostList(List<Post> postList) {
         this.postList = postList;
+    }
+
+    public User convertToEntity(UserDTO dto) throws ParseException {
+        ModelMapper modelMapper =  new ModelMapper();
+        User entity = modelMapper.map(dto, User.class);
+        entity.setBirthDate(dto.getBirthDate(Constants.timezone));
+        return entity;
     }
 }

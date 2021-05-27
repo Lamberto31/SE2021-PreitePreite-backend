@@ -1,7 +1,10 @@
 package it.unisalento.mylinkedin.dto;
 
 import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.entities.Applicant;
+import it.unisalento.mylinkedin.entities.Offeror;
 import it.unisalento.mylinkedin.validators.CheckValueInListConstraint;
+import org.modelmapper.ModelMapper;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -29,5 +32,13 @@ public class OfferorDTO extends UserDTO{
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public OfferorDTO convertToDto(Offeror entity) {
+        ModelMapper modelMapper =  new ModelMapper();
+        OfferorDTO dto = modelMapper.map(entity, OfferorDTO.class);
+        dto.setBirthDate(entity.getBirthDate(), Constants.timezone);
+        dto.setRegistrationDate(entity.getRegistrationDate(), Constants.timezone);
+        return dto;
     }
 }

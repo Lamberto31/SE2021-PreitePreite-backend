@@ -65,26 +65,38 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public User getByEmail(String email) throws UserNotFoundException {
-        //TODO: implementare
-        return null;
+        try {
+            return userRepository.findByEmail(email);
+        } catch (Exception e) {
+            throw new UserNotFoundException();
+        }
     }
 
     @Override
     public List<Applicant> getApplicantByStatus(String status) throws UserNotFoundException {
-        //TODO: implementare
-        return null;
+        try {
+            return applicantRepository.findByStatus(status);
+        } catch (Exception e) {
+            throw new UserNotFoundException();
+        }
     }
 
     @Override
     public List<Offeror> getOfferorByStatus(String status) throws UserNotFoundException {
-        //TODO: implementare
-        return null;
+        try {
+            return offerorRepository.findByStatus(status);
+        } catch (Exception e) {
+            throw new UserNotFoundException();
+        }
     }
 
     @Override
     public void updateStatusRegistration(String status, int id) throws UserNotFoundException, InvalidValueException {
-        //TODO: implementare
-
+        try {
+            applicantRepository.updateStatusRegistration(status, id);
+        } catch (Exception e) {
+            throw new UserNotFoundException();
+        }
     }
 
     @Override

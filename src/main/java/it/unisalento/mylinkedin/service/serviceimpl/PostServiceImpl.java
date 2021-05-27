@@ -62,14 +62,20 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     public List<Post> getByIsPrivate(boolean isPrivate) throws PostNotFoundException {
-        //TODO: implementare
-        return null;
+        try {
+            return postRepository.findByIsPrivate(isPrivate);
+        } catch (Exception e) {
+            throw new PostNotFoundException();
+        }
     }
 
     @Override
     public void updateIsHidden(boolean isHidden, int id) throws PostNotFoundException, InvalidValueException {
-        //TODO: implementare
-
+        try {
+            postRepository.updateIsHidden(isHidden, id);
+        } catch (Exception e) {
+            throw new PostNotFoundException();
+        }
     }
 
     @Override
@@ -102,8 +108,11 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     public List<Structure> getByUserCanPublish(String userCanPublish) throws StructureNotFoundException {
-        //TODO: implementare
-        return null;
+        try {
+            return structureRepository.getByUserCanPublish(userCanPublish);
+        } catch (Exception e) {
+            throw new StructureNotFoundException();
+        }
     }
 
     @Override

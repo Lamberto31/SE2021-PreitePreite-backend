@@ -1,6 +1,12 @@
 package it.unisalento.mylinkedin.entities;
 
+import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.dto.AttributeDTO;
+import it.unisalento.mylinkedin.dto.UserDTO;
+import org.modelmapper.ModelMapper;
+
 import javax.persistence.*;
+import java.text.ParseException;
 import java.util.List;
 
 @Entity
@@ -55,5 +61,10 @@ public class Attribute {
 
     public void setStructureAttributeList(List<StructureAttribute> structureAttributeList) {
         this.structureAttributeList = structureAttributeList;
+    }
+
+    public Attribute convertToEntity(AttributeDTO dto) {
+        ModelMapper modelMapper =  new ModelMapper();
+        return modelMapper.map(dto, Attribute.class);
     }
 }

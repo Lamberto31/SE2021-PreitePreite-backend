@@ -15,7 +15,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     @Modifying
     @Query("update Post p set p.isHidden = :isHidden where p.id = :id")
-    void updateStatusRegistration(@Param("isHidden") boolean isHidden, @Param("id") int id);
+    void updateIsHidden(@Param("isHidden") boolean isHidden, @Param("id") int id);
 
     //TODO: filtraggio per skills
 }

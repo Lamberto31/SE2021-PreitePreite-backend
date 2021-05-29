@@ -13,7 +13,7 @@ public class StructureDTO {
     @NotBlank
     String title;
     String description;
-    @CheckValueInListConstraint(feasibleList = {Constants.CAN_PUBLISH_APPLICANT, Constants.CAN_PUBLISH_APPLICANT, Constants.CAN_PUBLISH_BOTH})
+    @CheckValueInListConstraint(feasibleList = {Constants.CAN_PUBLISH_APPLICANT, Constants.CAN_PUBLISH_OFFEROR, Constants.CAN_PUBLISH_BOTH})
     String userCanPublish;
 
     public int getId() {

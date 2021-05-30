@@ -47,6 +47,8 @@ public interface IUserService {
 
     void deleteMessage(Message message) throws MessageNotFoundException;
 
+    List<Message> getMessageBySenderAndReceiver(User sender, User receiver) throws MessageNotFoundException;
+
 
     //COMPANY
     List<Company> getAllCompany();

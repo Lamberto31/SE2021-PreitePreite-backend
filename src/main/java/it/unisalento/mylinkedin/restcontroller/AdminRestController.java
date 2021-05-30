@@ -7,7 +7,9 @@ import it.unisalento.mylinkedin.entities.Applicant;
 import it.unisalento.mylinkedin.entities.Offeror;
 import it.unisalento.mylinkedin.entities.User;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
+import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
+import it.unisalento.mylinkedin.service.iservice.IPostService;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,9 @@ public class AdminRestController {
 
     @Autowired
     IUserService userService;
+
+    @Autowired
+    IPostService postService;
 
     @DeleteMapping(value = "/delete/{id}")
     public ResponseEntity<UserDTO> delete(@PathVariable("id") int id) throws UserNotFoundException {
@@ -58,6 +63,14 @@ public class AdminRestController {
         userService.updateStatusRegistration(status, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PostMapping(value = "/post/updateIsHidden/{id}/{isHidden}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDTO> updatePostIsHidden(@PathVariable("id") int id, @PathVariable("isHidden") boolean isHidden) throws PostNotFoundException, InvalidValueException {
+        postService.updateIsHidden(isHidden, id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 
 
 }

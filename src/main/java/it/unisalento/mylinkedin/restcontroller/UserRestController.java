@@ -1,13 +1,13 @@
 package it.unisalento.mylinkedin.restcontroller;
 
 import it.unisalento.mylinkedin.dto.CompanyDTO;
+import it.unisalento.mylinkedin.dto.PostDTO;
 import it.unisalento.mylinkedin.dto.ProfileImageDTO;
 import it.unisalento.mylinkedin.dto.UserDTO;
-import it.unisalento.mylinkedin.entities.Company;
-import it.unisalento.mylinkedin.entities.Offeror;
-import it.unisalento.mylinkedin.entities.ProfileImage;
-import it.unisalento.mylinkedin.entities.User;
+import it.unisalento.mylinkedin.entities.*;
+import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.user.*;
+import it.unisalento.mylinkedin.service.iservice.IPostService;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(value="/user")
@@ -22,6 +24,9 @@ public class UserRestController {
 
     @Autowired
     IUserService userService;
+
+    @Autowired
+    IPostService postService;
 
     @GetMapping(value = "/getById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO getById(@PathVariable int id) throws UserNotFoundException {
@@ -76,6 +81,17 @@ public class UserRestController {
         Offeror offeror =  userService.getOfferorById(offerorId);
         Company company = offeror.getCompany();
         return new CompanyDTO().convertToDto(company);
+    }
+
+    @GetMapping(value = "/post/getPublic", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PostDTO> getPostPublic() throws PostNotFoundException {
+
+        List<Post> postList = postService.getByIsPrivate(false);
+        List<PostDTO> postDTOList = new ArrayList<>();
+        for(Post post: postList) {
+            postDTOList.add(new PostDTO().convertToDto(post));
+        }
+        return postDTOList;
     }
 
 

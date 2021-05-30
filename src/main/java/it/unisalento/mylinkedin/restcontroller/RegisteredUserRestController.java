@@ -1,11 +1,18 @@
 package it.unisalento.mylinkedin.restcontroller;
 
 import it.unisalento.mylinkedin.dto.MessageDTO;
+import it.unisalento.mylinkedin.dto.OfferorDTO;
+import it.unisalento.mylinkedin.dto.PostDTO;
 import it.unisalento.mylinkedin.entities.Message;
+import it.unisalento.mylinkedin.entities.Offeror;
+import it.unisalento.mylinkedin.entities.Post;
 import it.unisalento.mylinkedin.entities.User;
+import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
+import it.unisalento.mylinkedin.exception.post.PostSavingException;
 import it.unisalento.mylinkedin.exception.user.MessageNotFoundException;
 import it.unisalento.mylinkedin.exception.user.MessageSavingException;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
+import it.unisalento.mylinkedin.service.iservice.IPostService;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -22,6 +29,9 @@ public class RegisteredUserRestController {
 
     @Autowired
     IUserService userService;
+
+    @Autowired
+    IPostService postService;
 
     @GetMapping(value = "/message/getById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public MessageDTO getMessagetById(@PathVariable int id) throws MessageNotFoundException {
@@ -50,5 +60,31 @@ public class RegisteredUserRestController {
             messageDTOList.add(new MessageDTO().convertToDto(message));
         }
         return messageDTOList;
+    }
+
+    @GetMapping(value = "/post/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PostDTO> getAllPost() {
+        List<Post> postList = postService.getAll();
+        List<PostDTO> postDTOList = new ArrayList<>();
+        for(Post post: postList) {
+            postDTOList.add(new PostDTO().convertToDto(post));
+        }
+        return postDTOList;
+    }
+
+    @GetMapping(value = "/post/getById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public PostDTO getPostById(@PathVariable int id) throws PostNotFoundException {
+
+        Post post = postService.getById(id);
+        return new PostDTO().convertToDto(post);
+    }
+
+    @PostMapping(value="/post/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public PostDTO savePost(@RequestBody @Valid PostDTO postDTO) throws ParseException, PostSavingException {
+
+        Post post = new Post().convertToEntity(postDTO);
+        Post postSaved = postService.save(post);
+        postDTO.setId(postSaved.getId());
+        return postDTO;
     }
 }

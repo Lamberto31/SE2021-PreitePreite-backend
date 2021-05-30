@@ -1,13 +1,13 @@
 package it.unisalento.mylinkedin.restcontroller;
 
-import it.unisalento.mylinkedin.dto.ApplicantDTO;
-import it.unisalento.mylinkedin.dto.OfferorDTO;
-import it.unisalento.mylinkedin.dto.UserDTO;
-import it.unisalento.mylinkedin.entities.Applicant;
-import it.unisalento.mylinkedin.entities.Offeror;
-import it.unisalento.mylinkedin.entities.User;
+import it.unisalento.mylinkedin.dto.*;
+import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
+import it.unisalento.mylinkedin.exception.post.PostSavingException;
+import it.unisalento.mylinkedin.exception.post.StructureNotFoundException;
+import it.unisalento.mylinkedin.exception.post.StructureSavingException;
+import it.unisalento.mylinkedin.exception.user.MessageNotFoundException;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
@@ -17,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,12 +67,42 @@ public class AdminRestController {
     }
 
     @PostMapping(value = "/post/updateIsHidden/{id}/{isHidden}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDTO> updatePostIsHidden(@PathVariable("id") int id, @PathVariable("isHidden") boolean isHidden) throws PostNotFoundException, InvalidValueException {
+    public ResponseEntity<PostDTO> updatePostIsHidden(@PathVariable("id") int id, @PathVariable("isHidden") boolean isHidden) throws PostNotFoundException, InvalidValueException {
         postService.updateIsHidden(isHidden, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping(value = "/structure/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<StructureDTO> getALlStructure() {
+        List<Structure> structureList = postService.getAllStructure();
+        List<StructureDTO> structureDTOList = new ArrayList<>();
+        for(Structure structure: structureList) {
+            structureDTOList.add(new StructureDTO().convertToDto(structure));
+        }
+        return structureDTOList;
+    }
 
+    @PostMapping(value="/structure/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public StructureDTO saveStructure(@RequestBody @Valid StructureDTO structureDTO) throws StructureSavingException {
+        Structure structure = new Structure().convertToEntity(structureDTO);
+        Structure structureSaved = postService.saveStructure(structure);
+        structureDTO.setId(structureSaved.getId());
+        return structureDTO;
+    }
+
+    @GetMapping(value = "/structure/getById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public StructureDTO getStructureById(@PathVariable int id) throws StructureNotFoundException {
+        Structure structure = postService.getStructureById(id);
+        return new StructureDTO().convertToDto(structure);
+    }
+
+    @DeleteMapping(value = "/structure/delete/{id}")
+    public ResponseEntity<StructureDTO> deleteStructure(@PathVariable("id") int id) throws StructureNotFoundException {
+        Structure structure = postService.getStructureById(id);
+        StructureDTO structureDTO = new StructureDTO().convertToDto(structure);
+        postService.deleteStructure(structure);
+        return new ResponseEntity<>(structureDTO, HttpStatus.OK);
+    }
 
 
 }

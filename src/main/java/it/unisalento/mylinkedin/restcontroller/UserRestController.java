@@ -1,7 +1,11 @@
 package it.unisalento.mylinkedin.restcontroller;
 
+import it.unisalento.mylinkedin.dto.ProfileImageDTO;
 import it.unisalento.mylinkedin.dto.UserDTO;
+import it.unisalento.mylinkedin.entities.ProfileImage;
 import it.unisalento.mylinkedin.entities.User;
+import it.unisalento.mylinkedin.exception.user.ProfileImageNotFoundException;
+import it.unisalento.mylinkedin.exception.user.ProfileImageSavingException;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.exception.user.UserSavingException;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
@@ -33,5 +37,21 @@ public class UserRestController {
         User userSaved = userService.save(user);
         userDTO.setId(userSaved.getId());
         return userDTO;
+    }
+
+    @GetMapping(value = "/ProfileImage/getById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ProfileImageDTO getProfileImagetById(@PathVariable int id) throws ProfileImageNotFoundException {
+
+        ProfileImage profileImage = userService.getProfileImageById(id);
+        return new ProfileImageDTO().convertToDto(profileImage);
+    }
+
+    @PostMapping(value="/ProfileImage/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ProfileImageDTO saveProfileImage(@RequestBody @Valid ProfileImageDTO profileImageDTO) throws ParseException, ProfileImageSavingException {
+
+        ProfileImage profileImage = new ProfileImage().convertToEntity(profileImageDTO);
+        ProfileImage profileImageSaved = userService.saveProfileImage(profileImage);
+        profileImageDTO.setId(profileImageSaved.getId());
+        return profileImageDTO;
     }
 }

@@ -19,9 +19,13 @@ public interface IUserService {
 
 
     //APPLICANT
+    Applicant getApplicantById(int id) throws UserNotFoundException;
+
     List<Applicant> getApplicantByStatus(String status) throws UserNotFoundException ;
 
     //OFFEROR
+    Offeror getOfferorById(int id) throws UserNotFoundException;
+
     List<Offeror> getOfferorByStatus(String status) throws UserNotFoundException;
 
     //OFFEROR E APPLICANT

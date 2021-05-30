@@ -1,14 +1,14 @@
 package it.unisalento.mylinkedin.restcontroller;
 
+import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dto.MessageDTO;
 import it.unisalento.mylinkedin.dto.OfferorDTO;
 import it.unisalento.mylinkedin.dto.PostDTO;
-import it.unisalento.mylinkedin.entities.Message;
-import it.unisalento.mylinkedin.entities.Offeror;
-import it.unisalento.mylinkedin.entities.Post;
-import it.unisalento.mylinkedin.entities.User;
+import it.unisalento.mylinkedin.dto.StructureDTO;
+import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.post.PostSavingException;
+import it.unisalento.mylinkedin.exception.post.StructureNotFoundException;
 import it.unisalento.mylinkedin.exception.user.MessageNotFoundException;
 import it.unisalento.mylinkedin.exception.user.MessageSavingException;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
@@ -86,5 +86,40 @@ public class RegisteredUserRestController {
         Post postSaved = postService.save(post);
         postDTO.setId(postSaved.getId());
         return postDTO;
+    }
+
+    @GetMapping(value = "/structure/getBothCanPublish", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<StructureDTO> getStructureBothCanPublish() throws StructureNotFoundException {
+
+        List<Structure> structureList = postService.getStructureByUserCanPublish(Constants.CAN_PUBLISH_BOTH);
+        List<StructureDTO> structureDTOList = new ArrayList<>();
+        for(Structure structure: structureList) {
+            structureDTOList.add(new StructureDTO().convertToDto(structure));
+        }
+        return structureDTOList;
+    }
+
+    // TODO: Gestire con spring security per far usare solo ad offeror
+    @GetMapping(value = "/offeror/structure/getOfferorhCanPublish", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<StructureDTO> getStructureOfferorCanPublish() throws StructureNotFoundException {
+
+        List<Structure> structureList = postService.getStructureByUserCanPublish(Constants.CAN_PUBLISH_OFFEROR);
+        List<StructureDTO> structureDTOList = new ArrayList<>();
+        for(Structure structure: structureList) {
+            structureDTOList.add(new StructureDTO().convertToDto(structure));
+        }
+        return structureDTOList;
+    }
+
+    // TODO: Gestire con spring security per far usare solo ad applicant
+    @GetMapping(value = "/applicant/structure/getApplicantCanPublish", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<StructureDTO> getStructureApplicantCanPublish() throws StructureNotFoundException {
+
+        List<Structure> structureList = postService.getStructureByUserCanPublish(Constants.CAN_PUBLISH_APPLICANT);
+        List<StructureDTO> structureDTOList = new ArrayList<>();
+        for(Structure structure: structureList) {
+            structureDTOList.add(new StructureDTO().convertToDto(structure));
+        }
+        return structureDTOList;
     }
 }

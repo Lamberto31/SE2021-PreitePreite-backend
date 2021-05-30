@@ -72,7 +72,7 @@ public class UserRestController {
     }
 
     @GetMapping(value = "/company/getCompanyByOfferorId/{offerorId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public CompanyDTO getCompanyByOfferorId(@PathVariable int offerorId) throws CompanyNotFoundException, UserNotFoundException {
+    public CompanyDTO getCompanyByOfferorId(@PathVariable int offerorId) throws UserNotFoundException {
         Offeror offeror =  userService.getOfferorById(offerorId);
         Company company = offeror.getCompany();
         return new CompanyDTO().convertToDto(company);

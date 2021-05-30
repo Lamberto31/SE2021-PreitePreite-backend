@@ -1,13 +1,13 @@
 package it.unisalento.mylinkedin.restcontroller;
 
+import it.unisalento.mylinkedin.dto.CompanyDTO;
 import it.unisalento.mylinkedin.dto.ProfileImageDTO;
 import it.unisalento.mylinkedin.dto.UserDTO;
+import it.unisalento.mylinkedin.entities.Company;
+import it.unisalento.mylinkedin.entities.Offeror;
 import it.unisalento.mylinkedin.entities.ProfileImage;
 import it.unisalento.mylinkedin.entities.User;
-import it.unisalento.mylinkedin.exception.user.ProfileImageNotFoundException;
-import it.unisalento.mylinkedin.exception.user.ProfileImageSavingException;
-import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
-import it.unisalento.mylinkedin.exception.user.UserSavingException;
+import it.unisalento.mylinkedin.exception.user.*;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -54,4 +54,29 @@ public class UserRestController {
         profileImageDTO.setId(profileImageSaved.getId());
         return profileImageDTO;
     }
+
+    @GetMapping(value = "/company/getById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public CompanyDTO getCompanyById(@PathVariable int id) throws CompanyNotFoundException {
+
+        Company company = userService.getCompanyById(id);
+        return new CompanyDTO().convertToDto(company);
+    }
+
+    @PostMapping(value="/company/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public CompanyDTO saveProfileImage(@RequestBody @Valid CompanyDTO companyDTO) throws CompanySavingException {
+
+        Company company = new Company().convertToEntity(companyDTO);
+        Company companySaved = userService.saveCompany(company);
+        companyDTO.setId(companySaved.getId());
+        return companyDTO;
+    }
+
+    @GetMapping(value = "/company/getCompanyByOfferorId/{offerorId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public CompanyDTO getCompanyByOfferorId(@PathVariable int offerorId) throws CompanyNotFoundException, UserNotFoundException {
+        Offeror offeror =  userService.getOfferorById(offerorId);
+        Company company = offeror.getCompany();
+        return new CompanyDTO().convertToDto(company);
+    }
+
+
 }

@@ -33,7 +33,7 @@ public interface IPostService {
 
     void deleteStructure(Structure structure) throws StructureNotFoundException;
 
-    List<Structure> getByUserCanPublish(String userCanPublish) throws StructureNotFoundException;
+    List<Structure> getStructureByUserCanPublish(String userCanPublish) throws StructureNotFoundException;
 
 
     //ATTRIBUTE

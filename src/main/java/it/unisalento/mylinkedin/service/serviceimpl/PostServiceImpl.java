@@ -1,16 +1,11 @@
 package it.unisalento.mylinkedin.service.serviceimpl;
 
-import it.unisalento.mylinkedin.dao.AttributeRepository;
-import it.unisalento.mylinkedin.dao.CommentRepository;
-import it.unisalento.mylinkedin.dao.PostRepository;
-import it.unisalento.mylinkedin.dao.StructureRepository;
-import it.unisalento.mylinkedin.entities.Attribute;
-import it.unisalento.mylinkedin.entities.Comment;
-import it.unisalento.mylinkedin.entities.Post;
-import it.unisalento.mylinkedin.entities.Structure;
+import it.unisalento.mylinkedin.dao.*;
+import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.post.*;
 import it.unisalento.mylinkedin.exception.user.CompanyNotFoundException;
+import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +27,12 @@ public class PostServiceImpl implements IPostService {
 
     @Autowired
     CommentRepository commentRepository;
+
+    @Autowired
+    StructureAttributeRepository structureAttributeRepository;
+
+    @Autowired
+    UserInterestedPostRepository userInterestedPostRepository;
 
 
     @Override
@@ -189,6 +190,100 @@ public class PostServiceImpl implements IPostService {
             commentRepository.delete(comment);
         } catch (Exception e) {
             throw new CommentNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = CommentNotFoundException.class)
+    public List<Comment> getCommentByPost(Post post) throws CommentNotFoundException {
+        try {
+            return commentRepository.getByPost(post);
+        } catch (Exception e) {
+            throw new CommentNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<StructureAttribute> getAllStructureAttribute() {
+        return structureAttributeRepository.findAll();
+    }
+
+    @Override
+    @Transactional(rollbackOn = StructureAttributeSavingException.class)
+    public StructureAttribute saveStructureAttribute(StructureAttribute structureAttribute) throws StructureAttributeSavingException {
+        try {
+            return structureAttributeRepository.save(structureAttribute);
+        } catch (Exception e) {
+            throw new StructureAttributeSavingException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = StructureAttributeSavingException.class)
+    public StructureAttribute getStructureAttributeById(int id) throws StructureAttributeNotFoundException {
+        return structureAttributeRepository.findById(id).orElseThrow(StructureAttributeNotFoundException::new);
+    }
+
+    @Override
+    @Transactional(rollbackOn = StructureAttributeSavingException.class)
+    public void deleteStructureAttribute(StructureAttribute structureAttribute) throws StructureAttributeNotFoundException {
+        try {
+            structureAttributeRepository.delete(structureAttribute);
+        } catch (Exception e) {
+            throw new StructureAttributeNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = AttributeNotFoundException.class)
+    public List<Attribute> getAttributeByStructure(Structure structure) throws AttributeNotFoundException {
+        try {
+            return structureAttributeRepository.findAttributeByStructure(structure);
+        } catch (Exception e) {
+            throw new AttributeNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<UserInterestedPost> getAllUserInterestedPost() {
+        return userInterestedPostRepository.findAll();
+    }
+
+    @Override
+    @Transactional(rollbackOn = UserInterestedPostSavingException.class)
+    public UserInterestedPost saveUserInterestedPost(UserInterestedPost userInterestedPost) throws UserInterestedPostSavingException {
+        try {
+            return userInterestedPostRepository.save(userInterestedPost);
+        } catch (Exception e) {
+            throw new UserInterestedPostSavingException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = UserInterestedPostNotFoundException.class)
+    public UserInterestedPost getUserInterestedPostById(int id) throws UserInterestedPostNotFoundException {
+        return userInterestedPostRepository.findById(id).orElseThrow(UserInterestedPostNotFoundException::new);
+    }
+
+    @Override
+    @Transactional(rollbackOn = UserInterestedPostNotFoundException.class)
+    public void deleteUserInterestedPost(UserInterestedPost userInterestedPost) throws UserInterestedPostNotFoundException {
+        try {
+            userInterestedPostRepository.delete(userInterestedPost);
+        } catch (Exception e) {
+            throw new UserInterestedPostNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = UserNotFoundException.class)
+    public List<User> getUserByInterestedPost(Post post) throws UserNotFoundException {
+        try {
+            return userInterestedPostRepository.findUserByPost(post);
+        } catch (Exception e) {
+            throw new UserNotFoundException();
         }
     }
 }

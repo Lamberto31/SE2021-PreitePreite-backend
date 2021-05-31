@@ -138,4 +138,16 @@ public class RegisteredUserRestController {
         }
         return commentDTOList;
     }
+
+    @GetMapping(value= "/attribute/getByStructure/{structureId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<AttributeDTO> getAttributeByStructure(@PathVariable("structureId") int structureId) throws StructureNotFoundException, AttributeNotFoundException {
+        Structure structure = postService.getStructureById(structureId);
+
+        List<Attribute> attributeList = postService.getAttributeByStructure(structure);
+        List<AttributeDTO> attributeDTOList = new ArrayList<>();
+        for(Attribute attribute: attributeList) {
+            attributeDTOList.add(new AttributeDTO().convertToDto(attribute));
+        }
+        return attributeDTOList;
+    }
 }

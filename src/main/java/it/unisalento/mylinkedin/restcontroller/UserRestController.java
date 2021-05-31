@@ -1,11 +1,10 @@
 package it.unisalento.mylinkedin.restcontroller;
 
-import it.unisalento.mylinkedin.dto.CompanyDTO;
-import it.unisalento.mylinkedin.dto.PostDTO;
-import it.unisalento.mylinkedin.dto.ProfileImageDTO;
-import it.unisalento.mylinkedin.dto.UserDTO;
+import it.unisalento.mylinkedin.dto.*;
 import it.unisalento.mylinkedin.entities.*;
+import it.unisalento.mylinkedin.exception.post.AttributeNotFoundException;
 import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
+import it.unisalento.mylinkedin.exception.post.StructureNotFoundException;
 import it.unisalento.mylinkedin.exception.user.*;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
@@ -92,6 +91,18 @@ public class UserRestController {
             postDTOList.add(new PostDTO().convertToDto(post));
         }
         return postDTOList;
+    }
+
+    @GetMapping(value= "/getByInterested/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<UserDTO> getByInterestedPost(@PathVariable("postId") int postId) throws PostNotFoundException, UserNotFoundException {
+        Post post = postService.getById(postId);
+
+        List<User> userList = postService.getUserByInterestedPost(post);
+        List<UserDTO> userDTOList = new ArrayList<>();
+        for(User user: userList) {
+            userDTOList.add(new UserDTO().convertToDto(user));
+        }
+        return userDTOList;
     }
 
 

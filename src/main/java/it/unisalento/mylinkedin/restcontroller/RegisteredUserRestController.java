@@ -3,10 +3,7 @@ package it.unisalento.mylinkedin.restcontroller;
 import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dto.*;
 import it.unisalento.mylinkedin.entities.*;
-import it.unisalento.mylinkedin.exception.post.CommentSavingException;
-import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
-import it.unisalento.mylinkedin.exception.post.PostSavingException;
-import it.unisalento.mylinkedin.exception.post.StructureNotFoundException;
+import it.unisalento.mylinkedin.exception.post.*;
 import it.unisalento.mylinkedin.exception.user.MessageNotFoundException;
 import it.unisalento.mylinkedin.exception.user.MessageSavingException;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
@@ -131,7 +128,7 @@ public class RegisteredUserRestController {
     }
 
     @GetMapping(value= "/comment/getByPost/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<CommentDTO> getMessageBySenderAndReceiver(@PathVariable("postId") int postId) throws PostNotFoundException {
+    public List<CommentDTO> getCommentByPost(@PathVariable("postId") int postId) throws PostNotFoundException, CommentNotFoundException {
         Post post = postService.getById(postId);
 
         List<Comment> commentList = postService.getCommentByPost(post);

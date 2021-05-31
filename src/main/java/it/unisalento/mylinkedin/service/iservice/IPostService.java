@@ -1,12 +1,10 @@
 package it.unisalento.mylinkedin.service.iservice;
 
 
-import it.unisalento.mylinkedin.entities.Attribute;
-import it.unisalento.mylinkedin.entities.Comment;
-import it.unisalento.mylinkedin.entities.Post;
-import it.unisalento.mylinkedin.entities.Structure;
+import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.post.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
+import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 
 import java.util.List;
 
@@ -54,4 +52,30 @@ public interface IPostService {
     Comment getCommentById(int id) throws CommentNotFoundException;
 
     void deleteComment(Comment comment) throws CommentNotFoundException;
+
+    List<Comment> getCommentByPost(Post post) throws CommentNotFoundException;
+
+
+    //STRUCTURE_ATTRIBUTE
+    List<StructureAttribute> getAllStructureAttribute();
+
+    StructureAttribute saveStructureAttribute(StructureAttribute structureAttribute) throws StructureAttributeSavingException;
+
+    StructureAttribute getStructureAttributeById(int id) throws StructureAttributeNotFoundException;
+
+    void deleteStructureAttribute(StructureAttribute structureAttribute) throws StructureAttributeNotFoundException;
+
+    List<Attribute> getAttributeByStructure(Structure structure) throws AttributeNotFoundException;
+
+
+    //USER_INTERESTED_POST
+    List<UserInterestedPost> getAllUserInterestedPost();
+
+    UserInterestedPost saveUserInterestedPost(UserInterestedPost userInterestedPost) throws UserInterestedPostSavingException;
+
+    UserInterestedPost getUserInterestedPostById(int id) throws UserInterestedPostNotFoundException;
+
+    void deleteUserInterestedPost(UserInterestedPost userInterestedPost) throws UserInterestedPostNotFoundException;
+
+    List<User> getUserByInterestedPost(Post post) throws UserNotFoundException;
 }

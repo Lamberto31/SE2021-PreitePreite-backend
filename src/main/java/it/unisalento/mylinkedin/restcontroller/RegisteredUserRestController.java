@@ -1,11 +1,9 @@
 package it.unisalento.mylinkedin.restcontroller;
 
 import it.unisalento.mylinkedin.configurations.Constants;
-import it.unisalento.mylinkedin.dto.MessageDTO;
-import it.unisalento.mylinkedin.dto.OfferorDTO;
-import it.unisalento.mylinkedin.dto.PostDTO;
-import it.unisalento.mylinkedin.dto.StructureDTO;
+import it.unisalento.mylinkedin.dto.*;
 import it.unisalento.mylinkedin.entities.*;
+import it.unisalento.mylinkedin.exception.post.CommentSavingException;
 import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.post.PostSavingException;
 import it.unisalento.mylinkedin.exception.post.StructureNotFoundException;
@@ -100,7 +98,7 @@ public class RegisteredUserRestController {
     }
 
     // TODO: Gestire con spring security per far usare solo ad offeror
-    @GetMapping(value = "/offeror/structure/getOfferorhCanPublish", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/offeror/structure/getOfferorCanPublish", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<StructureDTO> getStructureOfferorCanPublish() throws StructureNotFoundException {
 
         List<Structure> structureList = postService.getStructureByUserCanPublish(Constants.CAN_PUBLISH_OFFEROR);
@@ -121,5 +119,26 @@ public class RegisteredUserRestController {
             structureDTOList.add(new StructureDTO().convertToDto(structure));
         }
         return structureDTOList;
+    }
+
+    @PostMapping(value="/comment/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public CommentDTO savePost(@RequestBody @Valid CommentDTO commentDTO) throws ParseException, CommentSavingException {
+
+        Comment comment = new Comment().convertToEntity(commentDTO);
+        Comment commentSaved = postService.saveComment(comment);
+        commentDTO.setId(commentSaved.getId());
+        return commentDTO;
+    }
+
+    @GetMapping(value= "/comment/getByPost/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<CommentDTO> getMessageBySenderAndReceiver(@PathVariable("postId") int postId) throws PostNotFoundException {
+        Post post = postService.getById(postId);
+
+        List<Comment> commentList = postService.getCommentByPost(post);
+        List<CommentDTO> commentDTOList = new ArrayList<>();
+        for(Comment comment: commentList) {
+            commentDTOList.add(new CommentDTO().convertToDto(comment));
+        }
+        return commentDTOList;
     }
 }

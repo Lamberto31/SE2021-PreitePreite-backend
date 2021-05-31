@@ -3,10 +3,7 @@ package it.unisalento.mylinkedin.restcontroller;
 import it.unisalento.mylinkedin.dto.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
-import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
-import it.unisalento.mylinkedin.exception.post.PostSavingException;
-import it.unisalento.mylinkedin.exception.post.StructureNotFoundException;
-import it.unisalento.mylinkedin.exception.post.StructureSavingException;
+import it.unisalento.mylinkedin.exception.post.*;
 import it.unisalento.mylinkedin.exception.user.MessageNotFoundException;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
@@ -102,6 +99,32 @@ public class AdminRestController {
         StructureDTO structureDTO = new StructureDTO().convertToDto(structure);
         postService.deleteStructure(structure);
         return new ResponseEntity<>(structureDTO, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/attribute/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<AttributeDTO> getALlAttribute() {
+        List<Attribute> attributeList = postService.getAllAttribute();
+        List<AttributeDTO> attributeDTOList = new ArrayList<>();
+        for(Attribute attribute: attributeList) {
+            attributeDTOList.add(new AttributeDTO().convertToDto(attribute));
+        }
+        return attributeDTOList;
+    }
+
+    @PostMapping(value="/attribute/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public AttributeDTO saveAttribute(@RequestBody @Valid AttributeDTO attributeDTO) throws AttributeSavingException {
+        Attribute attribute = new Attribute().convertToEntity(attributeDTO);
+        Attribute attributeSaved = postService.saveAttribute(attribute);
+        attributeDTO.setId(attributeSaved.getId());
+        return attributeDTO;
+    }
+
+    @DeleteMapping(value = "/attribute/delete/{id}")
+    public ResponseEntity<AttributeDTO> deleteAttribute(@PathVariable("id") int id) throws AttributeNotFoundException {
+        Attribute attribute = postService.getAttributeById(id);
+        AttributeDTO attributeDTO = new AttributeDTO().convertToDto(attribute);
+        postService.deleteAttribute(attribute);
+        return new ResponseEntity<>(attributeDTO, HttpStatus.OK);
     }
 
 

@@ -2,6 +2,8 @@ package it.unisalento.mylinkedin.restcontroller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.entities.Applicant;
+import it.unisalento.mylinkedin.entities.Offeror;
 import it.unisalento.mylinkedin.entities.User;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
@@ -40,6 +42,8 @@ public class AdminRestControllerTest {
     private ObjectMapper objMapper;
 
     private User user;
+    private Applicant applicant;
+    private Offeror offeror;
 
 
     @BeforeEach
@@ -55,7 +59,6 @@ public class AdminRestControllerTest {
         this.user.setDescription("testDescription");
 
         when(userServiceMock.getById(1)).thenReturn(user);
-
     }
 
     @Test
@@ -73,6 +76,31 @@ public class AdminRestControllerTest {
     void getApplicantByStatusTest() {
         try {
             mockMvc.perform(get(Constants.URI_ADMIN+Constants.URI_GETAPPLICANTBYSTATUS, Constants.REGISTRATION_PENDING)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void getOfferorByStatusTest() {
+        try {
+            mockMvc.perform(get(Constants.URI_ADMIN+Constants.URI_GETOFFERORBYSTATUS, Constants.REGISTRATION_PENDING)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //TODO: Test updateStatusRegistration perchè dobbiamo fare put
+    //TODO: Test updateIsHidden perchè dobbiamo fare put
+
+    @Test
+    void getAllStructureTest() {
+        try {
+            mockMvc.perform(get(Constants.URI_ADMIN+Constants.URI_STRUCTURE+Constants.URI_GETALL)
                     .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk());
         } catch (Exception e) {

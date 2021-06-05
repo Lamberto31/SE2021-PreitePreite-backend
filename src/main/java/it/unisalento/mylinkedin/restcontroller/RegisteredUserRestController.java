@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/registeredUser")
+@RequestMapping(Constants.URI_REGISTEREDUSER)
 public class RegisteredUserRestController {
 
     @Autowired
@@ -28,14 +28,14 @@ public class RegisteredUserRestController {
     @Autowired
     IPostService postService;
 
-    @GetMapping(value = "/message/getById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = Constants.URI_MESSAGE+Constants.URI_GETBYID, produces = MediaType.APPLICATION_JSON_VALUE)
     public MessageDTO getMessagetById(@PathVariable int id) throws MessageNotFoundException {
 
         Message message = userService.getMessageById(id);
         return new MessageDTO().convertToDto(message);
     }
 
-    @PostMapping(value="/message/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value=Constants.URI_MESSAGE+Constants.URI_SAVE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public MessageDTO saveMessage(@RequestBody @Valid MessageDTO messageDTO) throws ParseException, MessageSavingException {
 
         Message message = new Message().convertToEntity(messageDTO);
@@ -44,7 +44,7 @@ public class RegisteredUserRestController {
         return messageDTO;
     }
 
-    @GetMapping(value= "/message/getBySenderAndReceiver/{senderId}/{receiverId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value= Constants.URI_MESSAGE+Constants.URI_GETBYSENDERANDRECEIVER, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<MessageDTO> getMessageBySenderAndReceiver(@PathVariable("senderId") int senderId, @PathVariable("receiverId") int receiverId) throws MessageNotFoundException, UserNotFoundException {
         User sender = userService.getById(senderId);
         User receiver = userService.getById(receiverId);
@@ -57,7 +57,7 @@ public class RegisteredUserRestController {
         return messageDTOList;
     }
 
-    @GetMapping(value = "/post/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = Constants.URI_POST+Constants.URI_GETALL, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PostDTO> getAllPost() {
         List<Post> postList = postService.getAll();
         List<PostDTO> postDTOList = new ArrayList<>();
@@ -67,14 +67,14 @@ public class RegisteredUserRestController {
         return postDTOList;
     }
 
-    @GetMapping(value = "/post/getById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = Constants.URI_POST+Constants.URI_GETBYID, produces = MediaType.APPLICATION_JSON_VALUE)
     public PostDTO getPostById(@PathVariable int id) throws PostNotFoundException {
 
         Post post = postService.getById(id);
         return new PostDTO().convertToDto(post);
     }
 
-    @PostMapping(value="/post/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value=Constants.URI_POST+Constants.URI_SAVE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public PostDTO savePost(@RequestBody @Valid PostDTO postDTO) throws ParseException, PostSavingException {
 
         Post post = new Post().convertToEntity(postDTO);
@@ -83,7 +83,7 @@ public class RegisteredUserRestController {
         return postDTO;
     }
 
-    @GetMapping(value = "/structure/getBothCanPublish", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = Constants.URI_STRUCTURE+Constants.URI_GETBOTHCANPUBLISH, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<StructureDTO> getStructureBothCanPublish() throws StructureNotFoundException {
 
         List<Structure> structureList = postService.getStructureByUserCanPublish(Constants.CAN_PUBLISH_BOTH);
@@ -95,7 +95,7 @@ public class RegisteredUserRestController {
     }
 
     // TODO: Gestire con spring security per far usare solo ad offeror
-    @GetMapping(value = "/offeror/structure/getOfferorCanPublish", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = Constants.URI_OFFEROR+Constants.URI_STRUCTURE+Constants.URI_GETOFFERORCANPUBLISH, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<StructureDTO> getStructureOfferorCanPublish() throws StructureNotFoundException {
 
         List<Structure> structureList = postService.getStructureByUserCanPublish(Constants.CAN_PUBLISH_OFFEROR);
@@ -107,7 +107,7 @@ public class RegisteredUserRestController {
     }
 
     // TODO: Gestire con spring security per far usare solo ad applicant
-    @GetMapping(value = "/applicant/structure/getApplicantCanPublish", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = Constants.TYPE_APPLICANT+Constants.URI_STRUCTURE+Constants.URI_GETAPPLICANTCANPUBLISH, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<StructureDTO> getStructureApplicantCanPublish() throws StructureNotFoundException {
 
         List<Structure> structureList = postService.getStructureByUserCanPublish(Constants.CAN_PUBLISH_APPLICANT);
@@ -118,7 +118,7 @@ public class RegisteredUserRestController {
         return structureDTOList;
     }
 
-    @PostMapping(value="/comment/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value=Constants.URI_COMMENT+Constants.URI_SAVE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public CommentDTO savePost(@RequestBody @Valid CommentDTO commentDTO) throws ParseException, CommentSavingException {
 
         Comment comment = new Comment().convertToEntity(commentDTO);
@@ -127,7 +127,7 @@ public class RegisteredUserRestController {
         return commentDTO;
     }
 
-    @GetMapping(value= "/comment/getByPost/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value= Constants.URI_COMMENT+Constants.URI_GETBYPOST, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<CommentDTO> getCommentByPost(@PathVariable("postId") int postId) throws PostNotFoundException, CommentNotFoundException {
         Post post = postService.getById(postId);
 
@@ -139,7 +139,7 @@ public class RegisteredUserRestController {
         return commentDTOList;
     }
 
-    @GetMapping(value= "/attribute/getByStructure/{structureId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value= Constants.URI_ATTRIBUTE+Constants.URI_GETBYSTRUCTURE, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<AttributeDTO> getAttributeByStructure(@PathVariable("structureId") int structureId) throws StructureNotFoundException, AttributeNotFoundException {
         Structure structure = postService.getStructureById(structureId);
 

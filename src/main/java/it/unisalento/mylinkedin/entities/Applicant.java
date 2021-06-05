@@ -1,6 +1,7 @@
 package it.unisalento.mylinkedin.entities;
 
 import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.dto.ApplicantDTO;
 import it.unisalento.mylinkedin.dto.OfferorDTO;
 import org.modelmapper.ModelMapper;
 
@@ -54,9 +55,9 @@ public class Applicant extends User{
         this.fixedAttributes = fixedAttributes;
     }
 
-    public Offeror convertToEntity(OfferorDTO dto) throws ParseException {
+    public Applicant convertToEntity(ApplicantDTO dto) throws ParseException {
         ModelMapper modelMapper =  new ModelMapper();
-        Offeror entity = modelMapper.map(dto, Offeror.class);
+        Applicant entity = modelMapper.map(dto, Applicant.class);
         entity.setBirthDate(dto.getBirthDate(Constants.timezone));
         entity.setRegistrationDate(dto.getRegistrationDate(Constants.timezone));
         return entity;

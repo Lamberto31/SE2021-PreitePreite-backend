@@ -2,7 +2,6 @@ package it.unisalento.mylinkedin.dto;
 
 import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.entities.Post;
-import it.unisalento.mylinkedin.entities.User;
 import org.modelmapper.ModelMapper;
 
 import javax.validation.constraints.NotBlank;
@@ -14,7 +13,7 @@ public class PostDTO {
 
     int id;
     String pubblicationDate;
-    boolean ishidden;
+    boolean isHidden;
     boolean isPrivate;
     @NotBlank
     String data; //JSON
@@ -37,12 +36,12 @@ public class PostDTO {
         this.id = id;
     }
 
-    public boolean isIshidden() {
-        return ishidden;
+    public boolean isHidden() {
+        return isHidden;
     }
 
-    public void setIshidden(boolean ishidden) {
-        this.ishidden = ishidden;
+    public void setHidden(boolean hidden) {
+        this.isHidden = hidden;
     }
 
     public boolean isPrivate() {

@@ -20,6 +20,9 @@ dependencies {
     compile 'org.modelmapper:modelmapper:2.4.4'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    compileOnly('org.projectlombok:lombok')
+    testCompile 'org.junit.jupiter:junit-jupiter-engine:5.6.1'
+    testCompile('org.mockito:mockito-junit-jupiter:2.23.0')
 }
 
 test {

@@ -5,7 +5,6 @@ import it.unisalento.mylinkedin.dto.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.post.*;
-import it.unisalento.mylinkedin.exception.user.MessageNotFoundException;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
@@ -16,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +69,7 @@ public class AdminRestController {
     }
 
     @GetMapping(value = Constants.URI_STRUCTURE+Constants.URI_GETALL, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<StructureDTO> getALlStructure() {
+    public List<StructureDTO> getAllStructure() {
         List<Structure> structureList = postService.getAllStructure();
         List<StructureDTO> structureDTOList = new ArrayList<>();
         for(Structure structure: structureList) {

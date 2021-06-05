@@ -1,9 +1,7 @@
 package it.unisalento.mylinkedin.modelmapper;
 
 import it.unisalento.mylinkedin.configurations.Constants;
-import it.unisalento.mylinkedin.dto.ApplicantDTO;
 import it.unisalento.mylinkedin.dto.OfferorDTO;
-import it.unisalento.mylinkedin.entities.Applicant;
 import it.unisalento.mylinkedin.entities.Offeror;
 import org.junit.jupiter.api.Test;
 

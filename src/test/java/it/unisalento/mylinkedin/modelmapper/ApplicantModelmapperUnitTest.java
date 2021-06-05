@@ -2,9 +2,7 @@ package it.unisalento.mylinkedin.modelmapper;
 
 import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dto.ApplicantDTO;
-import it.unisalento.mylinkedin.dto.UserDTO;
 import it.unisalento.mylinkedin.entities.Applicant;
-import it.unisalento.mylinkedin.entities.User;
 import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;

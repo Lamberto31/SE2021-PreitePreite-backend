@@ -21,9 +21,7 @@ public class UserModelmapperUnitTest {
         user.setSurname("testSurname");
         user.setEmail("emailtest@test.com");
         user.setPassword("testPassword");
-
         user.setBirthDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
-
         user.setDescription("testDescription");
 
         UserDTO userDTO = new UserDTO().convertToDto(user);
@@ -39,15 +37,16 @@ public class UserModelmapperUnitTest {
 
     @Test
     public void whenConvertUserDtoToUserEntity_thenCorrect() throws ParseException {
+
         UserDTO userDTO = new UserDTO();
         userDTO.setId(1);
         userDTO.setName("testName");
         userDTO.setSurname("testSurname");
         userDTO.setEmail("emailtest@test.com");
         userDTO.setPassword("testPassword");
-
         Date date = Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00");
         userDTO.setBirthDate(date, Constants.timezone);
+        userDTO.setDescription("testDescription");
 
         User user = new User().convertToEntity(userDTO);
 

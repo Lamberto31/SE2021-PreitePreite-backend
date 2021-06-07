@@ -107,7 +107,7 @@ public class RegisteredUserRestController {
     }
 
     // TODO: Gestire con spring security per far usare solo ad applicant
-    @GetMapping(value = Constants.TYPE_APPLICANT+Constants.URI_STRUCTURE+Constants.URI_GETAPPLICANTCANPUBLISH, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = Constants.URI_APPLICANT+Constants.URI_STRUCTURE+Constants.URI_GETAPPLICANTCANPUBLISH, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<StructureDTO> getStructureApplicantCanPublish() throws StructureNotFoundException {
 
         List<Structure> structureList = postService.getStructureByUserCanPublish(Constants.CAN_PUBLISH_APPLICANT);

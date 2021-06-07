@@ -36,7 +36,7 @@ public class AdminRestController {
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
-    @GetMapping(value= Constants.URI_GETAPPLICANTBYSTATUS, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value= Constants.URI_APPLICANT+Constants.URI_GETBYSTATUS, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ApplicantDTO> getApplicantByStatus(@PathVariable("status") String status) throws UserNotFoundException {
         List<Applicant> applicantList = userService.getApplicantByStatus(status);
         List<ApplicantDTO> applicantDTOList = new ArrayList<>();
@@ -46,7 +46,7 @@ public class AdminRestController {
         return applicantDTOList;
     }
 
-    @GetMapping(value= Constants.URI_GETOFFERORBYSTATUS, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value= Constants.URI_OFFEROR+Constants.URI_GETBYSTATUS, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<OfferorDTO> getOfferorByStatus(@PathVariable("status") String status) throws UserNotFoundException {
         List<Offeror> offerorList = userService.getOfferorByStatus(status);
         List<OfferorDTO> offerorDTOList = new ArrayList<>();
@@ -62,7 +62,7 @@ public class AdminRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping(value = Constants.URI_UPDATEISHIDDEN, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = Constants.URI_POST+Constants.URI_UPDATEISHIDDEN, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PostDTO> updatePostIsHidden(@PathVariable("id") int id, @PathVariable("isHidden") boolean isHidden) throws PostNotFoundException, InvalidValueException {
         postService.updateIsHidden(isHidden, id);
         return new ResponseEntity<>(HttpStatus.OK);

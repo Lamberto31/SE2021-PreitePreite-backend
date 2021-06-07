@@ -56,8 +56,14 @@ public class AdminRestController {
         return offerorDTOList;
     }
 
-    @PutMapping(value = Constants.URI_UPDATESTATUSREGISTRATION, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDTO> updateStatusRegistration(@PathVariable("id") int id, @PathVariable("status") String status) throws UserNotFoundException, InvalidValueException {
+    @PutMapping(value = Constants.URI_APPLICANT + Constants.URI_UPDATESTATUSREGISTRATION, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApplicantDTO> updateApplicantStatusRegistration(@PathVariable("id") int id, @PathVariable("status") String status) throws UserNotFoundException, InvalidValueException {
+        userService.updateStatusRegistration(status, id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping(value = Constants.URI_OFFEROR + Constants.URI_UPDATESTATUSREGISTRATION, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<OfferorDTO> updateOfferorStatusRegistration(@PathVariable("id") int id, @PathVariable("status") String status) throws UserNotFoundException, InvalidValueException {
         userService.updateStatusRegistration(status, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

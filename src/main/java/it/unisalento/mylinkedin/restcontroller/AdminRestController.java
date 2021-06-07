@@ -56,13 +56,13 @@ public class AdminRestController {
         return offerorDTOList;
     }
 
-    @PostMapping(value = Constants.URI_UPDATESTATUSREGISTRATION, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = Constants.URI_UPDATESTATUSREGISTRATION, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> updateStatusRegistration(@PathVariable("id") int id, @PathVariable("status") String status) throws UserNotFoundException, InvalidValueException {
         userService.updateStatusRegistration(status, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(value = Constants.URI_UPDATEISHIDDEN, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = Constants.URI_UPDATEISHIDDEN, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PostDTO> updatePostIsHidden(@PathVariable("id") int id, @PathVariable("isHidden") boolean isHidden) throws PostNotFoundException, InvalidValueException {
         postService.updateIsHidden(isHidden, id);
         return new ResponseEntity<>(HttpStatus.OK);

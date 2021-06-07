@@ -36,10 +36,14 @@ public interface Constants {
     //AdminRestController
     String URI_ADMIN = "/admin";
 
-    String URI_GETAPPLICANTBYSTATUS = "/geApplicantStatus/{status}";
-    String URI_GETOFFERORBYSTATUS = "/geOfferorStatus/{status}";
+    String URI_APPLICANT = "/applicant";
+    String URI_OFFEROR = "/offeror";
+
+    String URI_GETBYSTATUS = "/getByStatus/{status}";
     String URI_UPDATESTATUSREGISTRATION = "/updateStatusRegistration/{id}/{status}";
-    String URI_UPDATEISHIDDEN = "/post/updateIsHidden/{id}/{isHidden}";
+
+    String URI_POST = "/post";
+    String URI_UPDATEISHIDDEN = "/updateIsHidden/{id}/{isHidden}";
 
     String URI_STRUCTURE = "/structure";
 
@@ -51,14 +55,10 @@ public interface Constants {
     String URI_MESSAGE = "/message";
     String URI_GETBYSENDERANDRECEIVER = "/getBySenderAndReceiver/{senderId}/{receiverId}";
 
-    String URI_POST = "/post";
-
     String URI_GETBOTHCANPUBLISH = "/getBothCanPublish";
 
-    String URI_OFFEROR = "/offeror";
     String URI_GETOFFERORCANPUBLISH = "/getOfferorCanPublish";
 
-    String URI_APLLICANT = "/applicant";
     String URI_GETAPPLICANTCANPUBLISH = "/getApplicantCanPublish";
 
     String URI_COMMENT = "/comment";

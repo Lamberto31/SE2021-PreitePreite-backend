@@ -6,7 +6,6 @@ import it.unisalento.mylinkedin.dto.CompanyDTO;
 import it.unisalento.mylinkedin.dto.ProfileImageDTO;
 import it.unisalento.mylinkedin.dto.UserDTO;
 import it.unisalento.mylinkedin.entities.*;
-import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.user.*;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import it.unisalento.mylinkedin.service.iservice.IUserService;

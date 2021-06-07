@@ -70,6 +70,9 @@ public class UserRestControllerTest {
         when(userServiceMock.getById(user.getId())).thenReturn(user);
 
         this.userDTO = new UserDTO().convertToDto(user);
+        this.userDTO.setType(Constants.TYPE_APPLICANT);
+        this.userDTO.setPasswordToVerify(userDTO.getPassword());
+        this.userDTO.setEmailToVerify(userDTO.getEmail());
 
         when(userServiceMock.save(refEq(user))).thenReturn(user);
 
@@ -130,6 +133,7 @@ public class UserRestControllerTest {
         this.userDTONO.setDescription("testDescription");
         this.userDTONO.setEmailToVerify(userDTONO.getEmail());
         this.userDTONO.setPasswordToVerify(userDTONO.getPassword());
+        this.userDTONO.setType(Constants.TYPE_ADMIN);
     }
 
     @Test
@@ -143,7 +147,7 @@ public class UserRestControllerTest {
     void saveTest() throws Exception {
         mockMvc.perform(post(Constants.URI_USER+Constants.URI_SAVE)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objMapper.writeValueAsString(userDTONO)))
+                .content(objMapper.writeValueAsString(userDTO)))
                 .andExpect(status().isOk());
     }
 

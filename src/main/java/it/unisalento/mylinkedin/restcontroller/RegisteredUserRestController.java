@@ -28,13 +28,6 @@ public class RegisteredUserRestController {
     @Autowired
     IPostService postService;
 
-    @GetMapping(value = Constants.URI_MESSAGE+Constants.URI_GETBYID, produces = MediaType.APPLICATION_JSON_VALUE)
-    public MessageDTO getMessagetById(@PathVariable int id) throws MessageNotFoundException {
-
-        Message message = userService.getMessageById(id);
-        return new MessageDTO().convertToDto(message);
-    }
-
     @PostMapping(value=Constants.URI_MESSAGE+Constants.URI_SAVE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public MessageDTO saveMessage(@RequestBody @Valid MessageDTO messageDTO) throws ParseException, MessageSavingException {
 

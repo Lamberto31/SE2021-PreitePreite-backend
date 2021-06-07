@@ -2,12 +2,11 @@ package it.unisalento.mylinkedin.restcontroller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.dto.CommentDTO;
 import it.unisalento.mylinkedin.dto.MessageDTO;
 import it.unisalento.mylinkedin.dto.PostDTO;
-import it.unisalento.mylinkedin.entities.Attribute;
-import it.unisalento.mylinkedin.entities.Message;
-import it.unisalento.mylinkedin.entities.Post;
-import it.unisalento.mylinkedin.entities.User;
+import it.unisalento.mylinkedin.entities.*;
+import it.unisalento.mylinkedin.exception.post.CommentSavingException;
 import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.post.PostSavingException;
 import it.unisalento.mylinkedin.exception.user.MessageSavingException;
@@ -55,9 +54,12 @@ public class RegisteredUserRestControllerTest {
     private User user;
     private Post post;
     private PostDTO postDTO;
+    private CommentDTO commentDTO;
+    private Comment comment;
+    private Structure structure;
 
     @BeforeEach
-    void init() throws ParseException, MessageSavingException, UserNotFoundException, PostNotFoundException, PostSavingException {
+    void init() throws ParseException, MessageSavingException, UserNotFoundException, PostNotFoundException, PostSavingException, CommentSavingException {
 
         this.messageDTO = new MessageDTO();
         this.messageDTO.setId(1);
@@ -94,6 +96,20 @@ public class RegisteredUserRestControllerTest {
 
         when(postServiceMock.save(refEq(post))).thenReturn(post);
 
+        this.commentDTO = new CommentDTO();
+        this.commentDTO.setId(1);
+        this.commentDTO.setText("testText");
+        this.commentDTO.setPubblicationDate(date, Constants.timezone);
+
+        this.comment = new Comment().convertToEntity(this.commentDTO);
+
+        when(postServiceMock.saveComment(refEq(comment))).thenReturn(comment);
+
+        this.structure = new Structure();
+        this.structure.setId(1);
+        this.structure.setTitle("testTitle");
+        this.structure.setDescription("testDescription");
+        this.structure.setUserCanPublish(Constants.CAN_PUBLISH_BOTH);
     }
 
     //TODO: Risolvere problema objectmapper con data
@@ -136,8 +152,44 @@ public class RegisteredUserRestControllerTest {
     }
 
     @Test
-    void getStructureCanPublishTest() throws Exception {
+    void getStructureBothCanPublish() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_STRUCTURE+Constants.URI_GETBOTHCANPUBLISH)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getStructureApplicantCanPublish() throws Exception {
+        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_APPLICANT+Constants.URI_STRUCTURE+Constants.URI_GETAPPLICANTCANPUBLISH)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getStructureOfferorCanPublish() throws Exception {
+        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_OFFEROR+Constants.URI_STRUCTURE+Constants.URI_GETOFFERORCANPUBLISH)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void saveCommentTest() throws Exception {
+        mockMvc.perform(post(Constants.URI_REGISTEREDUSER + Constants.URI_COMMENT + Constants.URI_SAVE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objMapper.writeValueAsString(commentDTO)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getCommentByPostTest() throws Exception {
+        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_COMMENT+Constants.URI_GETBYPOST, post.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getAttributeByStructureTest() throws Exception {
+        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_ATTRIBUTE+Constants.URI_GETBYSTRUCTURE, structure.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

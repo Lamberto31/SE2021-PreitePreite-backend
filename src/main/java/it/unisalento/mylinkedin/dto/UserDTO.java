@@ -26,7 +26,6 @@ public class UserDTO {
     String email;
     @NotBlank
     String password;
-    @NotBlank
     String birthDate;
     String description;
     @NotBlank
@@ -118,5 +117,13 @@ public class UserDTO {
         UserDTO dto = modelMapper.map(entity, UserDTO.class);
         dto.setBirthDate(entity.getBirthDate(), Constants.timezone);
         return dto;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

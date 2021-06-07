@@ -45,6 +45,7 @@ public class AdminRestControllerTest {
     @Autowired
     private ObjectMapper objMapper;
 
+
     private User user;
     private StructureDTO structureDTO;
     private Structure structure;

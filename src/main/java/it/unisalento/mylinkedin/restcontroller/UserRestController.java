@@ -46,7 +46,7 @@ public class UserRestController {
     }
 
     @GetMapping(value = Constants.URI_PROFILEIMAGE+Constants.URI_GETBYID, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ProfileImageDTO getProfileImagetById(@PathVariable int id) throws ProfileImageNotFoundException {
+    public ProfileImageDTO getProfileImageById(@PathVariable int id) throws ProfileImageNotFoundException {
 
         ProfileImage profileImage = userService.getProfileImageById(id);
         return new ProfileImageDTO().convertToDto(profileImage);
@@ -69,7 +69,7 @@ public class UserRestController {
     }
 
     @PostMapping(value=Constants.URI_COMPANY+Constants.URI_SAVE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public CompanyDTO saveProfileImage(@RequestBody @Valid CompanyDTO companyDTO) throws CompanySavingException {
+    public CompanyDTO saveCompany(@RequestBody @Valid CompanyDTO companyDTO) throws CompanySavingException {
 
         Company company = new Company().convertToEntity(companyDTO);
         Company companySaved = userService.saveCompany(company);

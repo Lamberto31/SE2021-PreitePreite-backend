@@ -64,13 +64,18 @@ public class IUserServiceTest {
         this.user.setBirthDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
         this.user.setDescription("testDescription");
 
-        this.wrongUser = new User();
         when(userRepository.save(refEq(user))).thenReturn(user);
+
+        this.wrongUser = new User();
+
         when(userRepository.save(refEq(wrongUser))).thenThrow(IllegalArgumentException.class);
 
         this.userId = 1;
         when(userRepository.findById(userId)).thenReturn(java.util.Optional.ofNullable(user));
-        when(userRepository.findById(wrongUser.getId())).thenReturn(null);
+
+        when(userRepository.delete(refEq(user))).thenReturn(user);
+
+        when(userRepository.delete(refEq(wrongUser))).thenThrow(IllegalArgumentException.class);
     }
 
     @Test
@@ -99,6 +104,18 @@ public class IUserServiceTest {
     @Test
     void getByIdThrowsExTest() {
         Exception exp = assertThrows(UserNotFoundException.class, () -> userService.getById(wrongUser.getId()));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void deleteTest() throws UserNotFoundException {
+        User userDeleted = userService.delete(user);
+        assertThat(user.equals(userDeleted));
+    }
+
+    @Test
+    void deleteThrowsExTest() {
+        Exception exp = assertThrows(UserSavingException.class, () -> userService.save(wrongUser));
         assertThat(exp).isNotNull();
     }
 }

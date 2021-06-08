@@ -15,7 +15,7 @@ public interface IPostService {
 
     Post getById(int id) throws PostNotFoundException;
 
-    void delete(Post post) throws PostNotFoundException;
+    Post delete(Post post) throws PostNotFoundException;
 
     List<Post> getByIsPrivate(boolean isPrivate) throws PostNotFoundException;
 
@@ -29,7 +29,7 @@ public interface IPostService {
 
     Structure getStructureById(int id) throws StructureNotFoundException;
 
-    void deleteStructure(Structure structure) throws StructureNotFoundException;
+    Structure deleteStructure(Structure structure) throws StructureNotFoundException;
 
     List<Structure> getStructureByUserCanPublish(String userCanPublish) throws StructureNotFoundException;
 
@@ -41,7 +41,7 @@ public interface IPostService {
 
     Attribute getAttributeById(int id) throws AttributeNotFoundException;
 
-    void deleteAttribute(Attribute attribute) throws AttributeNotFoundException;
+    Attribute deleteAttribute(Attribute attribute) throws AttributeNotFoundException;
 
 
     //COMMENT
@@ -51,7 +51,7 @@ public interface IPostService {
 
     Comment getCommentById(int id) throws CommentNotFoundException;
 
-    void deleteComment(Comment comment) throws CommentNotFoundException;
+    Comment deleteComment(Comment comment) throws CommentNotFoundException;
 
     List<Comment> getCommentByPost(Post post) throws CommentNotFoundException;
 
@@ -63,7 +63,7 @@ public interface IPostService {
 
     StructureAttribute getStructureAttributeById(int id) throws StructureAttributeNotFoundException;
 
-    void deleteStructureAttribute(StructureAttribute structureAttribute) throws StructureAttributeNotFoundException;
+    StructureAttribute deleteStructureAttribute(StructureAttribute structureAttribute) throws StructureAttributeNotFoundException;
 
     List<Attribute> getAttributeByStructure(Structure structure) throws AttributeNotFoundException;
 
@@ -75,7 +75,7 @@ public interface IPostService {
 
     UserInterestedPost getUserInterestedPostById(int id) throws UserInterestedPostNotFoundException;
 
-    void deleteUserInterestedPost(UserInterestedPost userInterestedPost) throws UserInterestedPostNotFoundException;
+    UserInterestedPost deleteUserInterestedPost(UserInterestedPost userInterestedPost) throws UserInterestedPostNotFoundException;
 
     List<User> getUserByInterestedPost(Post post) throws UserNotFoundException;
 }

@@ -13,7 +13,7 @@ public interface IUserService {
 
     User getById(int id) throws UserNotFoundException;
 
-    void delete(User user) throws UserNotFoundException;
+    User delete(User user) throws UserNotFoundException;
 
     User getByEmail(String email) throws UserNotFoundException;
 
@@ -39,7 +39,7 @@ public interface IUserService {
 
     ProfileImage getProfileImageById(int id) throws ProfileImageNotFoundException;
 
-    void deleteProfileImage(ProfileImage profileImage) throws ProfileImageNotFoundException;
+    ProfileImage deleteProfileImage(ProfileImage profileImage) throws ProfileImageNotFoundException;
 
 
     //MESSAGE
@@ -49,7 +49,7 @@ public interface IUserService {
 
     Message getMessageById(int id) throws MessageNotFoundException;
 
-    void deleteMessage(Message message) throws MessageNotFoundException;
+    Message deleteMessage(Message message) throws MessageNotFoundException;
 
     List<Message> getMessageBySenderAndReceiver(User sender, User receiver) throws MessageNotFoundException;
 
@@ -61,5 +61,5 @@ public interface IUserService {
 
     Company getCompanyById(int id) throws CompanyNotFoundException;
 
-    void deleteCompany(Company company) throws CompanyNotFoundException;
+    Company deleteCompany(Company company) throws CompanyNotFoundException;
 }

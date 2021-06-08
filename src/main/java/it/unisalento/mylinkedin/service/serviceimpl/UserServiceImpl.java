@@ -60,9 +60,10 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     @Transactional(rollbackOn = UserNotFoundException.class)
-    public void delete(User user) throws UserNotFoundException {
+    public User delete(User user) throws UserNotFoundException {
         try {
             userRepository.delete(user);
+            return user;
         }catch (Exception e) {
             throw new UserNotFoundException();
         }
@@ -110,7 +111,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     @Transactional(rollbackOn = UserNotFoundException.class)
-    public void updateStatusRegistration(String status, int id) throws UserNotFoundException, InvalidValueException {
+    public void updateStatusRegistration(String status, int id) throws UserNotFoundException {
         try {
             applicantRepository.updateStatusRegistration(status, id);
         } catch (Exception e) {
@@ -142,9 +143,10 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     @Transactional(rollbackOn = ProfileImageNotFoundException.class)
-    public void deleteProfileImage(ProfileImage profileImage) throws ProfileImageNotFoundException {
+    public ProfileImage deleteProfileImage(ProfileImage profileImage) throws ProfileImageNotFoundException {
         try {
             profileImageRepository.delete(profileImage);
+            return profileImage;
         } catch (Exception e) {
             throw new ProfileImageNotFoundException();
         }
@@ -174,9 +176,10 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     @Transactional(rollbackOn = MessageNotFoundException.class)
-    public void deleteMessage(Message message) throws MessageNotFoundException {
+    public Message deleteMessage(Message message) throws MessageNotFoundException {
         try {
             messageRepository.delete(message);
+            return message;
         } catch (Exception e) {
             throw new MessageNotFoundException();
         }
@@ -215,9 +218,10 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     @Transactional(rollbackOn = CompanyNotFoundException.class)
-    public void deleteCompany(Company company) throws CompanyNotFoundException {
+    public Company deleteCompany(Company company) throws CompanyNotFoundException {
         try {
             companyRepository.delete(company);
+            return company;
         } catch (Exception e) {
             throw new CompanyNotFoundException();
         }

@@ -59,9 +59,10 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     @Transactional(rollbackOn = PostNotFoundException.class)
-    public void delete(Post post) throws PostNotFoundException {
+    public Post delete(Post post) throws PostNotFoundException {
         try {
             postRepository.delete(post);
+            return post;
         } catch (Exception e) {
             throw new PostNotFoundException();
         }
@@ -79,7 +80,7 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     @Transactional(rollbackOn = PostNotFoundException.class)
-    public void updateIsHidden(boolean isHidden, int id) throws PostNotFoundException, InvalidValueException {
+    public void updateIsHidden(boolean isHidden, int id) throws PostNotFoundException {
         try {
             postRepository.updateIsHidden(isHidden, id);
         } catch (Exception e) {
@@ -111,9 +112,10 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     @Transactional(rollbackOn = StructureNotFoundException.class)
-    public void deleteStructure(Structure structure) throws StructureNotFoundException {
+    public Structure deleteStructure(Structure structure) throws StructureNotFoundException {
         try {
             structureRepository.delete(structure);
+            return structure;
         } catch (Exception e) {
             throw new StructureNotFoundException();
         }
@@ -153,9 +155,10 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     @Transactional(rollbackOn = AttributeNotFoundException.class)
-    public void deleteAttribute(Attribute attribute) throws AttributeNotFoundException {
+    public Attribute deleteAttribute(Attribute attribute) throws AttributeNotFoundException {
         try {
             attributeRepository.delete(attribute);
+            return attribute;
         } catch (Exception e) {
             throw new AttributeNotFoundException();
         }
@@ -185,9 +188,10 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     @Transactional(rollbackOn = CommentNotFoundException.class)
-    public void deleteComment(Comment comment) throws CommentNotFoundException {
+    public Comment deleteComment(Comment comment) throws CommentNotFoundException {
         try {
             commentRepository.delete(comment);
+            return comment;
         } catch (Exception e) {
             throw new CommentNotFoundException();
         }
@@ -227,9 +231,10 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     @Transactional(rollbackOn = StructureAttributeSavingException.class)
-    public void deleteStructureAttribute(StructureAttribute structureAttribute) throws StructureAttributeNotFoundException {
+    public StructureAttribute deleteStructureAttribute(StructureAttribute structureAttribute) throws StructureAttributeNotFoundException {
         try {
             structureAttributeRepository.delete(structureAttribute);
+            return structureAttribute;
         } catch (Exception e) {
             throw new StructureAttributeNotFoundException();
         }
@@ -269,9 +274,10 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     @Transactional(rollbackOn = UserInterestedPostNotFoundException.class)
-    public void deleteUserInterestedPost(UserInterestedPost userInterestedPost) throws UserInterestedPostNotFoundException {
+    public UserInterestedPost deleteUserInterestedPost(UserInterestedPost userInterestedPost) throws UserInterestedPostNotFoundException {
         try {
             userInterestedPostRepository.delete(userInterestedPost);
+            return userInterestedPost;
         } catch (Exception e) {
             throw new UserInterestedPostNotFoundException();
         }

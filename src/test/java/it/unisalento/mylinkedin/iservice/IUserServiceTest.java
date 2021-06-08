@@ -19,6 +19,7 @@ import java.text.ParseException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.refEq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -73,9 +74,8 @@ public class IUserServiceTest {
         this.userId = 1;
         when(userRepository.findById(userId)).thenReturn(java.util.Optional.ofNullable(user));
 
-        when(userRepository.delete(refEq(user))).thenReturn(user);
-
-        when(userRepository.delete(refEq(wrongUser))).thenThrow(IllegalArgumentException.class);
+        //when(userRepository.delete(refEq(wrongUser))).thenThrow(IllegalArgumentException.class);
+        doThrow(new IllegalArgumentException()).when(userRepository).delete(wrongUser);
     }
 
     @Test
@@ -115,7 +115,7 @@ public class IUserServiceTest {
 
     @Test
     void deleteThrowsExTest() {
-        Exception exp = assertThrows(UserSavingException.class, () -> userService.save(wrongUser));
+        Exception exp = assertThrows(UserNotFoundException.class, () -> userService.delete(wrongUser));
         assertThat(exp).isNotNull();
     }
 }

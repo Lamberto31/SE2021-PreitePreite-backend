@@ -20,7 +20,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.text.ParseException;
-import java.util.Date;
 
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.when;
@@ -52,7 +51,6 @@ public class UserRestControllerTest {
     private CompanyDTO companyDTO;
     private Offeror offeror;
     private Post post;
-    private UserDTO userDTONO;
 
     @BeforeEach
     void init() throws ParseException, UserNotFoundException, UserSavingException, ProfileImageNotFoundException, ProfileImageSavingException, CompanyNotFoundException, CompanySavingException {
@@ -120,19 +118,6 @@ public class UserRestControllerTest {
         this.post.setHidden(true);
         this.post.setPrivate(false);
         this.post.setData("testData");
-
-        this.userDTONO = new UserDTO();
-        this.userDTONO.setId(1);
-        this.userDTONO.setName("testName");
-        this.userDTONO.setSurname("testSurname");
-        this.userDTONO.setEmail("emailtest@test.com");
-        this.userDTONO.setPassword("testPassword");
-        Date date = Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00");
-        this.userDTONO.setBirthDate(date, Constants.timezone);
-        this.userDTONO.setDescription("testDescription");
-        this.userDTONO.setEmailToVerify(userDTONO.getEmail());
-        this.userDTONO.setPasswordToVerify(userDTONO.getPassword());
-        this.userDTONO.setType(Constants.TYPE_ADMIN);
     }
 
     @Test

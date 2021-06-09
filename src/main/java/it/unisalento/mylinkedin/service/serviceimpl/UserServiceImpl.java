@@ -107,7 +107,11 @@ public class UserServiceImpl implements IUserService {
     @Transactional(rollbackOn = UserNotFoundException.class)
     public List<Offeror> getOfferorByStatus(String status) throws UserNotFoundException {
         try {
-            return offerorRepository.findByStatus(status);
+            List<Offeror> offerorFoundList = offerorRepository.findByStatus(status);
+            if (offerorFoundList.isEmpty()) {
+                throw new UserNotFoundException();
+            }
+            return offerorFoundList;
         } catch (Exception e) {
             throw new UserNotFoundException();
         }

@@ -1,6 +1,8 @@
 package it.unisalento.mylinkedin.configurations;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public interface Constants {
 
@@ -14,10 +16,22 @@ public interface Constants {
     String REGISTRATION_ACCEPTED = "accepted";
     String REGISTRATION_BLOCKED = "blocked";
 
+    List<String> REGISTRATION_STATUS_LIST = new ArrayList<>() {{
+        add(REGISTRATION_PENDING);
+        add(REGISTRATION_ACCEPTED);
+        add(REGISTRATION_BLOCKED);
+    }};
+
     //Variabili statiche per tipo utente
     String CAN_PUBLISH_OFFEROR = "offeror";
     String CAN_PUBLISH_APPLICANT = "applicant";
     String CAN_PUBLISH_BOTH = "both";
+
+    List<String> CAN_PUBLISH_LIST = new ArrayList<>() {{
+        add(CAN_PUBLISH_OFFEROR);
+        add(CAN_PUBLISH_APPLICANT);
+        add(CAN_PUBLISH_BOTH);
+    }};
 
     //Formato data
     String DATE_FORMAT = "dd/MM/yyyy HH:mm";

@@ -23,13 +23,15 @@ public interface IUserService {
 
     List<Applicant> getApplicantByStatus(String status) throws UserNotFoundException ;
 
+    void updateApplicantStatusRegistration(String status, int id) throws UserNotFoundException, InvalidValueException;
+
+
     //OFFEROR
     Offeror getOfferorById(int id) throws UserNotFoundException;
 
     List<Offeror> getOfferorByStatus(String status) throws UserNotFoundException;
 
-    //OFFEROR E APPLICANT
-    void updateStatusRegistration(String status, int id) throws UserNotFoundException, InvalidValueException;
+    void updateOfferorStatusRegistration(String status, int id) throws UserNotFoundException, InvalidValueException;
 
 
     //PROFILE IMAGE

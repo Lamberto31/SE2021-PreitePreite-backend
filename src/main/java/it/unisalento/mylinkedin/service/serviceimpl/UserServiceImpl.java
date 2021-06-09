@@ -2,7 +2,6 @@ package it.unisalento.mylinkedin.service.serviceimpl;
 
 import it.unisalento.mylinkedin.dao.*;
 import it.unisalento.mylinkedin.entities.*;
-import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.user.*;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,6 +120,9 @@ public class UserServiceImpl implements IUserService {
     @Transactional(rollbackOn = UserNotFoundException.class)
     public void updateStatusRegistration(String status, int id) throws UserNotFoundException {
         try {
+            if (status.equals("prova")) {
+                throw new IllegalArgumentException();
+            }
             applicantRepository.updateStatusRegistration(status, id);
         } catch (Exception e) {
             throw new UserNotFoundException();

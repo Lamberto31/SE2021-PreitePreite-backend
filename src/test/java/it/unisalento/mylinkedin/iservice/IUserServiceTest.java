@@ -2,15 +2,9 @@ package it.unisalento.mylinkedin.iservice;
 
 import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dao.*;
-import it.unisalento.mylinkedin.entities.Applicant;
-import it.unisalento.mylinkedin.entities.Offeror;
-import it.unisalento.mylinkedin.entities.ProfileImage;
-import it.unisalento.mylinkedin.entities.User;
+import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
-import it.unisalento.mylinkedin.exception.user.ProfileImageNotFoundException;
-import it.unisalento.mylinkedin.exception.user.ProfileImageSavingException;
-import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
-import it.unisalento.mylinkedin.exception.user.UserSavingException;
+import it.unisalento.mylinkedin.exception.user.*;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -68,8 +62,12 @@ public class IUserServiceTest {
     private Offeror offeror;
     private List<Offeror> offerorList;
     private String wrongUserRegisteredStatus;
+
     private ProfileImage profileImage;
     private ProfileImage wrongProfileImage;
+
+    private Message message;
+    private Message wrongMessage;
 
     @BeforeEach
     void init() throws ParseException, UserNotFoundException {
@@ -137,6 +135,8 @@ public class IUserServiceTest {
 
         wrongUserRegisteredStatus = "wrong";
 
+        //ProfileImage
+
         this.profileImage = new ProfileImage();
         this.profileImage.setDescription("testDescription");
         this.profileImage.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
@@ -152,6 +152,22 @@ public class IUserServiceTest {
 
         doThrow(new IllegalArgumentException()).when(profileImageRepository).delete(wrongProfileImage);
 
+        //Message
+
+        this.message = new Message();
+        this.message.setText("testName");
+        this.message.setImagePath("testImagePath");
+        this.message.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
+
+        when(messageRepository.save(refEq(message))).thenReturn(message);
+
+        this.wrongMessage = new Message();
+
+        when(messageRepository.save(refEq(wrongMessage))).thenThrow(IllegalArgumentException.class);
+
+        when(messageRepository.findById(correctId)).thenReturn(java.util.Optional.ofNullable(message));
+
+        doThrow(new IllegalArgumentException()).when(messageRepository).delete(wrongMessage);
 
     }
 
@@ -331,6 +347,45 @@ public class IUserServiceTest {
         assertThat(exp).isNotNull();
     }
 
+    @Test
+    void getAllMessageTest() {
+        assertThat(userService.getAllMessage()).isNotNull();
+    }
 
+    @Test
+    void saveMessageTest() throws MessageSavingException {
+        Message messageSaved = userService.saveMessage(message);
+        assertThat(message.equals(messageSaved));
+    }
+
+    @Test
+    void saveMessageThrowsExTest() {
+        Exception exp = assertThrows(MessageSavingException.class, () -> userService.saveMessage(wrongMessage));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getMessageByIdTest() throws MessageNotFoundException {
+        Message messageFound = userService.getMessageById(correctId);
+        assertThat(message.equals(messageFound));
+    }
+
+    @Test
+    void getMessageByIdThrowsExTest() {
+        Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.getMessageById(wrongMessage.getId()));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void deleteMessageTest() throws MessageNotFoundException {
+        Message messageDeleted = userService.deleteMessage(message);
+        assertThat(message.equals(messageDeleted));
+    }
+
+    @Test
+    void deleteMessageThrowsExTest() {
+        Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.deleteMessage(wrongMessage));
+        assertThat(exp).isNotNull();
+    }
 
 }

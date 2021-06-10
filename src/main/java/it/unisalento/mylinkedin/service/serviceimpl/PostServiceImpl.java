@@ -219,7 +219,11 @@ public class PostServiceImpl implements IPostService {
     @Transactional(rollbackOn = CommentNotFoundException.class)
     public List<Comment> getCommentByPost(Post post) throws CommentNotFoundException {
         try {
-            return commentRepository.getByPost(post);
+            List<Comment> commentFoundList = commentRepository.getByPost(post);
+            if (commentFoundList.isEmpty()) {
+                throw new CommentNotFoundException();
+            }
+            return commentFoundList;
         } catch (Exception e) {
             throw new CommentNotFoundException();
         }
@@ -262,7 +266,11 @@ public class PostServiceImpl implements IPostService {
     @Transactional(rollbackOn = AttributeNotFoundException.class)
     public List<Attribute> getAttributeByStructure(Structure structure) throws AttributeNotFoundException {
         try {
-            return structureAttributeRepository.findAttributeByStructure(structure);
+            List<Attribute> attributeFoundList = structureAttributeRepository.findAttributeByStructure(structure);
+            if (attributeFoundList.isEmpty()) {
+                throw new AttributeNotFoundException();
+            }
+            return attributeFoundList;
         } catch (Exception e) {
             throw new AttributeNotFoundException();
         }

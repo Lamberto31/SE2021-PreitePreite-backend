@@ -173,7 +173,7 @@ public class User {
         User entity = modelMapper.map(dto, User.class);
         try {
             entity.setBirthDate(dto.getBirthDate(Constants.timezone));
-        } catch (ParseException e) {
+        } catch (Exception e) {
             entity.setBirthDate(null);
         }
         return entity;

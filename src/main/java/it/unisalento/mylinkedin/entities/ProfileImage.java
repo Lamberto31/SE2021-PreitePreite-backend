@@ -90,7 +90,7 @@ public class ProfileImage {
         ProfileImage entity = modelMapper.map(dto, ProfileImage.class);
         try {
             entity.setPubblicationDate(dto.getPubblicationDate(Constants.timezone));
-        } catch (ParseException e) {
+        } catch (Exception e) {
             entity.setPubblicationDate(null);
         }
         return entity;

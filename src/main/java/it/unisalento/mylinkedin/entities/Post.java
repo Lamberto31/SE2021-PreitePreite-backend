@@ -125,7 +125,7 @@ public class Post {
         Post entity = modelMapper.map(dto, Post.class);
         try {
             entity.setPubblicationDate(dto.getPubblicationDate(Constants.timezone));
-        } catch (ParseException e) {
+        } catch (Exception e) {
             entity.setPubblicationDate(null);
         }
         return entity;

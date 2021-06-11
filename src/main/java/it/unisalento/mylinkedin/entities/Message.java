@@ -88,7 +88,7 @@ public class Message {
         Message entity = modelMapper.map(dto, Message.class);
         try {
             entity.setPubblicationDate(dto.getPubblicationDate(Constants.timezone));
-        } catch (ParseException e) {
+        } catch (Exception e) {
             entity.setPubblicationDate(null);
         }
         return entity;

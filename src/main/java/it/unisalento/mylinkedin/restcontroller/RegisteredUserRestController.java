@@ -76,6 +76,7 @@ public class RegisteredUserRestController {
         return postDTO;
     }
 
+
     @GetMapping(value = Constants.URI_STRUCTURE+Constants.URI_GETCANPUBLISH, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<StructureDTO> getStructureBothCanPublish() throws StructureNotFoundException {
 
@@ -88,6 +89,7 @@ public class RegisteredUserRestController {
     }
 
     // TODO: Gestire con spring security per far usare solo ad offeror
+
     @GetMapping(value = Constants.URI_OFFEROR+Constants.URI_STRUCTURE+Constants.URI_GETCANPUBLISH, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<StructureDTO> getStructureOfferorCanPublish() throws StructureNotFoundException {
 
@@ -113,7 +115,6 @@ public class RegisteredUserRestController {
 
     @PostMapping(value=Constants.URI_COMMENT+Constants.URI_SAVE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public CommentDTO saveComment(@RequestBody @Valid CommentDTO commentDTO) throws ParseException, CommentSavingException {
-
         Comment comment = new Comment().convertToEntity(commentDTO);
         Comment commentSaved = postService.saveComment(comment);
         commentDTO.setId(commentSaved.getId());

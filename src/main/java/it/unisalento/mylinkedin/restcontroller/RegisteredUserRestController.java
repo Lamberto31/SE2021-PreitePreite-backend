@@ -3,6 +3,7 @@ package it.unisalento.mylinkedin.restcontroller;
 import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dto.*;
 import it.unisalento.mylinkedin.entities.*;
+import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.post.*;
 import it.unisalento.mylinkedin.exception.user.MessageNotFoundException;
 import it.unisalento.mylinkedin.exception.user.MessageSavingException;
@@ -78,7 +79,7 @@ public class RegisteredUserRestController {
 
 
     @GetMapping(value = Constants.URI_STRUCTURE+Constants.URI_GETCANPUBLISH, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<StructureDTO> getStructureBothCanPublish() throws StructureNotFoundException {
+    public List<StructureDTO> getStructureBothCanPublish() throws StructureNotFoundException, InvalidValueException {
 
         List<Structure> structureList = postService.getStructureByUserCanPublish(Constants.CAN_PUBLISH_BOTH);
         List<StructureDTO> structureDTOList = new ArrayList<>();
@@ -91,7 +92,7 @@ public class RegisteredUserRestController {
     // TODO: Gestire con spring security per far usare solo ad offeror
 
     @GetMapping(value = Constants.URI_OFFEROR+Constants.URI_STRUCTURE+Constants.URI_GETCANPUBLISH, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<StructureDTO> getStructureOfferorCanPublish() throws StructureNotFoundException {
+    public List<StructureDTO> getStructureOfferorCanPublish() throws StructureNotFoundException, InvalidValueException {
 
         List<Structure> structureList = postService.getStructureByUserCanPublish(Constants.CAN_PUBLISH_OFFEROR);
         List<StructureDTO> structureDTOList = new ArrayList<>();
@@ -103,7 +104,7 @@ public class RegisteredUserRestController {
 
     // TODO: Gestire con spring security per far usare solo ad applicant
     @GetMapping(value = Constants.URI_APPLICANT+Constants.URI_STRUCTURE+Constants.URI_GETCANPUBLISH, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<StructureDTO> getStructureApplicantCanPublish() throws StructureNotFoundException {
+    public List<StructureDTO> getStructureApplicantCanPublish() throws StructureNotFoundException, InvalidValueException {
 
         List<Structure> structureList = postService.getStructureByUserCanPublish(Constants.CAN_PUBLISH_APPLICANT);
         List<StructureDTO> structureDTOList = new ArrayList<>();

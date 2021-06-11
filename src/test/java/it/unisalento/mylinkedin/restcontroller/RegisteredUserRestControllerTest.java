@@ -153,21 +153,21 @@ public class RegisteredUserRestControllerTest {
 
     @Test
     void getStructureBothCanPublish() throws Exception {
-        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_STRUCTURE+Constants.URI_GETBOTHCANPUBLISH)
+        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_STRUCTURE+Constants.URI_GETCANPUBLISH)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
     void getStructureApplicantCanPublish() throws Exception {
-        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_APPLICANT+Constants.URI_STRUCTURE+Constants.URI_GETAPPLICANTCANPUBLISH)
+        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_APPLICANT+Constants.URI_STRUCTURE+Constants.URI_GETCANPUBLISH)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
     void getStructureOfferorCanPublish() throws Exception {
-        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_OFFEROR+Constants.URI_STRUCTURE+Constants.URI_GETOFFERORCANPUBLISH)
+        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_OFFEROR+Constants.URI_STRUCTURE+Constants.URI_GETCANPUBLISH)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

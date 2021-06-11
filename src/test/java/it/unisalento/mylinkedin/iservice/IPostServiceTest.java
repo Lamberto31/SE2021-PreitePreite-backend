@@ -2,14 +2,12 @@ package it.unisalento.mylinkedin.iservice;
 
 import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dao.*;
-import it.unisalento.mylinkedin.entities.Applicant;
-import it.unisalento.mylinkedin.entities.Company;
-import it.unisalento.mylinkedin.entities.Post;
-import it.unisalento.mylinkedin.entities.User;
+import it.unisalento.mylinkedin.entities.*;
+import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.post.PostSavingException;
-import it.unisalento.mylinkedin.exception.user.CompanyNotFoundException;
-import it.unisalento.mylinkedin.exception.user.CompanySavingException;
+import it.unisalento.mylinkedin.exception.post.StructureNotFoundException;
+import it.unisalento.mylinkedin.exception.post.StructureSavingException;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import org.junit.jupiter.api.Test;
@@ -58,12 +56,15 @@ public class IPostServiceTest {
 
     private Post post;
     private Post wrongPost;
-
     private int correctId;
-
     private List<Post> postList;
-
     private boolean postNotFoundIsPrivate;
+
+    private Structure structure;
+    private Structure wrongStructure;
+    private List<Structure> structureList;
+    private String structureNotFoundUserCanPublish;
+    private String wrongStructureUserCanPublish;
 
     void init() throws ParseException {
 
@@ -89,6 +90,31 @@ public class IPostServiceTest {
         postList.add(post);
 
         when(postRepository.findByIsPrivate(post.isPrivate())).thenReturn(postList);
+
+        //Structure
+        this.structure = new Structure();
+        this.structure.setTitle("testTitle");
+        this.structure.setDescription("testDescription");
+        this.structure.setUserCanPublish(Constants.CAN_PUBLISH_BOTH);
+
+        when(structureRepository.save(refEq(structure))).thenReturn(structure);
+
+        this.wrongStructure = new Structure();
+
+        when(structureRepository.save(refEq(wrongStructure))).thenThrow(IllegalArgumentException.class);
+
+        when(structureRepository.findById(correctId)).thenReturn(java.util.Optional.ofNullable(structure));
+
+        doThrow(new IllegalArgumentException()).when(structureRepository).delete(wrongStructure);
+
+        this.structureList = new ArrayList<>();
+        structureList.add(structure);
+
+        when(structureRepository.findByUserCanPublish(structure.getUserCanPublish())).thenReturn(structureList);
+
+        this.structureNotFoundUserCanPublish = Constants.CAN_PUBLISH_OFFEROR;
+
+        this.wrongStructureUserCanPublish = "wrong";
     }
 
     //Post
@@ -153,6 +179,66 @@ public class IPostServiceTest {
     @Test
     void updateIsHiddenThrowsExTest() {
         Exception exp = assertThrows(PostNotFoundException.class, () -> postService.updateIsHidden(post.isHidden(), correctId));
+        assertThat(exp).isNotNull();
+    }
+
+    //Structure
+    @Test
+    void getAllStructureTest() {
+        assertThat(postService.getAllStructure()).isNotNull();
+    }
+
+    @Test
+    void saveStructureTest() throws StructureSavingException {
+        Structure structureSaved = postService.saveStructure(structure);
+        assertThat(structure.equals(structureSaved));
+    }
+
+    @Test
+    void saveStructureThrowsExTest() {
+        Exception exp = assertThrows(StructureSavingException.class, () -> postService.saveStructure(wrongStructure));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getStructureByIdTest() throws StructureNotFoundException {
+        Structure structureFound = postService.getStructureById(correctId);
+        assertThat(structure.equals(structureFound));
+    }
+
+    @Test
+    void getStructureByIdThrowsExTest() {
+        Exception exp = assertThrows(StructureNotFoundException.class, () -> postService.getStructureById(wrongStructure.getId()));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void deleteStructureTest() throws StructureNotFoundException {
+        Structure structureDeleted = postService.deleteStructure(structure);
+        assertThat(structure.equals(structureDeleted));
+    }
+
+    @Test
+    void deleteStructureThrowsExTest() {
+        Exception exp = assertThrows(PostNotFoundException.class, () -> postService.deleteStructure(wrongStructure));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getStructureByUserCanPublishTest() throws StructureNotFoundException {
+        List<Structure> structureFoundList = postService.getStructureByUserCanPublish(structure.getUserCanPublish());
+        assertThat(structureList.equals(structureFoundList));
+    }
+
+    @Test
+    void getStructureByUserCanPublishThrowsStructureNotFoundExTest() {
+        Exception exp = assertThrows(UserNotFoundException.class, () -> postService.getStructureByUserCanPublish(structureNotFoundUserCanPublish));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getStructureByUserCanPublishThrowsInvalidValueExTest() {
+        Exception exp = assertThrows(InvalidValueException.class, () -> postService.getStructureByUserCanPublish(wrongStructureUserCanPublish));
         assertThat(exp).isNotNull();
     }
 }

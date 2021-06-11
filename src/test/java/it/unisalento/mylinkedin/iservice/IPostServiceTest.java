@@ -471,7 +471,7 @@ public class IPostServiceTest {
     }
 
     @Test
-    void saveUserInterestedPostTest() {
+    void saveUserInterestedPostTest() throws UserInterestedPostSavingException {
         UserInterestedPost userInterestedPostSaved = postService.saveUserInterestedPost(userInterestedPost);
         assertThat(userInterestedPost.equals(userInterestedPostSaved));
     }

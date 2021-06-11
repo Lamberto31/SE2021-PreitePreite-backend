@@ -72,6 +72,7 @@ public class IPostServiceTest {
 
     private StructureAttribute structureAttribute;
     private StructureAttribute wrongStructureAttribute;
+    private List<Attribute> attributeList;
 
     private UserInterestedPost userInterestedPost;
     private UserInterestedPost wrongUserInterestedPost;
@@ -176,6 +177,11 @@ public class IPostServiceTest {
         when(structureAttributeRepository.findById(correctId)).thenReturn(java.util.Optional.ofNullable(structureAttribute));
 
         doThrow(new IllegalArgumentException()).when(structureAttributeRepository).delete(wrongStructureAttribute);
+
+        this.attributeList = new ArrayList<>();
+        attributeList.add(attribute);
+
+        when(structureAttributeRepository.findAttributeByStructure(structure)).thenReturn(attributeList);
 
         //UserInterestedPost
         this.user = new User();
@@ -461,6 +467,18 @@ public class IPostServiceTest {
     @Test
     void deleteStructureAttributeThrowsExTest() {
         Exception exp = assertThrows(StructureAttributeNotFoundException.class, () -> postService.deleteStructureAttribute(wrongStructureAttribute));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getAttributeByStructureTest() throws AttributeNotFoundException{
+        List<Attribute> attributeFoundList = postService.getAttributeByStructure(structure);
+        assertThat(attributeList.equals(attributeFoundList));
+    }
+
+    @Test
+    void getAttributeByStructureThrowsExTest() {
+        Exception exp = assertThrows(AttributeNotFoundException.class, () -> postService.getAttributeByStructure(wrongStructure));
         assertThat(exp).isNotNull();
     }
 

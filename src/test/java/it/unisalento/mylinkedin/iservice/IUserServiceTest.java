@@ -68,6 +68,7 @@ public class IUserServiceTest {
 
     private Message message;
     private Message wrongMessage;
+    private List<Message> messageList;
 
     @BeforeEach
     void init() throws ParseException, UserNotFoundException {
@@ -168,6 +169,13 @@ public class IUserServiceTest {
         when(messageRepository.findById(correctId)).thenReturn(java.util.Optional.ofNullable(message));
 
         doThrow(new IllegalArgumentException()).when(messageRepository).delete(wrongMessage);
+
+        this.messageList = new ArrayList<>();
+        messageList.add(message);
+
+        when(messageRepository.findBySenderAndReceiver(user, user)).thenReturn(messageList);
+
+        when(messageRepository.findBySenderAndReceiver(wrongUser, wrongUser)).thenThrow(MessageNotFoundException.class);
 
     }
 
@@ -385,6 +393,18 @@ public class IUserServiceTest {
     @Test
     void deleteMessageThrowsExTest() {
         Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.deleteMessage(wrongMessage));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getMessageBySenderAndReceiverTest() throws MessageNotFoundException {
+        List<Message> messageFoundList = userService.getMessageBySenderAndReceiver(user, user);
+        assertThat(messageList.equals(messageFoundList));
+    }
+
+    @Test
+    void getMessageBySenderAndReceiverThrowsExTest() {
+        Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.getMessageBySenderAndReceiver(wrongUser, wrongUser));
         assertThat(exp).isNotNull();
     }
 

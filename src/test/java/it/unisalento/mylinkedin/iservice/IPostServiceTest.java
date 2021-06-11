@@ -70,6 +70,9 @@ public class IPostServiceTest {
     private Comment wrongComment;
     private List<Comment> commentList;
 
+    private StructureAttribute structureAttribute;
+    private StructureAttribute wrongStructureAttribute;
+
     private UserInterestedPost userInterestedPost;
     private UserInterestedPost wrongUserInterestedPost;
     private User user;
@@ -158,6 +161,21 @@ public class IPostServiceTest {
         commentList.add(comment);
 
         when(commentRepository.getByPost(post)).thenReturn(commentList);
+
+        //StructureAttribute
+        this.structureAttribute = new StructureAttribute();
+        this.structureAttribute.setStructure(structure);
+        this.structureAttribute.setAttribute(attribute);
+
+        when(structureAttributeRepository.save(refEq(structureAttribute))).thenReturn(structureAttribute);
+
+        this.wrongStructureAttribute = new StructureAttribute();
+
+        when(structureAttributeRepository.save(refEq(wrongStructureAttribute))).thenThrow(IllegalArgumentException.class);
+
+        when(structureAttributeRepository.findById(correctId)).thenReturn(java.util.Optional.ofNullable(structureAttribute));
+
+        doThrow(new IllegalArgumentException()).when(structureAttributeRepository).delete(wrongStructureAttribute);
 
         //UserInterestedPost
         this.user = new User();
@@ -404,45 +422,45 @@ public class IPostServiceTest {
         assertThat(exp).isNotNull();
     }
 
-    //TODO: MADD StructureAttribute
+    //StructureAttribute
     @Test
-    void getAllCommentTest() {
-        assertThat(postService.getAllComment()).isNotNull();
+    void getAllStructureAttributeTest() {
+        assertThat(postService.getAllStructureAttribute()).isNotNull();
     }
 
     @Test
-    void saveCommentTest() throws CommentSavingException {
-        Comment commentSaved = postService.saveComment(comment);
-        assertThat(comment.equals(commentSaved));
+    void saveStructureAttributeTest() throws StructureAttributeSavingException {
+        StructureAttribute structureAttributeSaved = postService.saveStructureAttribute(structureAttribute);
+        assertThat(structureAttribute.equals(structureAttributeSaved));
     }
 
     @Test
-    void saveCommentThrowsExTest() {
-        Exception exp = assertThrows(CommentSavingException.class, () -> postService.saveComment(wrongComment));
+    void saveStructureAttributeThrowsExTest() {
+        Exception exp = assertThrows(StructureAttributeSavingException.class, () -> postService.saveStructureAttribute(wrongStructureAttribute));
         assertThat(exp).isNotNull();
     }
 
     @Test
-    void getCommentByIdTest() throws CommentNotFoundException {
-        Comment commentFound = postService.getCommentById(correctId);
-        assertThat(comment.equals(commentFound));
+    void getStructureAttributeByIdTest() throws StructureAttributeNotFoundException {
+        StructureAttribute structureAttributeFound = postService.getStructureAttributeById(correctId);
+        assertThat(structureAttribute.equals(structureAttributeFound));
     }
 
     @Test
-    void getCommentByIdThrowsExTest() {
-        Exception exp = assertThrows(CommentNotFoundException.class, () -> postService.getCommentById(wrongComment.getId()));
+    void getStructureAttributeByIdThrowsExTest() {
+        Exception exp = assertThrows(StructureAttributeNotFoundException.class, () -> postService.getStructureAttributeById(wrongStructureAttribute.getId()));
         assertThat(exp).isNotNull();
     }
 
     @Test
-    void deleteCommentTest() throws CommentNotFoundException {
-        Comment commentDeleted = postService.deleteComment(comment);
-        assertThat(comment.equals(commentDeleted));
+    void deleteStructureAttributeTest() throws StructureAttributeNotFoundException {
+        StructureAttribute structureAttributeDeleted = postService.deleteStructureAttribute(structureAttribute);
+        assertThat(structureAttribute.equals(structureAttributeDeleted));
     }
 
     @Test
-    void deleteCommentThrowsExTest() {
-        Exception exp = assertThrows(CommentNotFoundException.class, () -> postService.deleteComment(wrongComment));
+    void deleteStructureAttributeThrowsExTest() {
+        Exception exp = assertThrows(StructureAttributeNotFoundException.class, () -> postService.deleteStructureAttribute(wrongStructureAttribute));
         assertThat(exp).isNotNull();
     }
 

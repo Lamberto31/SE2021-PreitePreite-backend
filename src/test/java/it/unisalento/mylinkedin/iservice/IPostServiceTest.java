@@ -66,6 +66,10 @@ public class IPostServiceTest {
     private Attribute attribute;
     private Attribute wrongAttribute;
 
+    private Comment comment;
+    private Comment wrongComment;
+    private List<Comment> commentList;
+
     void init() throws ParseException {
 
         //Post
@@ -130,6 +134,26 @@ public class IPostServiceTest {
         when(attributeRepository.findById(correctId)).thenReturn(java.util.Optional.ofNullable(attribute));
 
         doThrow(new IllegalArgumentException()).when(attributeRepository).delete(wrongAttribute);
+
+        //Comment
+        this.comment = new Comment();
+        this.comment.setText("testText");
+        this.comment.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
+
+        when(commentRepository.save(refEq(comment))).thenReturn(comment);
+
+        this.wrongComment = new Comment();
+
+        when(commentRepository.save(refEq(wrongComment))).thenThrow(IllegalArgumentException.class);
+
+        when(commentRepository.findById(correctId)).thenReturn(java.util.Optional.ofNullable(comment));
+
+        doThrow(new IllegalArgumentException()).when(commentRepository).delete(wrongComment);
+
+        this.commentList = new ArrayList<>();
+        commentList.add(comment);
+
+        when(commentRepository.getByPost(post)).thenReturn(commentList);
     }
 
     //Post
@@ -296,6 +320,60 @@ public class IPostServiceTest {
     @Test
     void deleteAttributeThrowsExTest() {
         Exception exp = assertThrows(AttributeNotFoundException.class, () -> postService.deleteAttribute(wrongAttribute));
+        assertThat(exp).isNotNull();
+    }
+
+    //Comment
+    @Test
+    void getAllCommentTest() {
+        assertThat(postService.getAllComment()).isNotNull();
+    }
+
+    @Test
+    void saveCommentTest() throws CommentSavingException {
+        Comment commentSaved = postService.saveComment(comment);
+        assertThat(comment.equals(commentSaved));
+    }
+
+    @Test
+    void saveCommentThrowsExTest() {
+        Exception exp = assertThrows(CommentSavingException.class, () -> postService.saveComment(wrongComment));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getCommentByIdTest() throws CommentNotFoundException {
+        Comment commentFound = postService.getCommentById(correctId);
+        assertThat(comment.equals(commentFound));
+    }
+
+    @Test
+    void getCommentByIdThrowsExTest() {
+        Exception exp = assertThrows(CommentNotFoundException.class, () -> postService.getCommentById(wrongComment.getId()));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void deleteCommentTest() throws CommentNotFoundException {
+        Comment commentDeleted = postService.deleteComment(comment);
+        assertThat(comment.equals(commentDeleted));
+    }
+
+    @Test
+    void deleteCommentThrowsExTest() {
+        Exception exp = assertThrows(CommentNotFoundException.class, () -> postService.deleteComment(wrongComment));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getCommentByPostTest() throws CommentNotFoundException {
+        List<Comment> commentFoundList = postService.getCommentByPost(post);
+        assertThat(commentList.equals(commentFoundList));
+    }
+
+    @Test
+    void getCommentByPostThrowsExTest() {
+        Exception exp = assertThrows(CommentNotFoundException.class, () -> postService.getCommentByPost(wrongPost));
         assertThat(exp).isNotNull();
     }
 }

@@ -70,6 +70,10 @@ public class IPostServiceTest {
     private Comment wrongComment;
     private List<Comment> commentList;
 
+    private UserInterestedPost userInterestedPost;
+    private UserInterestedPost wrongUserInterestedPost;
+    private User user;
+
     void init() throws ParseException {
 
         //Post
@@ -154,6 +158,29 @@ public class IPostServiceTest {
         commentList.add(comment);
 
         when(commentRepository.getByPost(post)).thenReturn(commentList);
+
+        //UserInterestedPost
+        this.user = new User();
+        this.user.setName("testName");
+        this.user.setSurname("testSurname");
+        this.user.setEmail("emailtest@test.com");
+        this.user.setPassword("testPassword");
+        this.user.setBirthDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
+        this.user.setDescription("testDescription");
+
+        this.userInterestedPost = new UserInterestedPost();
+        this.userInterestedPost.setUser(user);
+        this.userInterestedPost.setPost(post);
+
+        when(userInterestedPostRepository.save(refEq(userInterestedPost))).thenReturn(userInterestedPost);
+
+        this.wrongUserInterestedPost = new UserInterestedPost();
+
+        when(userInterestedPostRepository.save(refEq(wrongUserInterestedPost))).thenThrow(IllegalArgumentException.class);
+
+        when(userInterestedPostRepository.findById(correctId)).thenReturn(java.util.Optional.ofNullable(userInterestedPost));
+
+        doThrow(new IllegalArgumentException()).when(userInterestedPostRepository).delete(wrongUserInterestedPost);
     }
 
     //Post
@@ -419,15 +446,45 @@ public class IPostServiceTest {
         assertThat(exp).isNotNull();
     }
 
+    //UserInterestedPost
     @Test
-    void getCommentByPostTest() throws CommentNotFoundException {
-        List<Comment> commentFoundList = postService.getCommentByPost(post);
-        assertThat(commentList.equals(commentFoundList));
+    void getAllUserInterestedPostTest() {
+        assertThat(postService.getAllUserInterestedPost()).isNotNull();
     }
 
     @Test
-    void getCommentByPostThrowsExTest() {
-        Exception exp = assertThrows(CommentNotFoundException.class, () -> postService.getCommentByPost(wrongPost));
+    void saveUserInterestedPostTest() {
+        UserInterestedPost userInterestedPostSaved = postService.saveUserInterestedPost(userInterestedPost);
+        assertThat(userInterestedPost.equals(userInterestedPostSaved));
+    }
+
+    @Test
+    void saveUserInterestedPostThrowsExTest() {
+        Exception exp = assertThrows(UserInterestedPostSavingException.class, () -> postService.saveUserInterestedPost(wrongUserInterestedPost));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getUserInterestedPostByIdTest() throws UserInterestedPostNotFoundException {
+        UserInterestedPost userInterestedPostFound = postService.getUserInterestedPostById(correctId);
+        assertThat(userInterestedPost.equals(userInterestedPostFound));
+    }
+
+    @Test
+    void getUserInterestedPostByIdThrowsExTest() {
+        Exception exp = assertThrows(UserInterestedPostNotFoundException.class, () -> postService.getUserInterestedPostById(wrongUserInterestedPost.getId()));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void deleteUserInterestedPostTest() throws UserInterestedPostNotFoundException {
+        UserInterestedPost userInterestedPostDeleted = postService.deleteUserInterestedPost(userInterestedPost);
+        assertThat(userInterestedPostDeleted.equals(userInterestedPostDeleted));
+    }
+
+    @Test
+    void deleteUserInterestedPostThrowsExTest() {
+        Exception exp = assertThrows(UserInterestedPostNotFoundException.class, () -> postService.deleteUserInterestedPost(wrongUserInterestedPost));
         assertThat(exp).isNotNull();
     }
 }

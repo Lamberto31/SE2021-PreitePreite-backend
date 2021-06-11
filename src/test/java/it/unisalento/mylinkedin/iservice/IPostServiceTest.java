@@ -7,6 +7,7 @@ import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.post.*;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +80,7 @@ public class IPostServiceTest {
     private User user;
     private List<User> userList;
 
+    @BeforeEach
     void init() throws ParseException {
 
         //Post
@@ -316,19 +318,19 @@ public class IPostServiceTest {
 
     @Test
     void deleteStructureThrowsExTest() {
-        Exception exp = assertThrows(PostNotFoundException.class, () -> postService.deleteStructure(wrongStructure));
+        Exception exp = assertThrows(StructureNotFoundException.class, () -> postService.deleteStructure(wrongStructure));
         assertThat(exp).isNotNull();
     }
 
     @Test
-    void getStructureByUserCanPublishTest() throws StructureNotFoundException {
+    void getStructureByUserCanPublishTest() throws StructureNotFoundException, InvalidValueException {
         List<Structure> structureFoundList = postService.getStructureByUserCanPublish(structure.getUserCanPublish());
         assertThat(structureList.equals(structureFoundList));
     }
 
     @Test
     void getStructureByUserCanPublishThrowsStructureNotFoundExTest() {
-        Exception exp = assertThrows(UserNotFoundException.class, () -> postService.getStructureByUserCanPublish(structureNotFoundUserCanPublish));
+        Exception exp = assertThrows(StructureNotFoundException.class, () -> postService.getStructureByUserCanPublish(structureNotFoundUserCanPublish));
         assertThat(exp).isNotNull();
     }
 

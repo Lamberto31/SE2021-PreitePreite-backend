@@ -313,7 +313,11 @@ public class PostServiceImpl implements IPostService {
     @Transactional(rollbackOn = UserNotFoundException.class)
     public List<User> getUserByInterestedPost(Post post) throws UserNotFoundException {
         try {
-            return userInterestedPostRepository.findUserByPost(post);
+            List<User> userFoundList = userInterestedPostRepository.findUserByPost(post);
+            if (userFoundList.isEmpty()) {
+                throw new UserNotFoundException();
+            }
+            return userFoundList;
         } catch (Exception e) {
             throw new UserNotFoundException();
         }

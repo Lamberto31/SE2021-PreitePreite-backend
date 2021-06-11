@@ -77,6 +77,7 @@ public class IPostServiceTest {
     private UserInterestedPost userInterestedPost;
     private UserInterestedPost wrongUserInterestedPost;
     private User user;
+    private List<User> userList;
 
     void init() throws ParseException {
 
@@ -205,6 +206,11 @@ public class IPostServiceTest {
         when(userInterestedPostRepository.findById(correctId)).thenReturn(java.util.Optional.ofNullable(userInterestedPost));
 
         doThrow(new IllegalArgumentException()).when(userInterestedPostRepository).delete(wrongUserInterestedPost);
+
+        this.userList = new ArrayList<>();
+        userList.add(user);
+
+        when(userInterestedPostRepository.findUserByPost(post)).thenReturn(userList);
     }
 
     //Post
@@ -521,6 +527,18 @@ public class IPostServiceTest {
     @Test
     void deleteUserInterestedPostThrowsExTest() {
         Exception exp = assertThrows(UserInterestedPostNotFoundException.class, () -> postService.deleteUserInterestedPost(wrongUserInterestedPost));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getUserByInterestedPostTest() throws UserNotFoundException{
+        List<User> userFoundList = postService.getUserByInterestedPost(post);
+        assertThat(userList.equals(userFoundList));
+    }
+
+    @Test
+    void getUserByInterestedPostTestThrowsExTest() {
+        Exception exp = assertThrows(UserNotFoundException.class, () -> postService.getUserByInterestedPost(wrongPost));
         assertThat(exp).isNotNull();
     }
 }

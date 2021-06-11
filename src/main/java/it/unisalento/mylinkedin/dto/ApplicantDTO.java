@@ -17,9 +17,13 @@ public class ApplicantDTO extends UserDTO{
     String status;
     String fixedAttributes; //JSON
 
-    public Date getRegistrationDate(String timezone) throws ParseException {
+    public Date getRegistrationDate(String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
-        return Constants.SIMPLE_DATE_FORMAT.parse(this.registrationDate);
+        try {
+            return Constants.SIMPLE_DATE_FORMAT.parse(this.registrationDate);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void setRegistrationDate(Date date, String timezone) {

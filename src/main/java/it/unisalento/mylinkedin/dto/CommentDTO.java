@@ -17,9 +17,13 @@ public class CommentDTO{
     String text;
     String pubblicationDate;
 
-    public Date getPubblicationDate(String timezone) throws ParseException {
+    public Date getPubblicationDate(String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
-        return Constants.SIMPLE_DATE_FORMAT.parse(this.pubblicationDate);
+        try {
+            return Constants.SIMPLE_DATE_FORMAT.parse(this.pubblicationDate);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void setPubblicationDate(Date date, String timezone) {

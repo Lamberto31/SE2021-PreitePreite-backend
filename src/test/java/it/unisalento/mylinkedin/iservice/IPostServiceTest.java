@@ -376,4 +376,58 @@ public class IPostServiceTest {
         Exception exp = assertThrows(CommentNotFoundException.class, () -> postService.getCommentByPost(wrongPost));
         assertThat(exp).isNotNull();
     }
+
+    //TODO: MADD StructureAttribute
+    @Test
+    void getAllCommentTest() {
+        assertThat(postService.getAllComment()).isNotNull();
+    }
+
+    @Test
+    void saveCommentTest() throws CommentSavingException {
+        Comment commentSaved = postService.saveComment(comment);
+        assertThat(comment.equals(commentSaved));
+    }
+
+    @Test
+    void saveCommentThrowsExTest() {
+        Exception exp = assertThrows(CommentSavingException.class, () -> postService.saveComment(wrongComment));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getCommentByIdTest() throws CommentNotFoundException {
+        Comment commentFound = postService.getCommentById(correctId);
+        assertThat(comment.equals(commentFound));
+    }
+
+    @Test
+    void getCommentByIdThrowsExTest() {
+        Exception exp = assertThrows(CommentNotFoundException.class, () -> postService.getCommentById(wrongComment.getId()));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void deleteCommentTest() throws CommentNotFoundException {
+        Comment commentDeleted = postService.deleteComment(comment);
+        assertThat(comment.equals(commentDeleted));
+    }
+
+    @Test
+    void deleteCommentThrowsExTest() {
+        Exception exp = assertThrows(CommentNotFoundException.class, () -> postService.deleteComment(wrongComment));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getCommentByPostTest() throws CommentNotFoundException {
+        List<Comment> commentFoundList = postService.getCommentByPost(post);
+        assertThat(commentList.equals(commentFoundList));
+    }
+
+    @Test
+    void getCommentByPostThrowsExTest() {
+        Exception exp = assertThrows(CommentNotFoundException.class, () -> postService.getCommentByPost(wrongPost));
+        assertThat(exp).isNotNull();
+    }
 }

@@ -65,8 +65,8 @@ public class RegisteredUserRestControllerTest {
         this.messageDTO.setId(1);
         this.messageDTO.setText("testText");
         this.messageDTO.setImagePath("testImagePath");
-        Date date = Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00");
-        this.messageDTO.setPubblicationDate(date, Constants.timezone);
+        //Date date = Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00");
+        //this.messageDTO.setPubblicationDate(date, Constants.timezone);
 
         this.message = new Message().convertToEntity(messageDTO);
 
@@ -78,14 +78,14 @@ public class RegisteredUserRestControllerTest {
         this.user.setSurname("testSurname");
         this.user.setEmail("emailtest@test.com");
         this.user.setPassword("testPassword");
-        this.user.setBirthDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
+        //this.user.setBirthDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
         this.user.setDescription("testDescription");
 
         when(userServiceMock.getById(user.getId())).thenReturn(user);
 
         this.post = new Post();
         this.post.setId(1);
-        this.post.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
+        //this.post.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
         this.post.setHidden(true);
         this.post.setPrivate(true);
         this.post.setData("testData");
@@ -99,7 +99,7 @@ public class RegisteredUserRestControllerTest {
         this.commentDTO = new CommentDTO();
         this.commentDTO.setId(1);
         this.commentDTO.setText("testText");
-        this.commentDTO.setPubblicationDate(date, Constants.timezone);
+        //this.commentDTO.setPubblicationDate(date, Constants.timezone);
 
         this.comment = new Comment().convertToEntity(this.commentDTO);
 

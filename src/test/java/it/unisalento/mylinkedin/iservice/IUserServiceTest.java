@@ -135,8 +135,6 @@ public class IUserServiceTest {
 
         when(offerorRepository.findByStatus(offeror.getStatus())).thenReturn(offerorList);
 
-        when(offerorRepository.findByStatus(registeredUserNotFoundStatus)).thenThrow(UserNotFoundException.class);
-
         wrongUserRegisteredStatus = "wrong";
 
         //ProfileImage

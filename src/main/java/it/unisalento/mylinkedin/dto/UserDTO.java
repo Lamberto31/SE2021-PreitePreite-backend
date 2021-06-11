@@ -45,7 +45,11 @@ public class UserDTO {
 
     public void setBirthDate(Date date, String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
-        this.birthDate = Constants.SIMPLE_DATE_FORMAT.format(date);
+        try {
+            this.birthDate = Constants.SIMPLE_DATE_FORMAT.format(date);
+        } catch (Exception e) {
+            this.birthDate = null;
+        }
     }
 
     public int getId() {

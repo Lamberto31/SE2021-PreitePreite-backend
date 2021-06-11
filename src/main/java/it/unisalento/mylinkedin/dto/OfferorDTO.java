@@ -23,7 +23,11 @@ public class OfferorDTO extends UserDTO{
 
     public void setRegistrationDate(Date date, String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
-        this.registrationDate = Constants.SIMPLE_DATE_FORMAT.format(date);
+        try {
+            this.registrationDate = Constants.SIMPLE_DATE_FORMAT.format(date);
+        } catch (Exception e) {
+            this.registrationDate = null;
+        }
     }
 
     public String getStatus() {

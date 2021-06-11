@@ -25,7 +25,11 @@ public class PostDTO {
 
     public void setPubblicationDate(Date date, String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
-        this.pubblicationDate = Constants.SIMPLE_DATE_FORMAT.format(date);
+        try {
+            this.pubblicationDate = Constants.SIMPLE_DATE_FORMAT.format(date);
+        } catch (Exception e) {
+            this.pubblicationDate = null;
+        }
     }
 
     public int getId() {

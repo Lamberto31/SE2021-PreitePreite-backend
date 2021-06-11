@@ -123,7 +123,11 @@ public class Post {
     public Post convertToEntity(PostDTO dto) throws ParseException {
         ModelMapper modelMapper =  new ModelMapper();
         Post entity = modelMapper.map(dto, Post.class);
-        entity.setPubblicationDate(dto.getPubblicationDate(Constants.timezone));
+        try {
+            entity.setPubblicationDate(dto.getPubblicationDate(Constants.timezone));
+        } catch (Exception e) {
+            entity.setPubblicationDate(null);
+        }
         return entity;
     }
 }

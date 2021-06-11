@@ -38,14 +38,22 @@ public class UserDTO {
     @NotBlank
     String passwordToVerify;
 
-    public Date getBirthDate(String timezone) throws ParseException {
+    public Date getBirthDate(String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
-        return Constants.SIMPLE_DATE_FORMAT.parse(this.birthDate);
+        try {
+            return Constants.SIMPLE_DATE_FORMAT.parse(this.birthDate);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void setBirthDate(Date date, String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
-        this.birthDate = Constants.SIMPLE_DATE_FORMAT.format(date);
+        try {
+            this.birthDate = Constants.SIMPLE_DATE_FORMAT.format(date);
+        } catch (Exception e) {
+            this.birthDate = null;
+        }
     }
 
     public int getId() {

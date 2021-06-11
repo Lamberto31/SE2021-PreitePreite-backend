@@ -58,8 +58,16 @@ public class Applicant extends User{
     public Applicant convertToEntity(ApplicantDTO dto) throws ParseException {
         ModelMapper modelMapper =  new ModelMapper();
         Applicant entity = modelMapper.map(dto, Applicant.class);
-        entity.setBirthDate(dto.getBirthDate(Constants.timezone));
-        entity.setRegistrationDate(dto.getRegistrationDate(Constants.timezone));
+        try {
+            entity.setBirthDate(dto.getBirthDate(Constants.timezone));
+        } catch (Exception e) {
+            entity.setBirthDate(null);
+        }
+        try {
+            entity.setRegistrationDate(dto.getRegistrationDate(Constants.timezone));
+        } catch (Exception e) {
+            entity.setRegistrationDate(null);
+        }
         return entity;
     }
 }

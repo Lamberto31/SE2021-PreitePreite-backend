@@ -16,14 +16,22 @@ public class OfferorDTO extends UserDTO{
     @CheckValueInListConstraint(feasibleList = {Constants.REGISTRATION_PENDING, Constants.REGISTRATION_ACCEPTED, Constants.REGISTRATION_BLOCKED})
     String status;
 
-    public Date getRegistrationDate(String timezone) throws ParseException {
+    public Date getRegistrationDate(String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
-        return Constants.SIMPLE_DATE_FORMAT.parse(this.registrationDate);
+        try {
+            return Constants.SIMPLE_DATE_FORMAT.parse(this.registrationDate);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void setRegistrationDate(Date date, String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
-        this.registrationDate = Constants.SIMPLE_DATE_FORMAT.format(date);
+        try {
+            this.registrationDate = Constants.SIMPLE_DATE_FORMAT.format(date);
+        } catch (Exception e) {
+            this.registrationDate = null;
+        }
     }
 
     public String getStatus() {

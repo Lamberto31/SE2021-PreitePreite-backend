@@ -18,14 +18,22 @@ public class ProfileImageDTO {
     @NotBlank
     String imagePath;
 
-    public Date getPubblicationDate(String timezone) throws ParseException {
+    public Date getPubblicationDate(String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
-        return Constants.SIMPLE_DATE_FORMAT.parse(this.pubblicationDate);
+        try {
+            return Constants.SIMPLE_DATE_FORMAT.parse(this.pubblicationDate);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void setPubblicationDate(Date date, String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
-        this.pubblicationDate = Constants.SIMPLE_DATE_FORMAT.format(date);
+        try {
+            this.pubblicationDate = Constants.SIMPLE_DATE_FORMAT.format(date);
+        } catch (Exception e) {
+            this.pubblicationDate = null;
+        }
     }
 
     public int getId() {

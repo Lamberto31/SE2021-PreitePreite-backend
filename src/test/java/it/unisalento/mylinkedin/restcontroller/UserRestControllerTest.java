@@ -53,7 +53,7 @@ public class UserRestControllerTest {
     private Post post;
 
     @BeforeEach
-    void init() throws ParseException, UserNotFoundException, UserSavingException, ProfileImageNotFoundException, ProfileImageSavingException, CompanyNotFoundException, CompanySavingException {
+    void init() throws UserNotFoundException, UserSavingException, ProfileImageNotFoundException, ProfileImageSavingException, CompanyNotFoundException, CompanySavingException {
 
         this.user = new User();
         this.user.setId(1);
@@ -61,7 +61,7 @@ public class UserRestControllerTest {
         this.user.setSurname("testSurname");
         this.user.setEmail("emailtest@test.com");
         this.user.setPassword("testPassword");
-        this.user.setBirthDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
+        //this.user.setBirthDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
         this.user.setDescription("testDescription");
 
         when(userServiceMock.getById(user.getId())).thenReturn(user);
@@ -76,7 +76,7 @@ public class UserRestControllerTest {
         this.profileImage = new ProfileImage();
         this.profileImage.setId(1);
         this.profileImage.setDescription("testDescription");
-        this.profileImage.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
+        //this.profileImage.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
         this.profileImage.setImagePath("testImagePath");
 
         when(userServiceMock.getProfileImageById(profileImage.getId())).thenReturn(profileImage);
@@ -104,9 +104,9 @@ public class UserRestControllerTest {
         this.offeror.setSurname("testSurname");
         this.offeror.setEmail("emailtest@test.com");
         this.offeror.setPassword("testPassword");
-        this.offeror.setBirthDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
+        //this.offeror.setBirthDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
         this.offeror.setDescription("testDescription");
-        this.offeror.setRegistrationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
+        //this.offeror.setRegistrationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
         this.offeror.setStatus(Constants.REGISTRATION_PENDING);
         this.offeror.setCompany(company);
 
@@ -114,7 +114,7 @@ public class UserRestControllerTest {
 
         this.post = new Post();
         this.post.setId(1);
-        this.post.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
+        //this.post.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
         this.post.setHidden(true);
         this.post.setPrivate(false);
         this.post.setData("testData");

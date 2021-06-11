@@ -88,7 +88,11 @@ public class ProfileImage {
     public ProfileImage convertToEntity(ProfileImageDTO dto) throws ParseException {
         ModelMapper modelMapper =  new ModelMapper();
         ProfileImage entity = modelMapper.map(dto, ProfileImage.class);
-        entity.setPubblicationDate(dto.getPubblicationDate(Constants.timezone));
+        try {
+            entity.setPubblicationDate(dto.getPubblicationDate(Constants.timezone));
+        } catch (Exception e) {
+            entity.setPubblicationDate(null);
+        }
         return entity;
     }
 }

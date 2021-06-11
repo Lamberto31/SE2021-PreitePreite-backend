@@ -86,7 +86,11 @@ public class Message {
     public Message convertToEntity(MessageDTO dto) throws ParseException {
         ModelMapper modelMapper =  new ModelMapper();
         Message entity = modelMapper.map(dto, Message.class);
-        entity.setPubblicationDate(dto.getPubblicationDate(Constants.timezone));
+        try {
+            entity.setPubblicationDate(dto.getPubblicationDate(Constants.timezone));
+        } catch (Exception e) {
+            entity.setPubblicationDate(null);
+        }
         return entity;
     }
 }

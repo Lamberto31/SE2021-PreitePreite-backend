@@ -171,7 +171,11 @@ public class User {
     public User convertToEntity(UserDTO dto) throws ParseException {
         ModelMapper modelMapper =  new ModelMapper();
         User entity = modelMapper.map(dto, User.class);
-        entity.setBirthDate(dto.getBirthDate(Constants.timezone));
+        try {
+            entity.setBirthDate(dto.getBirthDate(Constants.timezone));
+        } catch (ParseException e) {
+            entity.setBirthDate(null);
+        }
         return entity;
     }
 }

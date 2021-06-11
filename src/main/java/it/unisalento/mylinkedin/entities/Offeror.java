@@ -60,8 +60,16 @@ public class Offeror extends User{
     public Offeror convertToEntity(OfferorDTO dto) throws ParseException {
         ModelMapper modelMapper =  new ModelMapper();
         Offeror entity = modelMapper.map(dto, Offeror.class);
-        entity.setBirthDate(dto.getBirthDate(Constants.timezone));
-        entity.setRegistrationDate(dto.getRegistrationDate(Constants.timezone));
+        try {
+            entity.setBirthDate(dto.getBirthDate(Constants.timezone));
+        } catch (Exception e) {
+            entity.setBirthDate(null);
+        }
+        try {
+            entity.setRegistrationDate(dto.getRegistrationDate(Constants.timezone));
+        } catch (Exception e) {
+            entity.setRegistrationDate(null);
+        }
         return entity;
     }
 }

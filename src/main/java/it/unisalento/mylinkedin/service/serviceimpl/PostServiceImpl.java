@@ -1,10 +1,12 @@
 package it.unisalento.mylinkedin.service.serviceimpl;
 
+import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dao.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.post.*;
 import it.unisalento.mylinkedin.exception.user.CompanyNotFoundException;
+import it.unisalento.mylinkedin.exception.user.MessageNotFoundException;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +74,11 @@ public class PostServiceImpl implements IPostService {
     @Transactional(rollbackOn = PostNotFoundException.class)
     public List<Post> getByIsPrivate(boolean isPrivate) throws PostNotFoundException {
         try {
-            return postRepository.findByIsPrivate(isPrivate);
+            List<Post> postFoundList = postRepository.findByIsPrivate(isPrivate);
+            if (postFoundList.isEmpty()) {
+                throw new PostNotFoundException();
+            }
+            return postFoundList;
         } catch (Exception e) {
             throw new PostNotFoundException();
         }
@@ -82,6 +88,7 @@ public class PostServiceImpl implements IPostService {
     @Transactional(rollbackOn = PostNotFoundException.class)
     public void updateIsHidden(boolean isHidden, int id) throws PostNotFoundException {
         try {
+            postRepository.findById(id).orElseThrow(PostNotFoundException::new);
             postRepository.updateIsHidden(isHidden, id);
         } catch (Exception e) {
             throw new PostNotFoundException();
@@ -123,9 +130,20 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     @Transactional(rollbackOn = StructureNotFoundException.class)
-    public List<Structure> getStructureByUserCanPublish(String userCanPublish) throws StructureNotFoundException {
+    public List<Structure> getStructureByUserCanPublish(String userCanPublish) throws StructureNotFoundException, InvalidValueException {
         try {
-            return structureRepository.findByUserCanPublish(userCanPublish);
+            if (!Constants.CAN_PUBLISH_LIST.contains(userCanPublish)) {
+                throw new InvalidValueException();
+            }
+        } catch (Exception e) {
+            throw new InvalidValueException();
+        }
+        try {
+            List<Structure> structureFoundList = structureRepository.findByUserCanPublish(userCanPublish);
+            if (structureFoundList.isEmpty()) {
+                throw new StructureNotFoundException();
+            }
+            return structureFoundList;
         } catch (Exception e) {
             throw new StructureNotFoundException();
         }
@@ -201,7 +219,11 @@ public class PostServiceImpl implements IPostService {
     @Transactional(rollbackOn = CommentNotFoundException.class)
     public List<Comment> getCommentByPost(Post post) throws CommentNotFoundException {
         try {
-            return commentRepository.getByPost(post);
+            List<Comment> commentFoundList = commentRepository.getByPost(post);
+            if (commentFoundList.isEmpty()) {
+                throw new CommentNotFoundException();
+            }
+            return commentFoundList;
         } catch (Exception e) {
             throw new CommentNotFoundException();
         }
@@ -244,7 +266,11 @@ public class PostServiceImpl implements IPostService {
     @Transactional(rollbackOn = AttributeNotFoundException.class)
     public List<Attribute> getAttributeByStructure(Structure structure) throws AttributeNotFoundException {
         try {
-            return structureAttributeRepository.findAttributeByStructure(structure);
+            List<Attribute> attributeFoundList = structureAttributeRepository.findAttributeByStructure(structure);
+            if (attributeFoundList.isEmpty()) {
+                throw new AttributeNotFoundException();
+            }
+            return attributeFoundList;
         } catch (Exception e) {
             throw new AttributeNotFoundException();
         }

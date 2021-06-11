@@ -1,5 +1,6 @@
 package it.unisalento.mylinkedin.service.serviceimpl;
 
+import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dao.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
@@ -88,7 +89,11 @@ public class UserServiceImpl implements IUserService {
     @Transactional(rollbackOn = UserNotFoundException.class)
     public List<Applicant> getApplicantByStatus(String status) throws UserNotFoundException {
         try {
-            return applicantRepository.findByStatus(status);
+            List<Applicant> applicantFoundList = applicantRepository.findByStatus(status);
+            if (applicantFoundList.isEmpty()) {
+                throw new UserNotFoundException();
+            }
+            return applicantFoundList;
         } catch (Exception e) {
             throw new UserNotFoundException();
         }
@@ -103,7 +108,11 @@ public class UserServiceImpl implements IUserService {
     @Transactional(rollbackOn = UserNotFoundException.class)
     public List<Offeror> getOfferorByStatus(String status) throws UserNotFoundException {
         try {
-            return offerorRepository.findByStatus(status);
+            List<Offeror> offerorFoundList = offerorRepository.findByStatus(status);
+            if (offerorFoundList.isEmpty()) {
+                throw new UserNotFoundException();
+            }
+            return offerorFoundList;
         } catch (Exception e) {
             throw new UserNotFoundException();
         }
@@ -111,9 +120,35 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     @Transactional(rollbackOn = UserNotFoundException.class)
-    public void updateStatusRegistration(String status, int id) throws UserNotFoundException {
+    public void updateApplicantStatusRegistration(String status, int id) throws UserNotFoundException, InvalidValueException {
         try {
+            if (!Constants.REGISTRATION_STATUS_LIST.contains(status)) {
+                throw new InvalidValueException();
+            }
+        } catch (Exception e) {
+            throw new InvalidValueException();
+        }
+        try {
+            applicantRepository.findById(id).orElseThrow(UserNotFoundException::new);
             applicantRepository.updateStatusRegistration(status, id);
+        } catch (Exception e) {
+            throw new UserNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = UserNotFoundException.class)
+    public void updateOfferorStatusRegistration(String status, int id) throws UserNotFoundException, InvalidValueException {
+        try {
+            if (!Constants.REGISTRATION_STATUS_LIST.contains(status)) {
+                throw new InvalidValueException();
+            }
+        } catch (Exception e) {
+            throw new InvalidValueException();
+        }
+        try {
+            offerorRepository.findById(id).orElseThrow(UserNotFoundException::new);
+            offerorRepository.updateStatusRegistration(status, id);
         } catch (Exception e) {
             throw new UserNotFoundException();
         }
@@ -188,7 +223,11 @@ public class UserServiceImpl implements IUserService {
     @Override
     public List<Message> getMessageBySenderAndReceiver(User sender, User receiver) throws MessageNotFoundException {
         try {
-            return messageRepository.findBySenderAndReceiver(sender, receiver);
+            List<Message> messageFoundList = messageRepository.findBySenderAndReceiver(sender, receiver);
+            if (messageFoundList.isEmpty()) {
+                throw new MessageNotFoundException();
+            }
+            return messageFoundList;
         } catch (Exception e) {
             throw new MessageNotFoundException();
         }

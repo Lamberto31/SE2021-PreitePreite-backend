@@ -28,13 +28,6 @@ public class RegisteredUserRestController {
     @Autowired
     IPostService postService;
 
-    @GetMapping(value = Constants.URI_MESSAGE+Constants.URI_GETBYID, produces = MediaType.APPLICATION_JSON_VALUE)
-    public MessageDTO getMessagetById(@PathVariable int id) throws MessageNotFoundException {
-
-        Message message = userService.getMessageById(id);
-        return new MessageDTO().convertToDto(message);
-    }
-
     @PostMapping(value=Constants.URI_MESSAGE+Constants.URI_SAVE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public MessageDTO saveMessage(@RequestBody @Valid MessageDTO messageDTO) throws ParseException, MessageSavingException {
 
@@ -83,7 +76,8 @@ public class RegisteredUserRestController {
         return postDTO;
     }
 
-    @GetMapping(value = Constants.URI_STRUCTURE+Constants.URI_GETBOTHCANPUBLISH, produces = MediaType.APPLICATION_JSON_VALUE)
+
+    @GetMapping(value = Constants.URI_STRUCTURE+Constants.URI_GETCANPUBLISH, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<StructureDTO> getStructureBothCanPublish() throws StructureNotFoundException {
 
         List<Structure> structureList = postService.getStructureByUserCanPublish(Constants.CAN_PUBLISH_BOTH);
@@ -95,7 +89,8 @@ public class RegisteredUserRestController {
     }
 
     // TODO: Gestire con spring security per far usare solo ad offeror
-    @GetMapping(value = Constants.URI_OFFEROR+Constants.URI_STRUCTURE+Constants.URI_GETOFFERORCANPUBLISH, produces = MediaType.APPLICATION_JSON_VALUE)
+
+    @GetMapping(value = Constants.URI_OFFEROR+Constants.URI_STRUCTURE+Constants.URI_GETCANPUBLISH, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<StructureDTO> getStructureOfferorCanPublish() throws StructureNotFoundException {
 
         List<Structure> structureList = postService.getStructureByUserCanPublish(Constants.CAN_PUBLISH_OFFEROR);
@@ -107,7 +102,7 @@ public class RegisteredUserRestController {
     }
 
     // TODO: Gestire con spring security per far usare solo ad applicant
-    @GetMapping(value = Constants.URI_APPLICANT+Constants.URI_STRUCTURE+Constants.URI_GETAPPLICANTCANPUBLISH, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = Constants.URI_APPLICANT+Constants.URI_STRUCTURE+Constants.URI_GETCANPUBLISH, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<StructureDTO> getStructureApplicantCanPublish() throws StructureNotFoundException {
 
         List<Structure> structureList = postService.getStructureByUserCanPublish(Constants.CAN_PUBLISH_APPLICANT);
@@ -119,8 +114,7 @@ public class RegisteredUserRestController {
     }
 
     @PostMapping(value=Constants.URI_COMMENT+Constants.URI_SAVE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public CommentDTO savePost(@RequestBody @Valid CommentDTO commentDTO) throws ParseException, CommentSavingException {
-
+    public CommentDTO saveComment(@RequestBody @Valid CommentDTO commentDTO) throws ParseException, CommentSavingException {
         Comment comment = new Comment().convertToEntity(commentDTO);
         Comment commentSaved = postService.saveComment(comment);
         commentDTO.setId(commentSaved.getId());

@@ -55,11 +55,7 @@ public interface Constants {
     String URI_MESSAGE = "/message";
     String URI_GETBYSENDERANDRECEIVER = "/getBySenderAndReceiver/{senderId}/{receiverId}";
 
-    String URI_GETBOTHCANPUBLISH = "/getBothCanPublish";
-
-    String URI_GETOFFERORCANPUBLISH = "/getOfferorCanPublish";
-
-    String URI_GETAPPLICANTCANPUBLISH = "/getApplicantCanPublish";
+    String URI_GETCANPUBLISH = "/getCanPublish";
 
     String URI_COMMENT = "/comment";
     String URI_GETBYPOST = "/getByPost/{postId}";

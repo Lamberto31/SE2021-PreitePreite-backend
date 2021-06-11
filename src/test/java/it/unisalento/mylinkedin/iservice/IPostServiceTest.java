@@ -2,6 +2,7 @@ package it.unisalento.mylinkedin.iservice;
 
 import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dao.*;
+import it.unisalento.mylinkedin.entities.Applicant;
 import it.unisalento.mylinkedin.entities.Company;
 import it.unisalento.mylinkedin.entities.Post;
 import it.unisalento.mylinkedin.entities.User;
@@ -9,6 +10,7 @@ import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.post.PostSavingException;
 import it.unisalento.mylinkedin.exception.user.CompanyNotFoundException;
 import it.unisalento.mylinkedin.exception.user.CompanySavingException;
+import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,8 +20,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.doThrow;
@@ -56,6 +61,10 @@ public class IPostServiceTest {
 
     private int correctId;
 
+    private List<Post> postList;
+
+    private boolean postNotFoundIsPrivate;
+
     void init() throws ParseException {
 
         //Post
@@ -75,6 +84,11 @@ public class IPostServiceTest {
         when(postRepository.findById(correctId)).thenReturn(java.util.Optional.ofNullable(post));
 
         doThrow(new IllegalArgumentException()).when(postRepository).delete(wrongPost);
+
+        this.postList = new ArrayList<>();
+        postList.add(post);
+
+        when(postRepository.findByIsPrivate(post.isPrivate())).thenReturn(postList);
     }
 
     //Post
@@ -116,6 +130,29 @@ public class IPostServiceTest {
     @Test
     void deleteThrowsExTest() {
         Exception exp = assertThrows(PostNotFoundException.class, () -> postService.delete(wrongPost));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getByIsPrivateTest() throws PostNotFoundException{
+        List<Post> postFoundList = postService.getByIsPrivate(post.isPrivate());
+        assertThat(postList.equals(postFoundList));
+    }
+
+    @Test
+    void getByIsPrivateThrowsExTest() {
+        Exception exp = assertThrows(PostNotFoundException.class, () -> postService.getByIsPrivate(postNotFoundIsPrivate));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void updateIsHiddenTest() {
+        assertDoesNotThrow(() -> postService.updateIsHidden(post.isHidden(), correctId));
+    }
+
+    @Test
+    void updateIsHiddenThrowsExTest() {
+        Exception exp = assertThrows(PostNotFoundException.class, () -> postService.updateIsHidden(post.isHidden(), correctId));
         assertThat(exp).isNotNull();
     }
 }

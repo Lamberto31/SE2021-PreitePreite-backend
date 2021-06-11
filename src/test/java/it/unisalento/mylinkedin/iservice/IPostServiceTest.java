@@ -4,10 +4,7 @@ import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dao.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
-import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
-import it.unisalento.mylinkedin.exception.post.PostSavingException;
-import it.unisalento.mylinkedin.exception.post.StructureNotFoundException;
-import it.unisalento.mylinkedin.exception.post.StructureSavingException;
+import it.unisalento.mylinkedin.exception.post.*;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import org.junit.jupiter.api.Test;
@@ -66,6 +63,9 @@ public class IPostServiceTest {
     private String structureNotFoundUserCanPublish;
     private String wrongStructureUserCanPublish;
 
+    private Attribute attribute;
+    private Attribute wrongAttribute;
+
     void init() throws ParseException {
 
         //Post
@@ -115,6 +115,21 @@ public class IPostServiceTest {
         this.structureNotFoundUserCanPublish = Constants.CAN_PUBLISH_OFFEROR;
 
         this.wrongStructureUserCanPublish = "wrong";
+
+        //Attribute
+        this.attribute = new Attribute();
+        this.attribute.setTitle("testTitle");
+        this.attribute.setType("testType");
+
+        when(attributeRepository.save(refEq(attribute))).thenReturn(attribute);
+
+        this.wrongAttribute = new Attribute();
+
+        when(attributeRepository.save(refEq(wrongAttribute))).thenThrow(IllegalArgumentException.class);
+
+        when(attributeRepository.findById(correctId)).thenReturn(java.util.Optional.ofNullable(attribute));
+
+        doThrow(new IllegalArgumentException()).when(attributeRepository).delete(wrongAttribute);
     }
 
     //Post
@@ -239,6 +254,48 @@ public class IPostServiceTest {
     @Test
     void getStructureByUserCanPublishThrowsInvalidValueExTest() {
         Exception exp = assertThrows(InvalidValueException.class, () -> postService.getStructureByUserCanPublish(wrongStructureUserCanPublish));
+        assertThat(exp).isNotNull();
+    }
+
+    //Attribute
+    @Test
+    void getAllAttributeTest() {
+        assertThat(postService.getAllAttribute()).isNotNull();
+    }
+
+    @Test
+    void saveAttributeTest() throws AttributeSavingException {
+        Attribute attributeSaved = postService.saveAttribute(attribute);
+        assertThat(attribute.equals(attributeSaved));
+    }
+
+    @Test
+    void saveAttributeThrowsExTest() {
+        Exception exp = assertThrows(AttributeSavingException.class, () -> postService.saveAttribute(wrongAttribute));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getAttributeByIdTest() throws AttributeNotFoundException {
+        Attribute attributeFound = postService.getAttributeById(correctId);
+        assertThat(attribute.equals(attributeFound));
+    }
+
+    @Test
+    void getAttributeByIdThrowsExTest() {
+        Exception exp = assertThrows(AttributeNotFoundException.class, () -> postService.getAttributeById(wrongAttribute.getId()));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void deleteAttributeTest() throws AttributeNotFoundException {
+        Attribute attributeDeleted = postService.deleteAttribute(attribute);
+        assertThat(attribute.equals(attributeDeleted));
+    }
+
+    @Test
+    void deleteAttributeThrowsExTest() {
+        Exception exp = assertThrows(AttributeNotFoundException.class, () -> postService.deleteAttribute(wrongAttribute));
         assertThat(exp).isNotNull();
     }
 }

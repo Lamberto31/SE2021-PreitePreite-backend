@@ -117,7 +117,7 @@ public class IUserServiceTest {
 
         this.registeredUserNotFoundStatus = Constants.REGISTRATION_BLOCKED;
 
-        when(applicantRepository.findByStatus(registeredUserNotFoundStatus)).thenThrow(UserNotFoundException.class);
+        //when(applicantRepository.findByStatus(registeredUserNotFoundStatus)).thenThrow(UserNotFoundException.class);
 
         this.offeror = new Offeror();
         this.offeror.setName("testName");
@@ -176,7 +176,7 @@ public class IUserServiceTest {
 
         when(messageRepository.findBySenderAndReceiver(user, user)).thenReturn(messageList);
 
-        when(messageRepository.findBySenderAndReceiver(wrongUser, wrongUser)).thenThrow(MessageNotFoundException.class);
+        //when(messageRepository.findBySenderAndReceiver(wrongUser, wrongUser)).thenThrow(MessageNotFoundException.class);
 
         //Company
 

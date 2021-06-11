@@ -276,7 +276,7 @@ public class IPostServiceTest {
 
     @Test
     void updateIsHiddenThrowsExTest() {
-        Exception exp = assertThrows(PostNotFoundException.class, () -> postService.updateIsHidden(post.isHidden(), correctId));
+        Exception exp = assertThrows(PostNotFoundException.class, () -> postService.updateIsHidden(post.isHidden(), wrongPost.getId()));
         assertThat(exp).isNotNull();
     }
 

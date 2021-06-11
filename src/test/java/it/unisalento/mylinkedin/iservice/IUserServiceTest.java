@@ -70,8 +70,11 @@ public class IUserServiceTest {
     private Message wrongMessage;
     private List<Message> messageList;
 
+    private Company company;
+    private Company wrongCompany;
+
     @BeforeEach
-    void init() throws ParseException, UserNotFoundException {
+    void init() throws ParseException {
 
         this.user = new User();
         this.user.setName("testName");
@@ -176,6 +179,24 @@ public class IUserServiceTest {
         when(messageRepository.findBySenderAndReceiver(user, user)).thenReturn(messageList);
 
         when(messageRepository.findBySenderAndReceiver(wrongUser, wrongUser)).thenThrow(MessageNotFoundException.class);
+
+        //Company
+
+        this.company = new Company();
+        this.company.setName("testName");
+        this.company.setDescription("testDescription");
+        this.company.setPartitaIva("testPartIva");
+        this.company.setAddress("testAddress");
+
+        when(companyRepository.save(refEq(company))).thenReturn(company);
+
+        this.wrongCompany = new Company();
+
+        when(companyRepository.save(refEq(wrongCompany))).thenThrow(IllegalArgumentException.class);
+
+        when(companyRepository.findById(correctId)).thenReturn(java.util.Optional.ofNullable(company));
+
+        doThrow(new IllegalArgumentException()).when(companyRepository).delete(wrongCompany);
 
     }
 
@@ -314,6 +335,7 @@ public class IUserServiceTest {
         assertThat(exp).isNotNull();
     }
 
+    //ProfileImage
     @Test
     void getAllProfileImageTest() {
         assertThat(userService.getAllProfileImage()).isNotNull();
@@ -355,6 +377,7 @@ public class IUserServiceTest {
         assertThat(exp).isNotNull();
     }
 
+    //Message
     @Test
     void getAllMessageTest() {
         assertThat(userService.getAllMessage()).isNotNull();
@@ -405,6 +428,48 @@ public class IUserServiceTest {
     @Test
     void getMessageBySenderAndReceiverThrowsExTest() {
         Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.getMessageBySenderAndReceiver(wrongUser, wrongUser));
+        assertThat(exp).isNotNull();
+    }
+
+    //Company
+    @Test
+    void getAllCompanyTest() {
+        assertThat(userService.getAllCompany()).isNotNull();
+    }
+
+    @Test
+    void saveCompanyTest() throws CompanySavingException {
+        Company companySaved = userService.saveCompany(company);
+        assertThat(company.equals(companySaved));
+    }
+
+    @Test
+    void saveCompanyThrowsExTest() {
+        Exception exp = assertThrows(CompanySavingException.class, () -> userService.saveCompany(wrongCompany));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getCompanyByIdTest() throws CompanyNotFoundException {
+        Company companyFound = userService.getCompanyById(correctId);
+        assertThat(company.equals(companyFound));
+    }
+
+    @Test
+    void getCompanyByIdThrowsExTest() {
+        Exception exp = assertThrows(CompanyNotFoundException.class, () -> userService.getCompanyById(wrongCompany.getId()));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void deleteCompanyTest() throws CompanyNotFoundException {
+        Company companyDeleted = userService.deleteCompany(company);
+        assertThat(company.equals(companyDeleted));
+    }
+
+    @Test
+    void deleteCompanyThrowsExTest() {
+        Exception exp = assertThrows(CompanyNotFoundException.class, () -> userService.deleteCompany(wrongCompany));
         assertThat(exp).isNotNull();
     }
 

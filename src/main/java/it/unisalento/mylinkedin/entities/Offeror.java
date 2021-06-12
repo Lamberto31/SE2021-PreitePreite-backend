@@ -1,11 +1,15 @@
 package it.unisalento.mylinkedin.entities;
 
 import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.dto.OfferorDTO;
+import it.unisalento.mylinkedin.dto.UserDTO;
+import org.modelmapper.ModelMapper;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -51,5 +55,21 @@ public class Offeror extends User{
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public Offeror convertToEntity(OfferorDTO dto) throws ParseException {
+        ModelMapper modelMapper =  new ModelMapper();
+        Offeror entity = modelMapper.map(dto, Offeror.class);
+        try {
+            entity.setBirthDate(dto.getBirthDate(Constants.timezone));
+        } catch (Exception e) {
+            entity.setBirthDate(null);
+        }
+        try {
+            entity.setRegistrationDate(dto.getRegistrationDate(Constants.timezone));
+        } catch (Exception e) {
+            entity.setRegistrationDate(null);
+        }
+        return entity;
     }
 }

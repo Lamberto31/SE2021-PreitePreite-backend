@@ -1,7 +1,10 @@
 package it.unisalento.mylinkedin.dto;
 
 import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.entities.Message;
+import it.unisalento.mylinkedin.entities.User;
 import it.unisalento.mylinkedin.validators.AtLeastOneNotNullConstraint;
+import org.modelmapper.ModelMapper;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -15,14 +18,22 @@ public class MessageDTO {
     String imagePath;
     String pubblicationDate;
 
-    public Date getPubblicationDate(String timezone) throws ParseException {
+    public Date getPubblicationDate(String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
-        return Constants.SIMPLE_DATE_FORMAT.parse(this.pubblicationDate);
+        try {
+            return Constants.SIMPLE_DATE_FORMAT.parse(this.pubblicationDate);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void setPubblicationDate(Date date, String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
-        this.pubblicationDate = Constants.SIMPLE_DATE_FORMAT.format(date);
+        try {
+            this.pubblicationDate = Constants.SIMPLE_DATE_FORMAT.format(date);
+        } catch (Exception e) {
+            this.pubblicationDate = null;
+        }
     }
 
     public int getId() {
@@ -47,5 +58,12 @@ public class MessageDTO {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public MessageDTO convertToDto(Message entity) {
+        ModelMapper modelMapper =  new ModelMapper();
+        MessageDTO dto = modelMapper.map(entity, MessageDTO.class);
+        dto.setPubblicationDate(entity.getPubblicationDate(), Constants.timezone);
+        return dto;
     }
 }

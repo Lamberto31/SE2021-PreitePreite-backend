@@ -1,8 +1,10 @@
 package it.unisalento.mylinkedin.dto;
 
 import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.entities.User;
 import it.unisalento.mylinkedin.validators.CheckValueInListConstraint;
 import it.unisalento.mylinkedin.validators.MatchTwoFieldsConstraint;
+import org.modelmapper.ModelMapper;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -24,7 +26,6 @@ public class UserDTO {
     String email;
     @NotBlank
     String password;
-    @NotBlank
     String birthDate;
     String description;
     @NotBlank
@@ -37,14 +38,22 @@ public class UserDTO {
     @NotBlank
     String passwordToVerify;
 
-    public Date getBirthDate(String timezone) throws ParseException {
+    public Date getBirthDate(String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
-        return Constants.SIMPLE_DATE_FORMAT.parse(this.birthDate);
+        try {
+            return Constants.SIMPLE_DATE_FORMAT.parse(this.birthDate);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void setBirthDate(Date date, String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
-        this.birthDate = Constants.SIMPLE_DATE_FORMAT.format(date);
+        try {
+            this.birthDate = Constants.SIMPLE_DATE_FORMAT.format(date);
+        } catch (Exception e) {
+            this.birthDate = null;
+        }
     }
 
     public int getId() {
@@ -109,5 +118,20 @@ public class UserDTO {
 
     public void setPasswordToVerify(String passwordToVerify) {
         this.passwordToVerify = passwordToVerify;
+    }
+
+    public UserDTO convertToDto(User entity) {
+        ModelMapper modelMapper =  new ModelMapper();
+        UserDTO dto = modelMapper.map(entity, UserDTO.class);
+        dto.setBirthDate(entity.getBirthDate(), Constants.timezone);
+        return dto;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

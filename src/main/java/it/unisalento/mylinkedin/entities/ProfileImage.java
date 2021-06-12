@@ -1,6 +1,12 @@
 package it.unisalento.mylinkedin.entities;
 
+import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.dto.CommentDTO;
+import it.unisalento.mylinkedin.dto.ProfileImageDTO;
+import org.modelmapper.ModelMapper;
+
 import javax.persistence.*;
+import java.text.ParseException;
 import java.util.Date;
 
 @Entity
@@ -79,4 +85,14 @@ public class ProfileImage {
         this.company = company;
     }
 
+    public ProfileImage convertToEntity(ProfileImageDTO dto) throws ParseException {
+        ModelMapper modelMapper =  new ModelMapper();
+        ProfileImage entity = modelMapper.map(dto, ProfileImage.class);
+        try {
+            entity.setPubblicationDate(dto.getPubblicationDate(Constants.timezone));
+        } catch (Exception e) {
+            entity.setPubblicationDate(null);
+        }
+        return entity;
+    }
 }

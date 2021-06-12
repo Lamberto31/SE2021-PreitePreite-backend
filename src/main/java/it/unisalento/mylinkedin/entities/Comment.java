@@ -1,6 +1,12 @@
 package it.unisalento.mylinkedin.entities;
 
+import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.dto.CommentDTO;
+import it.unisalento.mylinkedin.dto.UserDTO;
+import org.modelmapper.ModelMapper;
+
 import javax.persistence.*;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -89,5 +95,16 @@ public class Comment {
 
     public void setAnswerCommentList(List<Comment> answerCommentList) {
         this.answerCommentList = answerCommentList;
+    }
+
+    public Comment convertToEntity(CommentDTO dto) throws ParseException {
+        ModelMapper modelMapper =  new ModelMapper();
+        Comment entity = modelMapper.map(dto, Comment.class);
+        try {
+            entity.setPubblicationDate(dto.getPubblicationDate(Constants.timezone));
+        } catch (Exception e) {
+            entity.setPubblicationDate(null);
+        }
+        return entity;
     }
 }

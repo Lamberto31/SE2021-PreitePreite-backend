@@ -1,7 +1,10 @@
 package it.unisalento.mylinkedin.dto;
 
 import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.entities.Structure;
+import it.unisalento.mylinkedin.entities.User;
 import it.unisalento.mylinkedin.validators.CheckValueInListConstraint;
+import org.modelmapper.ModelMapper;
 
 import javax.validation.constraints.NotBlank;
 public class StructureDTO {
@@ -10,7 +13,7 @@ public class StructureDTO {
     @NotBlank
     String title;
     String description;
-    @CheckValueInListConstraint(feasibleList = {Constants.CAN_PUBLISH_APPLICANT, Constants.CAN_PUBLISH_APPLICANT, Constants.CAN_PUBLISH_BOTH})
+    @CheckValueInListConstraint(feasibleList = {Constants.CAN_PUBLISH_APPLICANT, Constants.CAN_PUBLISH_OFFEROR, Constants.CAN_PUBLISH_BOTH})
     String userCanPublish;
 
     public int getId() {
@@ -43,5 +46,10 @@ public class StructureDTO {
 
     public void setUserCanPublish(String userCanPublish) {
         this.userCanPublish = userCanPublish;
+    }
+
+    public StructureDTO convertToDto(Structure entity) {
+        ModelMapper modelMapper =  new ModelMapper();
+        return modelMapper.map(entity, StructureDTO.class);
     }
 }

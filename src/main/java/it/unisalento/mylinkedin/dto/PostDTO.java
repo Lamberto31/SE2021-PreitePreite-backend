@@ -1,6 +1,8 @@
 package it.unisalento.mylinkedin.dto;
 
 import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.entities.Post;
+import org.modelmapper.ModelMapper;
 
 import javax.validation.constraints.NotBlank;
 import java.text.ParseException;
@@ -11,19 +13,27 @@ public class PostDTO {
 
     int id;
     String pubblicationDate;
-    boolean ishidden;
+    boolean isHidden;
     boolean isPrivate;
     @NotBlank
     String data; //JSON
 
-    public Date getPubblicationDate(String timezone) throws ParseException {
+    public Date getPubblicationDate(String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
-        return Constants.SIMPLE_DATE_FORMAT.parse(this.pubblicationDate);
+        try {
+            return Constants.SIMPLE_DATE_FORMAT.parse(this.pubblicationDate);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void setPubblicationDate(Date date, String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
-        this.pubblicationDate = Constants.SIMPLE_DATE_FORMAT.format(date);
+        try {
+            this.pubblicationDate = Constants.SIMPLE_DATE_FORMAT.format(date);
+        } catch (Exception e) {
+            this.pubblicationDate = null;
+        }
     }
 
     public int getId() {
@@ -34,12 +44,12 @@ public class PostDTO {
         this.id = id;
     }
 
-    public boolean isIshidden() {
-        return ishidden;
+    public boolean isHidden() {
+        return isHidden;
     }
 
-    public void setIshidden(boolean ishidden) {
-        this.ishidden = ishidden;
+    public void setHidden(boolean hidden) {
+        this.isHidden = hidden;
     }
 
     public boolean isPrivate() {
@@ -56,5 +66,12 @@ public class PostDTO {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public PostDTO convertToDto(Post entity) {
+        ModelMapper modelMapper =  new ModelMapper();
+        PostDTO dto = modelMapper.map(entity, PostDTO.class);
+        dto.setPubblicationDate(entity.getPubblicationDate(), Constants.timezone);
+        return dto;
     }
 }

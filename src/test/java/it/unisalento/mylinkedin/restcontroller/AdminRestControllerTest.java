@@ -145,7 +145,6 @@ public class AdminRestControllerTest {
                 .andExpect(status().isOk());
     }
 
-    //TODO: Test updateStatusRegistration perchè dobbiamo fare put
     @Test
     void updateApplicantStatusRegistrationTest() throws Exception {
         mockMvc.perform(put(Constants.URI_ADMIN +Constants.URI_APPLICANT + Constants.URI_UPDATESTATUSREGISTRATION, applicant.getId(), applicant.getStatus())
@@ -160,7 +159,13 @@ public class AdminRestControllerTest {
                 .andExpect(status().isOk());
     }
 
-    //TODO: Test updateIsHidden perchè dobbiamo fare put
+    @Test
+    void getAllPostTest() throws Exception {
+        mockMvc.perform(get(Constants.URI_ADMIN+Constants.URI_POST+Constants.URI_GETALL)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
     @Test
     void updatePostIsHiddenTest() throws Exception {
         mockMvc.perform(put(Constants.URI_ADMIN +Constants.URI_POST + Constants.URI_UPDATEISHIDDEN, post.getId(), post.isHidden())

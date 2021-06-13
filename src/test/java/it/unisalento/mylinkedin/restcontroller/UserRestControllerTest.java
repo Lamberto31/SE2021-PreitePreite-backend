@@ -6,6 +6,7 @@ import it.unisalento.mylinkedin.dto.CompanyDTO;
 import it.unisalento.mylinkedin.dto.ProfileImageDTO;
 import it.unisalento.mylinkedin.dto.UserDTO;
 import it.unisalento.mylinkedin.entities.*;
+import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.user.*;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
@@ -53,7 +54,7 @@ public class UserRestControllerTest {
     private Post post;
 
     @BeforeEach
-    void init() throws UserNotFoundException, UserSavingException, ProfileImageNotFoundException, ProfileImageSavingException, CompanyNotFoundException, CompanySavingException {
+    void init() throws UserNotFoundException, UserSavingException, ProfileImageNotFoundException, ProfileImageSavingException, CompanyNotFoundException, CompanySavingException, PostNotFoundException {
 
         this.user = new User();
         this.user.setId(1);
@@ -118,6 +119,9 @@ public class UserRestControllerTest {
         this.post.setHidden(true);
         this.post.setPrivate(false);
         this.post.setData("testData");
+
+        when(postServiceMock.getById(post.getId())).thenReturn(post);
+        when(postServiceMock.getUser(refEq(post))).thenReturn(user);
     }
 
     @Test
@@ -182,6 +186,13 @@ public class UserRestControllerTest {
     @Test
     void getByInterestedPost() throws Exception {
         mockMvc.perform(get(Constants.URI_USER+Constants.URI_GETBYINTERESTED, post.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getByPostTest() throws Exception {
+        mockMvc.perform(get(Constants.URI_USER+Constants.URI_GETBYPOST, post.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

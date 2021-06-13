@@ -1,6 +1,7 @@
 package it.unisalento.mylinkedin.dao;
 
 import it.unisalento.mylinkedin.entities.Post;
+import it.unisalento.mylinkedin.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,6 +17,8 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Modifying
     @Query("update Post p set p.isHidden = :isHidden where p.id = :id")
     void updateIsHidden(@Param("isHidden") boolean isHidden, @Param("id") int id);
+
+    User findUserById(Post post);
 
     //TODO: filtraggio per skills
 }

@@ -5,8 +5,6 @@ import it.unisalento.mylinkedin.dao.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.post.*;
-import it.unisalento.mylinkedin.exception.user.CompanyNotFoundException;
-import it.unisalento.mylinkedin.exception.user.MessageNotFoundException;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +90,19 @@ public class PostServiceImpl implements IPostService {
             postRepository.updateIsHidden(isHidden, id);
         } catch (Exception e) {
             throw new PostNotFoundException();
+        }
+    }
+
+    @Override
+    public User getUser(Post post) throws UserNotFoundException {
+        try {
+            User userFound = postRepository.findUserById(post);
+            if (userFound == null) {
+                throw new UserNotFoundException();
+            }
+            return userFound;
+        } catch (Exception e) {
+            throw new UserNotFoundException();
         }
     }
 

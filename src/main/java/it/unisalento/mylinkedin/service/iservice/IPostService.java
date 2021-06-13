@@ -21,6 +21,8 @@ public interface IPostService {
 
     void updateIsHidden(boolean isHidden, int id) throws PostNotFoundException, InvalidValueException;
 
+    User getUser(Post post) throws UserNotFoundException;
+
 
     //STRUCTURE
     List<Structure> getAllStructure();

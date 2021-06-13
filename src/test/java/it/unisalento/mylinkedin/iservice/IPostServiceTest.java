@@ -106,6 +106,16 @@ public class IPostServiceTest {
 
         when(postRepository.findByIsPrivate(post.isPrivate())).thenReturn(postList);
 
+        this.user = new User();
+        this.user.setName("testName");
+        this.user.setSurname("testSurname");
+        this.user.setEmail("emailtest@test.com");
+        this.user.setPassword("testPassword");
+        this.user.setBirthDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
+        this.user.setDescription("testDescription");
+
+        when(postRepository.findUserById(refEq(post))).thenReturn(user);
+
         //Structure
         this.structure = new Structure();
         this.structure.setTitle("testTitle");
@@ -187,14 +197,6 @@ public class IPostServiceTest {
         when(structureAttributeRepository.findAttributeByStructure(structure)).thenReturn(attributeList);
 
         //UserInterestedPost
-        this.user = new User();
-        this.user.setName("testName");
-        this.user.setSurname("testSurname");
-        this.user.setEmail("emailtest@test.com");
-        this.user.setPassword("testPassword");
-        this.user.setBirthDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
-        this.user.setDescription("testDescription");
-
         this.userInterestedPost = new UserInterestedPost();
         this.userInterestedPost.setUser(user);
         this.userInterestedPost.setPost(post);
@@ -277,6 +279,18 @@ public class IPostServiceTest {
     @Test
     void updateIsHiddenThrowsExTest() {
         Exception exp = assertThrows(PostNotFoundException.class, () -> postService.updateIsHidden(post.isHidden(), wrongPost.getId()));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getUserByPostTest() throws UserNotFoundException {
+        User userFound = postService.getUser(post);
+        assertThat(user.equals(userFound));
+    }
+
+    @Test
+    void getUserByPostThrowsExTest() {
+        Exception exp = assertThrows(UserNotFoundException.class, () -> postService.getUser(wrongPost));
         assertThat(exp).isNotNull();
     }
 

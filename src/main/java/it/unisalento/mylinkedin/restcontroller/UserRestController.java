@@ -107,5 +107,11 @@ public class UserRestController {
         return userDTOList;
     }
 
+    @GetMapping(value = Constants.URI_GETBYPOST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserDTO getByPost(@PathVariable int postId) throws UserNotFoundException, PostNotFoundException {
+        Post post = postService.getById(postId);
 
+        User user = postService.getUser(post);
+        return new UserDTO().convertToDto(user);
+    }
 }

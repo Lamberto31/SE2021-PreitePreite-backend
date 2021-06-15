@@ -107,6 +107,11 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
+    public List<Post> getAllOrderByPubblicationDateDesc() {
+        return postRepository.findAllByOrderByPubblicationDateDesc();
+    }
+
+    @Override
     @Transactional
     public List<Structure> getAllStructure() {
         return structureRepository.findAll();

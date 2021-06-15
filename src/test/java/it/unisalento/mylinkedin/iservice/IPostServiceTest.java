@@ -294,6 +294,11 @@ public class IPostServiceTest {
         assertThat(exp).isNotNull();
     }
 
+    void getAllOrderByPubblicationDateDescTest() {
+        assertThat(postService.getAllOrderByPubblicationDateDesc()).isNotNull();
+    }
+
+
     //Structure
     @Test
     void getAllStructureTest() {

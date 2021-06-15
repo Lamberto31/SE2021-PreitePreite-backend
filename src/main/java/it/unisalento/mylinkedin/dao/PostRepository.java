@@ -20,5 +20,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     User findUserById(Post post);
 
+    List<Post> findAllByOrderByPubblicationDateDesc();
+
     //TODO: filtraggio per skills
 }

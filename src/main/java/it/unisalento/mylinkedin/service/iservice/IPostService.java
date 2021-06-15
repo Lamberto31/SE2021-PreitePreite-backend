@@ -23,6 +23,8 @@ public interface IPostService {
 
     User getUser(Post post) throws UserNotFoundException;
 
+    List<Post> getAllOrderByPubblicationDateDesc();
+
 
     //STRUCTURE
     List<Structure> getAllStructure();

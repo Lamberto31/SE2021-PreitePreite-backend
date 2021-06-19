@@ -214,7 +214,7 @@ public class IPostServiceTest {
         this.userList = new ArrayList<>();
         userList.add(user);
 
-        when(userInterestedPostRepository.findUserByPost(post)).thenReturn(userList);
+        when(userInterestedPostRepository.findUserByPost(post.getId())).thenReturn(userList);
     }
 
     //Post

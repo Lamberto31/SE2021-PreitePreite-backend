@@ -31,6 +31,8 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
 
+    @Column(nullable = false)
+    String title;
     Date pubblicationDate;
     @Column(nullable = false)
     boolean isHidden;
@@ -54,6 +56,14 @@ public class Post {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Date getPubblicationDate() {

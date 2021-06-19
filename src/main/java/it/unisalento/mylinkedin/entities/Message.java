@@ -26,7 +26,6 @@ public class Message {
     int id;
 
     String text;
-    @Column(unique = true, nullable = false)
     String imagePath;
     Date pubblicationDate;
 

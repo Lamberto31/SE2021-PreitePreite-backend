@@ -96,7 +96,7 @@ public class PostServiceImpl implements IPostService {
     @Override
     public User getUser(Post post) throws UserNotFoundException {
         try {
-            User userFound = postRepository.findUserById(post);
+            User userFound = postRepository.findUserById(post.getId());
             if (userFound == null) {
                 throw new UserNotFoundException();
             }

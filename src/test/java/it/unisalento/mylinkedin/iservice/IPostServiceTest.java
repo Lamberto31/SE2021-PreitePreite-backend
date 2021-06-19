@@ -114,7 +114,7 @@ public class IPostServiceTest {
         this.user.setBirthDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
         this.user.setDescription("testDescription");
 
-        when(postRepository.findUserById(refEq(post))).thenReturn(user);
+        when(postRepository.findUserById(refEq(post.getId()))).thenReturn(user);
 
         //Structure
         this.structure = new Structure();

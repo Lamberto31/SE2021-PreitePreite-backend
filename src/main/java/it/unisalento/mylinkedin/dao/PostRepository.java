@@ -18,7 +18,8 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("update Post p set p.isHidden = :isHidden where p.id = :id")
     void updateIsHidden(@Param("isHidden") boolean isHidden, @Param("id") int id);
 
-    User findUserById(Post post);
+    @Query("select p.user from Post p where p.id=:postId ")
+    User findUserById(int postId);
 
     List<Post> findAllByOrderByPubblicationDateDesc();
 

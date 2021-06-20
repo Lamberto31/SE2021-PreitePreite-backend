@@ -85,6 +85,7 @@ public class IPostServiceTest {
 
         //Post
         this.post = new Post();
+        this.post.setId(1);
         this.post.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
         this.post.setHidden(true);
         this.post.setPrivate(true);
@@ -114,7 +115,7 @@ public class IPostServiceTest {
         this.user.setBirthDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
         this.user.setDescription("testDescription");
 
-        when(postRepository.findUserById(refEq(post))).thenReturn(user);
+        when(postRepository.findUserById(correctId)).thenReturn(user);
 
         //Structure
         this.structure = new Structure();
@@ -214,7 +215,7 @@ public class IPostServiceTest {
         this.userList = new ArrayList<>();
         userList.add(user);
 
-        when(userInterestedPostRepository.findUserByPost(post)).thenReturn(userList);
+        when(userInterestedPostRepository.findUserByPost(correctId)).thenReturn(userList);
     }
 
     //Post

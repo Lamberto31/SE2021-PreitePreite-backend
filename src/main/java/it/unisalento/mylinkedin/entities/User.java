@@ -1,8 +1,10 @@
 package it.unisalento.mylinkedin.entities;
 
 import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.dto.PostDTO;
 import it.unisalento.mylinkedin.dto.UserDTO;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 
 import javax.persistence.*;
 import java.text.ParseException;
@@ -170,6 +172,13 @@ public class User {
 
     public User convertToEntity(UserDTO dto) throws ParseException {
         ModelMapper modelMapper =  new ModelMapper();
+        modelMapper.addMappings(new PropertyMap<UserDTO, User>() {
+            @Override
+            protected void configure() {
+                skip(destination.getBirthDate());
+            }
+        });
+
         User entity = modelMapper.map(dto, User.class);
         try {
             entity.setBirthDate(dto.getBirthDate(Constants.timezone));

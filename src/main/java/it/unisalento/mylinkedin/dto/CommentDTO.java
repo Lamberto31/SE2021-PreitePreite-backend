@@ -17,6 +17,14 @@ public class CommentDTO{
     String text;
     String pubblicationDate;
 
+    public String getPubblicationDate() {
+        return pubblicationDate;
+    }
+
+    public void setPubblicationDate(String pubblicationDate) {
+        this.pubblicationDate = pubblicationDate;
+    }
+
     public Date getPubblicationDate(String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
         try {

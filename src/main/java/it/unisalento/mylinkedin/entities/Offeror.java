@@ -2,8 +2,10 @@ package it.unisalento.mylinkedin.entities;
 
 import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dto.OfferorDTO;
+import it.unisalento.mylinkedin.dto.PostDTO;
 import it.unisalento.mylinkedin.dto.UserDTO;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -59,6 +61,14 @@ public class Offeror extends User{
 
     public Offeror convertToEntity(OfferorDTO dto) throws ParseException {
         ModelMapper modelMapper =  new ModelMapper();
+        modelMapper.addMappings(new PropertyMap<OfferorDTO, Offeror>() {
+            @Override
+            protected void configure() {
+                skip(destination.getBirthDate());
+                skip(destination.getRegistrationDate());
+            }
+        });
+
         Offeror entity = modelMapper.map(dto, Offeror.class);
         try {
             entity.setBirthDate(dto.getBirthDate(Constants.timezone));

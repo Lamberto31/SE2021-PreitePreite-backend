@@ -1,7 +1,6 @@
 package it.unisalento.mylinkedin.entities;
 
 import it.unisalento.mylinkedin.configurations.Constants;
-import it.unisalento.mylinkedin.dto.PostDTO;
 import it.unisalento.mylinkedin.dto.UserDTO;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;

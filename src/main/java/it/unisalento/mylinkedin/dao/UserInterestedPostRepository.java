@@ -1,6 +1,7 @@
 package it.unisalento.mylinkedin.dao;
 
-import it.unisalento.mylinkedin.entities.*;
+import it.unisalento.mylinkedin.entities.User;
+import it.unisalento.mylinkedin.entities.UserInterestedPost;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

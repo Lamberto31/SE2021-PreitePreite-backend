@@ -5,7 +5,6 @@ import it.unisalento.mylinkedin.entities.Post;
 import org.modelmapper.ModelMapper;
 
 import javax.validation.constraints.NotBlank;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.TimeZone;
 

@@ -2,11 +2,9 @@ package it.unisalento.mylinkedin.dto;
 
 import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.entities.ProfileImage;
-import it.unisalento.mylinkedin.entities.User;
 import org.modelmapper.ModelMapper;
 
 import javax.validation.constraints.NotBlank;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.TimeZone;
 

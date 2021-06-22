@@ -14,6 +14,8 @@ public class OfferorDTO extends UserDTO{
     @CheckValueInListConstraint(feasibleList = {Constants.REGISTRATION_PENDING, Constants.REGISTRATION_ACCEPTED, Constants.REGISTRATION_BLOCKED})
     String status;
 
+    CompanyDTO company;
+
     public String getRegistrationDate() {
         return registrationDate;
     }
@@ -46,6 +48,14 @@ public class OfferorDTO extends UserDTO{
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public CompanyDTO getCompany() {
+        return company;
+    }
+
+    public void setCompany(CompanyDTO company) {
+        this.company = company;
     }
 
     public OfferorDTO convertToDto(Offeror entity) {

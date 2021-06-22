@@ -16,6 +16,9 @@ public class MessageDTO {
     String imagePath;
     String pubblicationDate;
 
+    UserDTO sender;
+    UserDTO receiver;
+
     public String getPubblicationDate() {
         return pubblicationDate;
     }
@@ -64,6 +67,22 @@ public class MessageDTO {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public UserDTO getSender() {
+        return sender;
+    }
+
+    public void setSender(UserDTO sender) {
+        this.sender = sender;
+    }
+
+    public UserDTO getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(UserDTO receiver) {
+        this.receiver = receiver;
     }
 
     public MessageDTO convertToDto(Message entity) {

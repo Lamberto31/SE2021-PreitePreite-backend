@@ -15,6 +15,10 @@ public class CommentDTO{
     String text;
     String pubblicationDate;
 
+    CommentDTO answeredComment;
+    PostDTO post;
+    UserDTO user;
+
     public String getPubblicationDate() {
         return pubblicationDate;
     }
@@ -55,6 +59,30 @@ public class CommentDTO{
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public CommentDTO getAnsweredComment() {
+        return answeredComment;
+    }
+
+    public void setAnsweredComment(CommentDTO answeredComment) {
+        this.answeredComment = answeredComment;
+    }
+
+    public PostDTO getPost() {
+        return post;
+    }
+
+    public void setPost(PostDTO post) {
+        this.post = post;
+    }
+
+    public UserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserDTO user) {
+        this.user = user;
     }
 
     public CommentDTO convertToDto(Comment entity) {

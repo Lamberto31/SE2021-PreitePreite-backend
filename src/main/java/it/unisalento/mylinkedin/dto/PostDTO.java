@@ -18,6 +18,9 @@ public class PostDTO {
     @NotBlank
     String data; //JSON
 
+    StructureDTO structure;
+    UserDTO user;
+
     public String getPubblicationDate() {
         return pubblicationDate;
     }
@@ -82,6 +85,22 @@ public class PostDTO {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public StructureDTO getStructure() {
+        return structure;
+    }
+
+    public void setStructure(StructureDTO structure) {
+        this.structure = structure;
+    }
+
+    public UserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserDTO user) {
+        this.user = user;
     }
 
     public PostDTO convertToDto(Post entity) {

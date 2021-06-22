@@ -61,6 +61,17 @@ public class UserRestController {
         return profileImageDTO;
     }
 
+    @GetMapping(value = Constants.URI_PROFILEIMAGE+Constants.URI_GETBYUSER, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ProfileImageDTO> getProfileImageByUser(@PathVariable int userId) throws UserNotFoundException {
+        User user =  userService.getById(userId);
+        List<ProfileImage> profileImageList = user.getProfileImage();
+        List<ProfileImageDTO> profileImageDTOList = new ArrayList<>();
+        for(ProfileImage profileImage: profileImageList) {
+            profileImageDTOList.add(new ProfileImageDTO().convertToDto(profileImage));
+        }
+        return profileImageDTOList;
+    }
+
     @GetMapping(value = Constants.URI_COMPANY+Constants.URI_GETBYID, produces = MediaType.APPLICATION_JSON_VALUE)
     public CompanyDTO getCompanyById(@PathVariable int id) throws CompanyNotFoundException {
 

@@ -21,6 +21,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.when;
@@ -47,7 +49,9 @@ public class UserRestControllerTest {
     private User user;
     private UserDTO userDTO;
     private ProfileImage profileImage;
+    private List<ProfileImage> profileImageList;
     private ProfileImageDTO profileImageDTO;
+    private User backendUser;
     private Company company;
     private CompanyDTO companyDTO;
     private Offeror offeror;
@@ -85,6 +89,15 @@ public class UserRestControllerTest {
         this.profileImageDTO = new ProfileImageDTO().convertToDto(profileImage);
 
         when(userServiceMock.saveProfileImage(refEq(profileImage))).thenReturn(profileImage);
+
+        this.profileImageList = new ArrayList<>();
+        this.profileImageList.add(profileImage);
+
+        this.backendUser = new User();
+        this.backendUser.setId(2);
+        this.backendUser.setProfileImage(profileImageList);
+
+        when(userServiceMock.getById(backendUser.getId())).thenReturn(backendUser);
 
         this.company = new Company();
         this.company.setId(1);
@@ -151,6 +164,13 @@ public class UserRestControllerTest {
         mockMvc.perform(post(Constants.URI_USER+Constants.URI_PROFILEIMAGE+Constants.URI_SAVE)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objMapper.writeValueAsString(profileImageDTO)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getProfileImageByUserTest() throws Exception {
+        mockMvc.perform(get(Constants.URI_USER+Constants.URI_PROFILEIMAGE+Constants.URI_GETBYUSER, backendUser.getId())
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 

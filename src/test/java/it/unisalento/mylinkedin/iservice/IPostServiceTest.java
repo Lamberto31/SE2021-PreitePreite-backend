@@ -295,6 +295,7 @@ public class IPostServiceTest {
         assertThat(exp).isNotNull();
     }
 
+    @Test
     void getAllOrderByPubblicationDateDescTest() {
         assertThat(postService.getAllOrderByPubblicationDateDesc()).isNotNull();
     }

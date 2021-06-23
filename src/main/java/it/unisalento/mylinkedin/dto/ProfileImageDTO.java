@@ -16,6 +16,9 @@ public class ProfileImageDTO {
     @NotBlank
     String imagePath;
 
+    UserDTO user;
+    CompanyDTO company;
+
     public String getPubblicationDate() {
         return pubblicationDate;
     }
@@ -64,6 +67,22 @@ public class ProfileImageDTO {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public UserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserDTO user) {
+        this.user = user;
+    }
+
+    public CompanyDTO getCompany() {
+        return company;
+    }
+
+    public void setCompany(CompanyDTO company) {
+        this.company = company;
     }
 
     public ProfileImageDTO convertToDto(ProfileImage entity) {

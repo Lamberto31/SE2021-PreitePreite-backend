@@ -80,6 +80,7 @@ public interface Constants {
     String URI_USER = "/user";
 
     String URI_PROFILEIMAGE = "/profileImage";
+    String URI_GETBYUSER = "/getByUser/{userId}";
 
     String URI_COMPANY = "/company";
     String URI_GETBYOFFERORID = "/getCompanyByOfferorId/{offerorId}";

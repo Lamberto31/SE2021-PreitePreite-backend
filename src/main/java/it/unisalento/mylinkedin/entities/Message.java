@@ -13,12 +13,13 @@ import java.util.Date;
 public class Message {
     public Message() {}
 
-    public Message(int id, String text, Date pubblicationDate, User sender, User receiver) {
+    public Message(int id, String text, Date pubblicationDate, boolean isRead, User sender, User receiver) {
         this.id = id;
         this.text = text;
         this.pubblicationDate = pubblicationDate;
         this.sender = sender;
         this.receiver = receiver;
+        this.isRead = isRead;
     }
 
     @Id
@@ -28,6 +29,7 @@ public class Message {
     String text;
     String imagePath;
     Date pubblicationDate;
+    boolean isRead;
 
     @ManyToOne(optional = false)
     User sender;
@@ -64,6 +66,14 @@ public class Message {
 
     public void setPubblicationDate(Date pubblicationDate) {
         this.pubblicationDate = pubblicationDate;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
     }
 
     public User getSender() {

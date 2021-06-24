@@ -22,6 +22,7 @@ public class MessageModelmapperUnitTest {
         message.setText("testName");
         message.setImagePath("testImagePath");
         message.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
+        message.setRead(false);
 
         User sender = new User();
         sender.setId(1);
@@ -37,6 +38,7 @@ public class MessageModelmapperUnitTest {
         assertEquals(message.getText(), messageDTO.getText());
         assertEquals(message.getImagePath(), messageDTO.getImagePath());
         assertEquals(message.getPubblicationDate(), messageDTO.getPubblicationDate(Constants.timezone));
+        assertEquals(message.isRead(), messageDTO.isRead());
         assertEquals(message.getSender().getId(), messageDTO.getSender().getId());
         assertEquals(message.getReceiver().getId(), messageDTO.getReceiver().getId());
     }
@@ -50,6 +52,7 @@ public class MessageModelmapperUnitTest {
         messageDTO.setImagePath("testImagePath");
         Date date = Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00");
         messageDTO.setPubblicationDate(date, Constants.timezone);
+        messageDTO.setRead(false);
 
         UserDTO sender = new UserDTO();
         sender.setId(1);
@@ -65,6 +68,7 @@ public class MessageModelmapperUnitTest {
         assertEquals(message.getText(), messageDTO.getText());
         assertEquals(message.getImagePath(), messageDTO.getImagePath());
         assertEquals(message.getPubblicationDate(), messageDTO.getPubblicationDate(Constants.timezone));
+        assertEquals(message.isRead(), messageDTO.isRead());
         assertEquals(message.getSender().getId(), messageDTO.getSender().getId());
         assertEquals(message.getReceiver().getId(), messageDTO.getReceiver().getId());
     }

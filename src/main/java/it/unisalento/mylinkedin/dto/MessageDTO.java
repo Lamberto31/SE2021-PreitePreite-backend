@@ -15,6 +15,7 @@ public class MessageDTO {
     String text;
     String imagePath;
     String pubblicationDate;
+    boolean isRead;
 
     UserDTO sender;
     UserDTO receiver;
@@ -67,6 +68,14 @@ public class MessageDTO {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
     }
 
     public UserDTO getSender() {

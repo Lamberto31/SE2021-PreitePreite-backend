@@ -55,6 +55,10 @@ public interface IUserService {
 
     List<Message> getMessageBySenderAndReceiver(User sender, User receiver) throws MessageNotFoundException;
 
+    List<Message> getMessageBySender(User sender) throws MessageNotFoundException;
+
+    List<Message> getMessageByReceiver(User receiver) throws MessageNotFoundException;
+
 
     //COMPANY
     List<Company> getAllCompany();

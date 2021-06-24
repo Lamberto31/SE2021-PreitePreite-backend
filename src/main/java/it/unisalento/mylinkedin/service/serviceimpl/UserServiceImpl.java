@@ -234,6 +234,32 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public List<Message> getMessageBySender(User sender) throws MessageNotFoundException {
+        try {
+            List<Message> messageFoundList = messageRepository.findBySender(sender);
+            if (messageFoundList.isEmpty()) {
+                throw new MessageNotFoundException();
+            }
+            return messageFoundList;
+        } catch (Exception e) {
+            throw new MessageNotFoundException();
+        }
+    }
+
+    @Override
+    public List<Message> getMessageByReceiver(User receiver) throws MessageNotFoundException {
+        try {
+            List<Message> messageFoundList = messageRepository.findByReceiver(receiver);
+            if (messageFoundList.isEmpty()) {
+                throw new MessageNotFoundException();
+            }
+            return messageFoundList;
+        } catch (Exception e) {
+            throw new MessageNotFoundException();
+        }
+    }
+
+    @Override
     @Transactional
     public List<Company> getAllCompany() {
         return companyRepository.findAll();

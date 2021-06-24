@@ -68,6 +68,8 @@ public interface Constants {
 
     String URI_MESSAGE = "/message";
     String URI_GETBYSENDERANDRECEIVER = "/getBySenderAndReceiver/{senderId}/{receiverId}";
+    String URI_GETBYSENDER = "/getBySender/{senderId}";
+    String URI_GETBYRECEIVER = "/getByReceiver/{receiverId}";
 
     String URI_GETCANPUBLISH = "/getCanPublish";
 

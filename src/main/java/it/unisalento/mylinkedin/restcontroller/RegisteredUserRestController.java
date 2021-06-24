@@ -51,6 +51,30 @@ public class RegisteredUserRestController {
         return messageDTOList;
     }
 
+    @GetMapping(value= Constants.URI_MESSAGE+Constants.URI_GETBYSENDER, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<MessageDTO> getMessageBySender(@PathVariable("senderId") int senderId) throws MessageNotFoundException, UserNotFoundException {
+        User sender = userService.getById(senderId);
+
+        List<Message> messageList = userService.getMessageBySender(sender);
+        List<MessageDTO> messageDTOList = new ArrayList<>();
+        for(Message message: messageList) {
+            messageDTOList.add(new MessageDTO().convertToDto(message));
+        }
+        return messageDTOList;
+    }
+
+    @GetMapping(value= Constants.URI_MESSAGE+Constants.URI_GETBYRECEIVER, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<MessageDTO> getMessageByReceiver(@PathVariable("receiverId") int receiverId) throws MessageNotFoundException, UserNotFoundException {
+        User receiver = userService.getById(receiverId);
+
+        List<Message> messageList = userService.getMessageByReceiver(receiver);
+        List<MessageDTO> messageDTOList = new ArrayList<>();
+        for(Message message: messageList) {
+            messageDTOList.add(new MessageDTO().convertToDto(message));
+        }
+        return messageDTOList;
+    }
+
     @GetMapping(value = Constants.URI_POST+Constants.URI_GETALL, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PostDTO> getAllPost() {
         List<Post> postList = postService.getAll();

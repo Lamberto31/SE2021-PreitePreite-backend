@@ -5,6 +5,7 @@ import it.unisalento.mylinkedin.dao.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.post.*;
+import it.unisalento.mylinkedin.exception.user.MessageNotFoundException;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +95,7 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
+    @Transactional(rollbackOn = UserNotFoundException.class)
     public User getUser(Post post) throws UserNotFoundException {
         try {
             User userFound = postRepository.findUserById(post.getId());
@@ -107,6 +109,7 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
+    @Transactional
     public List<Post> getAllOrderByPubblicationDateDesc() {
         return postRepository.findAllByOrderByPubblicationDateDesc();
     }

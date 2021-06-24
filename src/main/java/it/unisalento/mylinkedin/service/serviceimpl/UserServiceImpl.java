@@ -81,6 +81,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional(rollbackOn = UserNotFoundException.class)
     public Applicant getApplicantById(int id) throws UserNotFoundException {
         return applicantRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
@@ -100,6 +101,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional(rollbackOn = UserNotFoundException.class)
     public Offeror getOfferorById(int id) throws UserNotFoundException {
         return offerorRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
@@ -221,6 +223,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional(rollbackOn = MessageNotFoundException.class)
     public List<Message> getMessageBySenderAndReceiver(User sender, User receiver) throws MessageNotFoundException {
         try {
             List<Message> messageFoundList = messageRepository.findBySenderAndReceiver(sender, receiver);
@@ -234,6 +237,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional(rollbackOn = MessageNotFoundException.class)
     public List<Message> getMessageBySender(User sender) throws MessageNotFoundException {
         try {
             List<Message> messageFoundList = messageRepository.findBySender(sender);
@@ -247,6 +251,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional(rollbackOn = MessageNotFoundException.class)
     public List<Message> getMessageByReceiver(User receiver) throws MessageNotFoundException {
         try {
             List<Message> messageFoundList = messageRepository.findByReceiver(receiver);

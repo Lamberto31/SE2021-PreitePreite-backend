@@ -69,6 +69,7 @@ public class IUserServiceTest {
     private Message message;
     private Message wrongMessage;
     private List<Message> messageList;
+    private boolean isRead;
 
     private Company company;
     private Company wrongCompany;
@@ -183,6 +184,10 @@ public class IUserServiceTest {
         when(messageRepository.findByReceiver(user)).thenReturn(messageList);
 
         when(messageRepository.findBySenderOrReceiverOrderByPubblicationDateDesc(user, user)).thenReturn(messageList);
+
+        this.isRead = false;
+
+        when(messageRepository.findByReceiverAndIsRead(user, isRead)).thenReturn(messageList);
 
         //Company
 
@@ -468,6 +473,18 @@ public class IUserServiceTest {
     @Test
     void getMessageSentOrReceivedByUserThrowsExTest() {
         Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.getMessageSentOrReceivedByUser(wrongUser));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getMessageByReceiverAndNotReadTest() throws MessageNotFoundException {
+        List<Message> messageFoundList = userService.getMessageByReceiverAndNotRead(user);
+        assertThat(messageList.equals(messageFoundList));
+    }
+
+    @Test
+    void getMessageByReceiverAndNotReadTestThrowsExTest() {
+        Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.getMessageByReceiverAndNotRead(wrongUser));
         assertThat(exp).isNotNull();
     }
 

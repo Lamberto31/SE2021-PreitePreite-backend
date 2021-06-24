@@ -71,6 +71,7 @@ public interface Constants {
     String URI_GETBYSENDER = "/getBySender/{senderId}";
     String URI_GETBYRECEIVER = "/getByReceiver/{receiverId}";
     String URI_GETBYUSERSENTORRECEIVED = "/getByUserSentOrReceived/{userId}";
+    String URI_GETBYRECEIVERANDNOTREAD = "/getByReceiverAndNotRead/{receiverId}";
 
     String URI_GETCANPUBLISH = "/getCanPublish";
 

@@ -265,6 +265,20 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional(rollbackOn = MessageNotFoundException.class)
+    public List<Message> getMessageSentOrReceivedByUser(User user) throws MessageNotFoundException {
+        try {
+            List<Message> messageFoundList = messageRepository.findBySenderOrReceiverOrderByPubblicationDateDesc(user, user);
+            if (messageFoundList.isEmpty()) {
+                throw new MessageNotFoundException();
+            }
+            return messageFoundList;
+        } catch (Exception e) {
+            throw new MessageNotFoundException();
+        }
+    }
+
+    @Override
     @Transactional
     public List<Company> getAllCompany() {
         return companyRepository.findAll();

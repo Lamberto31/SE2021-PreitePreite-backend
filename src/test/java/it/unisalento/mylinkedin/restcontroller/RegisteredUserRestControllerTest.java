@@ -143,6 +143,13 @@ public class RegisteredUserRestControllerTest {
     }
 
     @Test
+    void getMessageSentOrReceivedByUserTest() throws Exception {
+        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_MESSAGE+Constants.URI_GETBYUSERSENTORRECEIVED, user.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void getAllPostTest() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_POST+Constants.URI_GETALL)
                 .contentType(MediaType.APPLICATION_JSON))

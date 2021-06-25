@@ -66,6 +66,8 @@ public interface IUserService {
 
     void updateMessageIsRead(boolean isRead, int id) throws MessageNotFoundException;
 
+    List<Message> getMessageBySenderAndReceiverAndNotRead(User sender, User receiver) throws MessageNotFoundException;
+
 
     //COMPANY
     List<Company> getAllCompany();

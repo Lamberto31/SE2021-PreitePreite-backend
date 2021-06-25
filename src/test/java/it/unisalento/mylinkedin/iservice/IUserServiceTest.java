@@ -228,6 +228,8 @@ public class IUserServiceTest {
 
         when(messageRepository.findBySenderAndReceiver(user2, user)).thenReturn(messageList2);
 
+        when(messageRepository.findBySenderAndReceiverAndIsRead(user, user, isRead)).thenReturn(messageList);
+
         //Company
 
         this.company = new Company();
@@ -535,6 +537,18 @@ public class IUserServiceTest {
     @Test
     void updateMessageIsReadThrowsExTest() {
         Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.updateMessageIsRead(message.isRead(), wrongMessage.getId()));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getMessageBySenderAndReceiverAndNotReadTest() throws MessageNotFoundException {
+        List<Message> messageFoundList = userService.getMessageBySenderAndReceiverAndNotRead(user, user);
+        assertThat(messageList.equals(messageFoundList)).isTrue();
+    }
+
+    @Test
+    void getMessageBySenderAndReceiverAndNotReadThrowsExTest() {
+        Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.getMessageBySenderAndReceiverAndNotRead(wrongUser, wrongUser));
         assertThat(exp).isNotNull();
     }
 

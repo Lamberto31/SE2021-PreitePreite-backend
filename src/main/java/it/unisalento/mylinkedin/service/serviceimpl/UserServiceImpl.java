@@ -312,6 +312,20 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional(rollbackOn = MessageNotFoundException.class)
+    public List<Message> getMessageBySenderAndReceiverAndNotRead(User sender, User receiver) throws MessageNotFoundException {
+        try {
+            List<Message> messageFoundList = messageRepository.findBySenderAndReceiverAndIsRead(sender, receiver, false);
+            if (messageFoundList.isEmpty()) {
+                throw new MessageNotFoundException();
+            }
+            return messageFoundList;
+        } catch (Exception e) {
+            throw new MessageNotFoundException();
+        }
+    }
+
+    @Override
     @Transactional
     public List<Company> getAllCompany() {
         return companyRepository.findAll();

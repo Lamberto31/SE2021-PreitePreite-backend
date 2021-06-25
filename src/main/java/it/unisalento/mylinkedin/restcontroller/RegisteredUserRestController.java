@@ -107,6 +107,19 @@ public class RegisteredUserRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping(value= Constants.URI_MESSAGE+Constants.URI_GETBYSENDERANDRECEIVERANDNOTREAD, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<MessageDTO> getMessageBySenderAndReceiverAndNotRead(@PathVariable("senderId") int senderId, @PathVariable("receiverId") int receiverId) throws MessageNotFoundException, UserNotFoundException {
+        User sender = userService.getById(senderId);
+        User receiver = userService.getById(receiverId);
+
+        List<Message> messageList = userService.getMessageBySenderAndReceiverAndNotRead(sender, receiver);
+        List<MessageDTO> messageDTOList = new ArrayList<>();
+        for(Message message: messageList) {
+            messageDTOList.add(new MessageDTO().convertToDto(message));
+        }
+        return messageDTOList;
+    }
+
     @GetMapping(value = Constants.URI_POST+Constants.URI_GETALL, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PostDTO> getAllPost() {
         List<Post> postList = postService.getAll();

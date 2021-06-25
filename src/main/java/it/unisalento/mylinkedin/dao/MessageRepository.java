@@ -18,6 +18,7 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
     List<Message> findByReceiver(User receiver);
     List<Message> findBySenderOrReceiverOrderByPubblicationDateDesc(User sender, User receiver);
     List<Message> findByReceiverAndIsRead(User receiver, boolean isRead);
+    List<Message> findBySenderAndReceiverAndIsRead(User sender, User receiver, boolean isRead);
 
     @Modifying
     @Query("update Message m set m.isRead = :isRead where m.id = :id")

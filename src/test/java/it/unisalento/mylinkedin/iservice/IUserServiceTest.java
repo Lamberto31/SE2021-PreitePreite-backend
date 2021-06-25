@@ -70,6 +70,11 @@ public class IUserServiceTest {
     private Message wrongMessage;
     private List<Message> messageList;
     private boolean isRead;
+    private User user2;
+    private Message message2;
+    private Message message3;
+    private List<Message> messageList2;
+    private List<Message> orderedMessageList;
 
     private Company company;
     private Company wrongCompany;
@@ -157,10 +162,20 @@ public class IUserServiceTest {
 
         //Message
 
+        this.user2 = new User();
+        this.user2.setName("testName2");
+        this.user2.setSurname("testSurname2");
+        this.user2.setEmail("emailtest2@test.com");
+        this.user2.setPassword("testPassword2");
+        this.user2.setBirthDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
+        this.user2.setDescription("testDescription2");
+
         this.message = new Message();
         this.message.setText("testName");
         this.message.setImagePath("testImagePath");
-        this.message.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
+        this.message.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 01:00"));
+        this.message.setSender(user);
+        this.message.setReceiver(user2);
 
         when(messageRepository.save(refEq(message))).thenReturn(message);
 
@@ -175,10 +190,6 @@ public class IUserServiceTest {
         this.messageList = new ArrayList<>();
         messageList.add(message);
 
-        when(messageRepository.findBySenderAndReceiver(user, user)).thenReturn(messageList);
-
-        //when(messageRepository.findBySenderAndReceiver(wrongUser, wrongUser)).thenThrow(MessageNotFoundException.class);
-
         when(messageRepository.findBySender(user)).thenReturn(messageList);
 
         when(messageRepository.findByReceiver(user)).thenReturn(messageList);
@@ -188,6 +199,33 @@ public class IUserServiceTest {
         this.isRead = false;
 
         when(messageRepository.findByReceiverAndIsRead(user, isRead)).thenReturn(messageList);
+
+        this.message2 = new Message();
+        this.message2.setText("testName");
+        this.message2.setImagePath("testImagePath");
+        this.message2.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
+        this.message2.setSender(user2);
+        this.message2.setReceiver(user);
+
+        this.message3 = new Message();
+        this.message3.setText("testName");
+        this.message3.setImagePath("testImagePath");
+        this.message3.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 02:00"));
+        this.message3.setSender(user2);
+        this.message3.setReceiver(user);
+
+        this.messageList2 = new ArrayList<>();
+        messageList2.add(message2);
+        messageList2.add(message3);
+
+        this.orderedMessageList = new ArrayList<>();
+        orderedMessageList.add(message2);
+        orderedMessageList.add(message);
+        orderedMessageList.add(message3);
+
+        when(messageRepository.findBySenderAndReceiver(user, user2)).thenReturn(messageList);
+
+        when(messageRepository.findBySenderAndReceiver(user2, user)).thenReturn(messageList2);
 
         //Company
 
@@ -217,7 +255,7 @@ public class IUserServiceTest {
     @Test
     void saveTest() throws UserSavingException {
         User userSaved = userService.save(user);
-        assertThat(user.equals(userSaved));
+        assertThat(user.equals(userSaved)).isTrue();
     }
 
     @Test
@@ -229,7 +267,7 @@ public class IUserServiceTest {
     @Test
     void getByIdTest() throws UserNotFoundException {
         User userFound = userService.getById(correctId);
-        assertThat(user.equals(userFound));
+        assertThat(user.equals(userFound)).isTrue();
     }
 
     @Test
@@ -241,7 +279,7 @@ public class IUserServiceTest {
     @Test
     void deleteTest() throws UserNotFoundException {
         User userDeleted = userService.delete(user);
-        assertThat(user.equals(userDeleted));
+        assertThat(user.equals(userDeleted)).isTrue();
     }
 
     @Test
@@ -253,7 +291,7 @@ public class IUserServiceTest {
     @Test
     void getByEmailTest() throws UserNotFoundException {
         User userFound = userService.getByEmail(user.getEmail());
-        assertThat(user.equals(userFound));
+        assertThat(user.equals(userFound)).isTrue();
     }
 
     @Test
@@ -265,7 +303,7 @@ public class IUserServiceTest {
     @Test
     void getApplicantByIdTest() throws UserNotFoundException {
         Applicant applicantFound = userService.getApplicantById(correctId);
-        assertThat(applicant.equals(applicantFound));
+        assertThat(applicant.equals(applicantFound)).isTrue();
     }
 
     @Test
@@ -277,7 +315,7 @@ public class IUserServiceTest {
     @Test
     void getApplicantByStatusTest() throws UserNotFoundException {
         List<Applicant> applicantFoundList = userService.getApplicantByStatus(applicant.getStatus());
-        assertThat(applicantList.equals(applicantFoundList));
+        assertThat(applicantList.equals(applicantFoundList)).isTrue();
     }
 
     @Test
@@ -289,7 +327,7 @@ public class IUserServiceTest {
     @Test
     void getOfferorByIdTest() throws UserNotFoundException {
         Offeror offerorFound = userService.getOfferorById(correctId);
-        assertThat(offeror.equals(offerorFound));
+        assertThat(offeror.equals(offerorFound)).isTrue();
     }
 
     @Test
@@ -301,7 +339,7 @@ public class IUserServiceTest {
     @Test
     void getOfferorByStatusTest() throws UserNotFoundException {
         List<Offeror> offerorFoundList = userService.getOfferorByStatus(offeror.getStatus());
-        assertThat(offerorList.equals(offerorFoundList));
+        assertThat(offerorList.equals(offerorFoundList)).isTrue();
     }
 
     @Test
@@ -353,7 +391,7 @@ public class IUserServiceTest {
     @Test
     void saveProfileImageTest() throws ProfileImageSavingException {
         ProfileImage profileImageSaved = userService.saveProfileImage(profileImage);
-        assertThat(profileImage.equals(profileImageSaved));
+        assertThat(profileImage.equals(profileImageSaved)).isTrue();
     }
 
     @Test
@@ -365,7 +403,7 @@ public class IUserServiceTest {
     @Test
     void getProfileImageByIdTest() throws ProfileImageNotFoundException {
         ProfileImage profileImageFound = userService.getProfileImageById(correctId);
-        assertThat(profileImage.equals(profileImageFound));
+        assertThat(profileImage.equals(profileImageFound)).isTrue();
     }
 
     @Test
@@ -377,7 +415,7 @@ public class IUserServiceTest {
     @Test
     void deleteProfileImageTest() throws ProfileImageNotFoundException {
         ProfileImage profileImageDeleted = userService.deleteProfileImage(profileImage);
-        assertThat(profileImage.equals(profileImageDeleted));
+        assertThat(profileImage.equals(profileImageDeleted)).isTrue();
     }
 
     @Test
@@ -395,7 +433,7 @@ public class IUserServiceTest {
     @Test
     void saveMessageTest() throws MessageSavingException {
         Message messageSaved = userService.saveMessage(message);
-        assertThat(message.equals(messageSaved));
+        assertThat(message.equals(messageSaved)).isTrue();
     }
 
     @Test
@@ -407,7 +445,7 @@ public class IUserServiceTest {
     @Test
     void getMessageByIdTest() throws MessageNotFoundException {
         Message messageFound = userService.getMessageById(correctId);
-        assertThat(message.equals(messageFound));
+        assertThat(message.equals(messageFound)).isTrue();
     }
 
     @Test
@@ -419,7 +457,7 @@ public class IUserServiceTest {
     @Test
     void deleteMessageTest() throws MessageNotFoundException {
         Message messageDeleted = userService.deleteMessage(message);
-        assertThat(message.equals(messageDeleted));
+        assertThat(message.equals(messageDeleted)).isTrue();
     }
 
     @Test
@@ -430,8 +468,8 @@ public class IUserServiceTest {
 
     @Test
     void getMessageBySenderAndReceiverTest() throws MessageNotFoundException {
-        List<Message> messageFoundList = userService.getMessageBetweenTwoUser(user, user);
-        assertThat(messageList.equals(messageFoundList));
+        List<Message> messageFoundList = userService.getMessageBetweenTwoUser(user, user2);
+        assertThat(orderedMessageList.equals(messageFoundList)).isTrue();
     }
 
     @Test
@@ -443,7 +481,7 @@ public class IUserServiceTest {
     @Test
     void getMessageBySenderTest() throws MessageNotFoundException {
         List<Message> messageFoundList = userService.getMessageBySender(user);
-        assertThat(messageList.equals(messageFoundList));
+        assertThat(messageList.equals(messageFoundList)).isTrue();
     }
 
     @Test
@@ -455,7 +493,7 @@ public class IUserServiceTest {
     @Test
     void getMessageByReceiverTest() throws MessageNotFoundException {
         List<Message> messageFoundList = userService.getMessageByReceiver(user);
-        assertThat(messageList.equals(messageFoundList));
+        assertThat(messageList.equals(messageFoundList)).isTrue();
     }
 
     @Test
@@ -467,7 +505,7 @@ public class IUserServiceTest {
     @Test
     void getMessageSentOrReceivedByUserTest() throws MessageNotFoundException {
         List<Message> messageFoundList = userService.getMessageSentOrReceivedByUser(user);
-        assertThat(messageList.equals(messageFoundList));
+        assertThat(messageList.equals(messageFoundList)).isTrue();
     }
 
     @Test
@@ -479,7 +517,7 @@ public class IUserServiceTest {
     @Test
     void getMessageByReceiverAndNotReadTest() throws MessageNotFoundException {
         List<Message> messageFoundList = userService.getMessageByReceiverAndNotRead(user);
-        assertThat(messageList.equals(messageFoundList));
+        assertThat(messageList.equals(messageFoundList)).isTrue();
     }
 
     @Test
@@ -497,7 +535,7 @@ public class IUserServiceTest {
     @Test
     void saveCompanyTest() throws CompanySavingException {
         Company companySaved = userService.saveCompany(company);
-        assertThat(company.equals(companySaved));
+        assertThat(company.equals(companySaved)).isTrue();
     }
 
     @Test
@@ -509,7 +547,7 @@ public class IUserServiceTest {
     @Test
     void getCompanyByIdTest() throws CompanyNotFoundException {
         Company companyFound = userService.getCompanyById(correctId);
-        assertThat(company.equals(companyFound));
+        assertThat(company.equals(companyFound)).isTrue();
     }
 
     @Test
@@ -521,7 +559,7 @@ public class IUserServiceTest {
     @Test
     void deleteCompanyTest() throws CompanyNotFoundException {
         Company companyDeleted = userService.deleteCompany(company);
-        assertThat(company.equals(companyDeleted));
+        assertThat(company.equals(companyDeleted)).isTrue();
     }
 
     @Test

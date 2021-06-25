@@ -38,12 +38,12 @@ public class RegisteredUserRestController {
         return messageDTO;
     }
 
-    @GetMapping(value= Constants.URI_MESSAGE+Constants.URI_GETBYSENDERANDRECEIVER, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<MessageDTO> getMessageBySenderAndReceiver(@PathVariable("senderId") int senderId, @PathVariable("receiverId") int receiverId) throws MessageNotFoundException, UserNotFoundException {
-        User sender = userService.getById(senderId);
-        User receiver = userService.getById(receiverId);
+    @GetMapping(value= Constants.URI_MESSAGE+Constants.URI_GETBYTWOUSER, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<MessageDTO> getMessageBetweenTwoUser(@PathVariable("user1Id") int user1Id, @PathVariable("user2Id") int user2Id) throws MessageNotFoundException, UserNotFoundException {
+        User user1 = userService.getById(user1Id);
+        User user2 = userService.getById(user2Id);
 
-        List<Message> messageList = userService.getMessageBySenderAndReceiver(sender, receiver);
+        List<Message> messageList = userService.getMessageBetweenTwoUser(user1, user2);
         List<MessageDTO> messageDTOList = new ArrayList<>();
         for(Message message: messageList) {
             messageDTOList.add(new MessageDTO().convertToDto(message));

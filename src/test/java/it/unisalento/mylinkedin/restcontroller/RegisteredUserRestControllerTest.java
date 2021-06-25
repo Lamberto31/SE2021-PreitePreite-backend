@@ -24,7 +24,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.text.ParseException;
-import java.util.Date;
 
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.when;
@@ -123,7 +122,7 @@ public class RegisteredUserRestControllerTest {
 
     @Test
     void getMessageBySenderAndReceiverTest() throws Exception {
-        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_MESSAGE+Constants.URI_GETBYSENDERANDRECEIVER, user.getId(), user.getId())
+        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_MESSAGE+Constants.URI_GETBYTWOUSER, user.getId(), user.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

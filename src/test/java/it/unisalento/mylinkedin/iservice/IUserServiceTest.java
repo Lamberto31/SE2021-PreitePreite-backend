@@ -4,6 +4,7 @@ import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dao.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
+import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.user.*;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -523,6 +524,17 @@ public class IUserServiceTest {
     @Test
     void getMessageByReceiverAndNotReadTestThrowsExTest() {
         Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.getMessageByReceiverAndNotRead(wrongUser));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void updateMessageIsReadTest() {
+        assertDoesNotThrow(() -> userService.updateMessageIsRead(message.isRead(), correctId));
+    }
+
+    @Test
+    void updateMessageIsReadThrowsExTest() {
+        Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.updateMessageIsRead(message.isRead(), wrongMessage.getId()));
         assertThat(exp).isNotNull();
     }
 

@@ -27,8 +27,7 @@ import java.text.ParseException;
 
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -64,6 +63,7 @@ public class RegisteredUserRestControllerTest {
         this.messageDTO.setId(1);
         this.messageDTO.setText("testText");
         this.messageDTO.setImagePath("testImagePath");
+        this.messageDTO.setRead(false);
         //Date date = Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00");
         //this.messageDTO.setPubblicationDate(date, Constants.timezone);
 
@@ -151,6 +151,13 @@ public class RegisteredUserRestControllerTest {
     @Test
     void getMessageByReceiverAndNotReadTest() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_MESSAGE+Constants.URI_GETBYRECEIVERANDNOTREAD, user.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void updateMessageIsReadTest() throws Exception {
+        mockMvc.perform(put(Constants.URI_REGISTEREDUSER +Constants.URI_MESSAGE + Constants.URI_UPDATEISREAD, message.getId(), message.isRead())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

@@ -11,7 +11,9 @@ import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -97,6 +99,12 @@ public class RegisteredUserRestController {
             messageDTOList.add(new MessageDTO().convertToDto(message));
         }
         return messageDTOList;
+    }
+
+    @PutMapping(value = Constants.URI_MESSAGE+Constants.URI_UPDATEISREAD, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<MessageDTO> updateMessageIsRead(@PathVariable("messageId") int messageId, @PathVariable("isRead") boolean isRead) throws MessageNotFoundException {
+        userService.updateMessageIsRead(isRead, messageId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = Constants.URI_POST+Constants.URI_GETALL, produces = MediaType.APPLICATION_JSON_VALUE)

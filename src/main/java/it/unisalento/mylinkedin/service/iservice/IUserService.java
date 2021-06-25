@@ -2,6 +2,7 @@ package it.unisalento.mylinkedin.service.iservice;
 
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
+import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.user.*;
 
 import java.util.List;
@@ -62,6 +63,8 @@ public interface IUserService {
     List<Message> getMessageSentOrReceivedByUser(User user) throws MessageNotFoundException;
 
     List<Message> getMessageByReceiverAndNotRead(User receiver) throws MessageNotFoundException;
+
+    void updateMessageIsRead(boolean isRead, int id) throws MessageNotFoundException;
 
 
     //COMPANY

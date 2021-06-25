@@ -4,6 +4,7 @@ import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dao.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
+import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.user.*;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -295,6 +296,17 @@ public class UserServiceImpl implements IUserService {
             }
             return messageFoundList;
         } catch (Exception e) {
+            throw new MessageNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = MessageNotFoundException.class)
+    public void updateMessageIsRead(boolean isRead, int id) throws MessageNotFoundException {
+        try {
+            messageRepository.findById(id).orElseThrow(MessageNotFoundException::new);
+            messageRepository.updateIsRead(isRead, id);
+        } catch (MessageNotFoundException e) {
             throw new MessageNotFoundException();
         }
     }

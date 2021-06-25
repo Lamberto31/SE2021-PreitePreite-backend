@@ -430,13 +430,13 @@ public class IUserServiceTest {
 
     @Test
     void getMessageBySenderAndReceiverTest() throws MessageNotFoundException {
-        List<Message> messageFoundList = userService.getMessageBySenderAndReceiver(user, user);
+        List<Message> messageFoundList = userService.getMessageBetweenTwoUser(user, user);
         assertThat(messageList.equals(messageFoundList));
     }
 
     @Test
     void getMessageBySenderAndReceiverThrowsExTest() {
-        Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.getMessageBySenderAndReceiver(wrongUser, wrongUser));
+        Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.getMessageBetweenTwoUser(wrongUser, wrongUser));
         assertThat(exp).isNotNull();
     }
 

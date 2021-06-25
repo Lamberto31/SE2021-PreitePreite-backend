@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -224,12 +227,16 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     @Transactional(rollbackOn = MessageNotFoundException.class)
-    public List<Message> getMessageBySenderAndReceiver(User sender, User receiver) throws MessageNotFoundException {
+    public List<Message> getMessageBetweenTwoUser(User user1, User user2) throws MessageNotFoundException {
         try {
-            List<Message> messageFoundList = messageRepository.findBySenderAndReceiver(sender, receiver);
-            if (messageFoundList.isEmpty()) {
+            List<Message> message1to2FoundList = messageRepository.findBySenderAndReceiver(user1, user2);
+            List<Message> message2to1FoundList = messageRepository.findBySenderAndReceiver(user2, user1);
+            if (message1to2FoundList.isEmpty() && message2to1FoundList.isEmpty()) {
                 throw new MessageNotFoundException();
             }
+            List<Message> messageFoundList = new ArrayList<>(message1to2FoundList);
+            messageFoundList.addAll(message2to1FoundList);
+            messageFoundList.sort(Comparator.comparing(Message::getPubblicationDate));
             return messageFoundList;
         } catch (Exception e) {
             throw new MessageNotFoundException();

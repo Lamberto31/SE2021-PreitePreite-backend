@@ -53,7 +53,7 @@ public interface IUserService {
 
     Message deleteMessage(Message message) throws MessageNotFoundException;
 
-    List<Message> getMessageBySenderAndReceiver(User sender, User receiver) throws MessageNotFoundException;
+    List<Message> getMessageBetweenTwoUser(User user1, User user2) throws MessageNotFoundException;
 
     List<Message> getMessageBySender(User sender) throws MessageNotFoundException;
 

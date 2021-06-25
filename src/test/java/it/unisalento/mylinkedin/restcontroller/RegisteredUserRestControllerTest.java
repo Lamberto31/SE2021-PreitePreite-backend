@@ -221,4 +221,11 @@ public class RegisteredUserRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void getUserById() throws Exception {
+        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_GETBYID, user.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 }

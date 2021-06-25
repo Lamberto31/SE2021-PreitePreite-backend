@@ -193,4 +193,11 @@ public class RegisteredUserRestController {
         }
         return attributeDTOList;
     }
+
+    @GetMapping(value = Constants.URI_GETBYID, produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserDTO getUserById(@PathVariable int id) throws UserNotFoundException {
+
+        User user = userService.getById(id);
+        return new UserDTO().convertToDto(user);
+    }
 }

@@ -125,4 +125,14 @@ public class UserRestController {
         User user = postService.getUser(post);
         return new UserDTO().convertToDto(user);
     }
+
+    @GetMapping(value = Constants.URI_GETALL, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<UserDTO> getAllUser() {
+        List<User> userList = userService.getAll();
+        List<UserDTO> userDTOList = new ArrayList<>();
+        for(User user: userList) {
+            userDTOList.add(new UserDTO().convertToDto(user));
+        }
+        return userDTOList;
+    }
 }

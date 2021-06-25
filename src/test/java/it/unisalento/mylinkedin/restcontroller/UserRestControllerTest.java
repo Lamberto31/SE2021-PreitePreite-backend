@@ -216,4 +216,11 @@ public class UserRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void getAllUserTest() throws Exception {
+        mockMvc.perform(get(Constants.URI_USER+Constants.URI_GETALL)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 }

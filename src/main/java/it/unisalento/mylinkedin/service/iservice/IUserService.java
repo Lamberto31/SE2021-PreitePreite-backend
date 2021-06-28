@@ -20,6 +20,8 @@ public interface IUserService {
 
 
     //APPLICANT
+    List<Applicant> getAllApplicant();
+
     Applicant getApplicantById(int id) throws UserNotFoundException;
 
     List<Applicant> getApplicantByStatus(String status) throws UserNotFoundException ;
@@ -28,6 +30,9 @@ public interface IUserService {
 
 
     //OFFEROR
+    List<Offeror> getAllOfferor();
+
+
     Offeror getOfferorById(int id) throws UserNotFoundException;
 
     List<Offeror> getOfferorByStatus(String status) throws UserNotFoundException;

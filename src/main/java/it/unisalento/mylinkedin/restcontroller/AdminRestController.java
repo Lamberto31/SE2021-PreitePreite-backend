@@ -142,5 +142,23 @@ public class AdminRestController {
         return new ResponseEntity<>(attributeDTO, HttpStatus.OK);
     }
 
+    @GetMapping(value = Constants.URI_APPLICANT+Constants.URI_GETALL, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ApplicantDTO> getAllApplicant() {
+        List<Applicant> userList = userService.getAllApplicant();
+        List<ApplicantDTO> userDTOList = new ArrayList<>();
+        for(Applicant applicant: userList) {
+            userDTOList.add(new ApplicantDTO().convertToDto(applicant));
+        }
+        return userDTOList;
+    }
 
+    @GetMapping(value = Constants.URI_OFFEROR+Constants.URI_GETALL, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<OfferorDTO> getAllOfferor() {
+        List<Offeror> userList = userService.getAllOfferor();
+        List<OfferorDTO> userDtoList = new ArrayList<>();
+        for(Offeror offeror: userList) {
+            userDtoList.add(new OfferorDTO().convertToDto(offeror));
+        }
+        return userDtoList;
+    }
 }

@@ -85,6 +85,12 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional
+    public List<Applicant> getAllApplicant() {
+        return applicantRepository.findAll();
+    }
+
+    @Override
     @Transactional(rollbackOn = UserNotFoundException.class)
     public Applicant getApplicantById(int id) throws UserNotFoundException {
         return applicantRepository.findById(id).orElseThrow(UserNotFoundException::new);
@@ -102,6 +108,12 @@ public class UserServiceImpl implements IUserService {
         } catch (Exception e) {
             throw new UserNotFoundException();
         }
+    }
+
+    @Override
+    @Transactional
+    public List<Offeror> getAllOfferor() {
+        return offerorRepository.findAll();
     }
 
     @Override

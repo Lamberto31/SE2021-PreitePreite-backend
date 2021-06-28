@@ -304,6 +304,11 @@ public class IUserServiceTest {
     }
 
     @Test
+    void getAllApplicantTest() {
+        assertThat(userService.getAll()).isNotNull();
+    }
+
+    @Test
     void getApplicantByIdTest() throws UserNotFoundException {
         Applicant applicantFound = userService.getApplicantById(correctId);
         assertThat(applicant.equals(applicantFound)).isTrue();
@@ -325,6 +330,11 @@ public class IUserServiceTest {
     void getApplicantByStatusThrowsExTest() {
         Exception exp = assertThrows(UserNotFoundException.class, () -> userService.getApplicantByStatus(registeredUserNotFoundStatus));
         assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getAllOfferorTest() {
+        assertThat(userService.getAll()).isNotNull();
     }
 
     @Test

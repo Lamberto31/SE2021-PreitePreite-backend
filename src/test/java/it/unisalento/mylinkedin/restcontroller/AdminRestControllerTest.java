@@ -223,4 +223,18 @@ public class AdminRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void getAllApplicantTest() throws Exception {
+        mockMvc.perform(get(Constants.URI_ADMIN+Constants.URI_APPLICANT+Constants.URI_GETALL)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getAllOfferorTest() throws Exception {
+        mockMvc.perform(get(Constants.URI_ADMIN+Constants.URI_OFFEROR+Constants.URI_GETALL)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 }

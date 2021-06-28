@@ -65,6 +65,11 @@ public class User {
     @OneToMany(mappedBy = "user", targetEntity = Post.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Post> postList;
 
+    @Transient
+    public String getType() {
+        return this.getClass().getAnnotation(DiscriminatorValue.class).value();
+    }
+
     public int getId() {
         return id;
     }

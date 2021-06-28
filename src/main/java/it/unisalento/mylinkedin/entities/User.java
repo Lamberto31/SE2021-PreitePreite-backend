@@ -67,7 +67,11 @@ public class User {
 
     @Transient
     public String getType() {
-        return this.getClass().getAnnotation(DiscriminatorValue.class).value();
+        try {
+            return this.getClass().getAnnotation(DiscriminatorValue.class).value();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public int getId() {

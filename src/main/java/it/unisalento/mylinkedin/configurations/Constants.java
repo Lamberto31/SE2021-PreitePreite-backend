@@ -50,6 +50,7 @@ public interface Constants {
     String URI_GETALL = "/getAll";
     String URI_SAVE = "/save";
     String URI_DELETE = "/delete/{id}";
+    String URI_LOGIN = "/login";
 
     //AdminRestController
     String URI_ADMIN = "/admin";

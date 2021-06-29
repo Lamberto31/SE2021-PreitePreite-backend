@@ -28,6 +28,11 @@ public class AdminRestController {
     @Autowired
     IPostService postService;
 
+    @GetMapping(value = Constants.URI_LOGIN)
+    public ResponseEntity<UserDTO> adminLogin() {
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @DeleteMapping(value = Constants.URI_DELETE)
     public ResponseEntity<UserDTO> delete(@PathVariable("id") int id) throws UserNotFoundException {
         User user = userService.getById(id);

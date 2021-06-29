@@ -6,14 +6,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -36,9 +31,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(Constants.URI_REGISTEREDUSER + "/**").hasAnyRole("ADMIN", "REGISTEREDUSER")
                 .antMatchers("/").permitAll()
                 .and().formLogin()
-                .successHandler((request, response, authentication) -> {
+                .disable();
+              /*  .successHandler((request, response, authentication) -> {
                     //Do nothing
-                });
+                }); */
         http.cors().and().csrf().disable();
     }
 

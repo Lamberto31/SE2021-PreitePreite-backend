@@ -21,7 +21,7 @@ public class MyUserDetails implements UserDetails {
         this.username = user.getEmail();
         this.password = user.getPassword();
         this.active = true;
-        this.authorities = Arrays.stream(user.getType().split(","))
+        this.authorities = Arrays.stream(Constants.ROLE_ADMIN.split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
@@ -30,7 +30,7 @@ public class MyUserDetails implements UserDetails {
         this.username = user.getEmail();
         this.password = user.getPassword();
         this.active = extractActive(user.getStatus());
-        this.authorities = Arrays.stream(user.getType().split(","))
+        this.authorities = Arrays.stream(Constants.ROLE_REGISTEREDUSER.split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
@@ -39,7 +39,7 @@ public class MyUserDetails implements UserDetails {
         this.username = user.getEmail();
         this.password = user.getPassword();
         this.active = extractActive(user.getStatus());
-        this.authorities = Arrays.stream(user.getType().split(","))
+        this.authorities = Arrays.stream(Constants.ROLE_REGISTEREDUSER.split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }

@@ -112,6 +112,14 @@ public class RegisteredUserRestControllerTest {
         this.structure.setUserCanPublish(Constants.CAN_PUBLISH_BOTH);
     }
 
+    @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
+    void registerUserLoginTest() throws Exception {
+        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_LOGIN)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
     //TODO: Risolvere problema objectmapper con data
     @Test
     @WithMockUser(roles = "REGISTEREDUSER")

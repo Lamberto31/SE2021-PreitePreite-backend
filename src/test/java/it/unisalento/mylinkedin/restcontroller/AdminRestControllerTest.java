@@ -127,7 +127,7 @@ public class AdminRestControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    void loginTest() throws Exception {
+    void adminLoginTest() throws Exception {
         mockMvc.perform(get(Constants.URI_ADMIN+Constants.URI_LOGIN)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

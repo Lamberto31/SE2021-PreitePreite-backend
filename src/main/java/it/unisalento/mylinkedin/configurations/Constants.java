@@ -11,6 +11,10 @@ public interface Constants {
     String TYPE_OFFEROR = "offeror";
     String TYPE_APPLICANT = "applicant";
 
+    //Variabili tipo utente per spring security
+    String ROLE_ADMIN = "ROLE_ADMIN";
+    String ROLE_REGISTEREDUSER = "ROLE_REGISTEREDUSER";
+
     //Variabili statiche per stato registrazione
     String REGISTRATION_PENDING = "pending";
     String REGISTRATION_ACCEPTED = "accepted";
@@ -46,6 +50,7 @@ public interface Constants {
     String URI_GETALL = "/getAll";
     String URI_SAVE = "/save";
     String URI_DELETE = "/delete/{id}";
+    String URI_LOGIN = "/login";
 
     //AdminRestController
     String URI_ADMIN = "/admin";

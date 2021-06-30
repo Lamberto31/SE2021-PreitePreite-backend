@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -111,8 +112,17 @@ public class RegisteredUserRestControllerTest {
         this.structure.setUserCanPublish(Constants.CAN_PUBLISH_BOTH);
     }
 
+    @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
+    void registerUserLoginTest() throws Exception {
+        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_LOGIN)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
     //TODO: Risolvere problema objectmapper con data
     @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
     void saveMessageTest() throws Exception {
         mockMvc.perform(post(Constants.URI_REGISTEREDUSER + Constants.URI_MESSAGE + Constants.URI_SAVE)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -121,6 +131,7 @@ public class RegisteredUserRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
     void getMessageBySenderAndReceiverTest() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_MESSAGE+Constants.URI_GETBYTWOUSER, user.getId(), user.getId())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -128,6 +139,7 @@ public class RegisteredUserRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
     void getMessageBySenderTest() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_MESSAGE+Constants.URI_GETBYSENDER, user.getId())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -135,6 +147,7 @@ public class RegisteredUserRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
     void getMessageByReceiverTest() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_MESSAGE+Constants.URI_GETBYRECEIVER, user.getId())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -142,6 +155,7 @@ public class RegisteredUserRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
     void getMessageSentOrReceivedByUserTest() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_MESSAGE+Constants.URI_GETBYUSERSENTORRECEIVED, user.getId())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -149,6 +163,7 @@ public class RegisteredUserRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
     void getMessageByReceiverAndNotReadTest() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_MESSAGE+Constants.URI_GETBYRECEIVERANDNOTREAD, user.getId())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -156,6 +171,7 @@ public class RegisteredUserRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
     void updateMessageIsReadTest() throws Exception {
         mockMvc.perform(put(Constants.URI_REGISTEREDUSER +Constants.URI_MESSAGE + Constants.URI_UPDATEISREAD, message.getId(), message.isRead())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -163,6 +179,7 @@ public class RegisteredUserRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
     void getMessageBySenderAndReceiverAndNotRead() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_MESSAGE+Constants.URI_GETBYSENDERANDRECEIVERANDNOTREAD, user.getId(), user.getId())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -170,6 +187,7 @@ public class RegisteredUserRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
     void getAllPostTest() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_POST+Constants.URI_GETALL)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -177,6 +195,7 @@ public class RegisteredUserRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
     void getPostByIdTest() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_POST+Constants.URI_GETBYID, post.getId())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -185,6 +204,7 @@ public class RegisteredUserRestControllerTest {
 
     //TODO: Risolvere problema objectmapper con data
     @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
     void savePostTest() throws Exception {
         mockMvc.perform(post(Constants.URI_REGISTEREDUSER + Constants.URI_POST + Constants.URI_SAVE)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -193,6 +213,7 @@ public class RegisteredUserRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
     void getStructureBothCanPublish() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_STRUCTURE+Constants.URI_GETCANPUBLISH)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -200,6 +221,7 @@ public class RegisteredUserRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
     void getStructureApplicantCanPublish() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_APPLICANT+Constants.URI_STRUCTURE+Constants.URI_GETCANPUBLISH)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -207,6 +229,7 @@ public class RegisteredUserRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
     void getStructureOfferorCanPublish() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_OFFEROR+Constants.URI_STRUCTURE+Constants.URI_GETCANPUBLISH)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -214,6 +237,7 @@ public class RegisteredUserRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
     void saveCommentTest() throws Exception {
         mockMvc.perform(post(Constants.URI_REGISTEREDUSER + Constants.URI_COMMENT + Constants.URI_SAVE)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -222,6 +246,7 @@ public class RegisteredUserRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
     void getCommentByPostTest() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_COMMENT+Constants.URI_GETBYPOST, post.getId())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -229,6 +254,7 @@ public class RegisteredUserRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
     void getAttributeByStructureTest() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_ATTRIBUTE+Constants.URI_GETBYSTRUCTURE, structure.getId())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -236,6 +262,7 @@ public class RegisteredUserRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
     void getUserById() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_GETBYID, user.getId())
                 .contentType(MediaType.APPLICATION_JSON))

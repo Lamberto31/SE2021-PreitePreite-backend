@@ -32,8 +32,10 @@ public class RegisteredUserRestController {
     IPostService postService;
 
     @GetMapping(value = Constants.URI_LOGIN)
-    public ResponseEntity<UserDTO> registeredUserLogin() {
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<UserDTO> registeredUserLogin(@PathVariable("email") String email) throws UserNotFoundException {
+        User user = userService.getByEmail(email);
+        UserDTO userDTO = new UserDTO().convertToDto(user);
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @PostMapping(value=Constants.URI_MESSAGE+Constants.URI_SAVE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)

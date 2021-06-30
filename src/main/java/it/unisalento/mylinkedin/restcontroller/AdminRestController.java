@@ -29,8 +29,10 @@ public class AdminRestController {
     IPostService postService;
 
     @GetMapping(value = Constants.URI_LOGIN)
-    public ResponseEntity<UserDTO> adminLogin() {
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<UserDTO> adminLogin(@PathVariable("email") String email) throws UserNotFoundException {
+        User user = userService.getByEmail(email);
+        UserDTO userDTO = new UserDTO().convertToDto(user);
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @DeleteMapping(value = Constants.URI_DELETE)

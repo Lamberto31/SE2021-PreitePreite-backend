@@ -83,6 +83,8 @@ public class RegisteredUserRestControllerTest {
 
         when(userServiceMock.getById(user.getId())).thenReturn(user);
 
+        when(userServiceMock.getByEmail(user.getEmail())).thenReturn(user);
+
         this.post = new Post();
         this.post.setId(1);
         //this.post.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
@@ -115,7 +117,7 @@ public class RegisteredUserRestControllerTest {
     @Test
     @WithMockUser(roles = "REGISTEREDUSER")
     void registerUserLoginTest() throws Exception {
-        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_LOGIN)
+        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_LOGIN, user.getEmail())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

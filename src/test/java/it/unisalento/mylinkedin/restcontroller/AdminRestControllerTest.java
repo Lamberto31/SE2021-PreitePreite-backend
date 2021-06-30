@@ -71,6 +71,8 @@ public class AdminRestControllerTest {
 
         when(userServiceMock.getById(user.getId())).thenReturn(user);
 
+        when(userServiceMock.getByEmail(user.getEmail())).thenReturn(user);
+
         this.structureDTO = new StructureDTO();
         this.structureDTO.setId(1);
         this.structureDTO.setTitle("testTitle");
@@ -128,7 +130,7 @@ public class AdminRestControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void adminLoginTest() throws Exception {
-        mockMvc.perform(get(Constants.URI_ADMIN+Constants.URI_LOGIN)
+        mockMvc.perform(get(Constants.URI_ADMIN+Constants.URI_LOGIN, user.getEmail())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

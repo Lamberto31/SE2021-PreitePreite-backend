@@ -168,4 +168,19 @@ public class AdminRestController {
         }
         return userDtoList;
     }
+
+    @PostMapping(value=Constants.URI_STRUCTURE+Constants.URI_SAVE +Constants.URI_STRUCTUREATTRIBUTEID, produces = MediaType.APPLICATION_JSON_VALUE)
+    public StructureDTO saveStructureAttribute(@PathVariable("structureId") int structureId, @PathVariable("attributeId") int attributeId) throws StructureAttributeSavingException, StructureNotFoundException, AttributeNotFoundException {
+
+        StructureAttribute structureAttribute= new StructureAttribute();
+        Structure structure = postService.getStructureById(structureId);
+        Attribute attribute = postService.getAttributeById(attributeId);
+
+        structureAttribute.setStructure(structure);
+        structureAttribute.setAttribute(attribute);
+
+        StructureAttribute structureAttributeSaved = postService.saveStructureAttribute(structureAttribute);
+
+        return new StructureDTO().convertToDto(structure);
+    }
 }

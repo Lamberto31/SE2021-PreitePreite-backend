@@ -68,6 +68,8 @@ public interface Constants {
 
     String URI_ATTRIBUTE = "/attribute";
 
+    String URI_STRUCTUREATTRIBUTEID = "/structureAttribute/{structureId}/{attributeId}";
+
     //RegisteredUserRestController
     String URI_REGISTEREDUSER = "/registeredUser";
 

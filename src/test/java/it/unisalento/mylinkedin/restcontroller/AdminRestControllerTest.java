@@ -5,10 +5,7 @@ import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dto.AttributeDTO;
 import it.unisalento.mylinkedin.dto.StructureDTO;
 import it.unisalento.mylinkedin.entities.*;
-import it.unisalento.mylinkedin.exception.post.AttributeNotFoundException;
-import it.unisalento.mylinkedin.exception.post.AttributeSavingException;
-import it.unisalento.mylinkedin.exception.post.StructureNotFoundException;
-import it.unisalento.mylinkedin.exception.post.StructureSavingException;
+import it.unisalento.mylinkedin.exception.post.*;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
@@ -55,10 +52,11 @@ public class AdminRestControllerTest {
     private Applicant applicant;
     private Offeror offeror;
     private Post post;
+    private StructureAttribute structureAttribute;
 
 
     @BeforeEach
-    void init() throws UserNotFoundException, ParseException, StructureSavingException, StructureNotFoundException, AttributeSavingException, AttributeNotFoundException {
+    void init() throws UserNotFoundException, ParseException, StructureSavingException, StructureNotFoundException, AttributeSavingException, AttributeNotFoundException, StructureAttributeSavingException {
 
         this.user = new User();
         this.user.setId(1);
@@ -125,6 +123,12 @@ public class AdminRestControllerTest {
         this.post.setHidden(true);
         this.post.setPrivate(true);
         this.post.setData("testData");
+
+        this.structureAttribute = new StructureAttribute();
+        this.structureAttribute.setStructure(structure);
+        this.structureAttribute.setAttribute(attribute);
+
+        when(postServiceMock.saveStructureAttribute(structureAttribute)).thenReturn(structureAttribute);
     }
 
     @Test
@@ -261,6 +265,14 @@ public class AdminRestControllerTest {
     @WithMockUser(roles = "ADMIN")
     void getAllOfferorTest() throws Exception {
         mockMvc.perform(get(Constants.URI_ADMIN+Constants.URI_OFFEROR+Constants.URI_GETALL)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void saveStructureAttributeTest() throws Exception {
+        mockMvc.perform(post(Constants.URI_ADMIN + Constants.URI_STRUCTURE + Constants.URI_SAVE + Constants.URI_STRUCTUREATTRIBUTEID, structure.getId(), attribute.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

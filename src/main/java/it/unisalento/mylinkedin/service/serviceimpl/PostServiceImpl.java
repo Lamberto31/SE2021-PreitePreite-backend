@@ -285,7 +285,7 @@ public class PostServiceImpl implements IPostService {
     @Transactional(rollbackOn = AttributeNotFoundException.class)
     public List<Attribute> getAttributeByStructure(Structure structure) throws AttributeNotFoundException {
         try {
-            List<Attribute> attributeFoundList = structureAttributeRepository.findAttributeByStructure(structure);
+            List<Attribute> attributeFoundList = structureAttributeRepository.findAttributeByStructure(structure.getId());
             if (attributeFoundList.isEmpty()) {
                 throw new AttributeNotFoundException();
             }

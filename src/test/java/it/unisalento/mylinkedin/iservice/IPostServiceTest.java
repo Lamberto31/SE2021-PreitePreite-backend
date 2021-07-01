@@ -119,6 +119,7 @@ public class IPostServiceTest {
 
         //Structure
         this.structure = new Structure();
+        this.structure.setId(1);
         this.structure.setTitle("testTitle");
         this.structure.setDescription("testDescription");
         this.structure.setUserCanPublish(Constants.CAN_PUBLISH_BOTH);
@@ -195,7 +196,7 @@ public class IPostServiceTest {
         this.attributeList = new ArrayList<>();
         attributeList.add(attribute);
 
-        when(structureAttributeRepository.findAttributeByStructure(structure)).thenReturn(attributeList);
+        when(structureAttributeRepository.findAttributeByStructure(structure.getId())).thenReturn(attributeList);
 
         //UserInterestedPost
         this.userInterestedPost = new UserInterestedPost();

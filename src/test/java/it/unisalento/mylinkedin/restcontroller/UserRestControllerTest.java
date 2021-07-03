@@ -9,6 +9,7 @@ import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.user.*;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
+import it.unisalento.mylinkedin.service.iservice.IS3Service;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.refEq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -39,6 +40,9 @@ public class UserRestControllerTest {
 
     @MockBean
     IPostService postServiceMock;
+
+    @MockBean
+    IS3Service s3ServiceMock;
 
     @Autowired
     private MockMvc mockMvc;
@@ -88,7 +92,8 @@ public class UserRestControllerTest {
 
         this.profileImageDTO = new ProfileImageDTO().convertToDto(profileImage);
 
-        when(userServiceMock.saveProfileImage(refEq(profileImage))).thenReturn(profileImage);
+        when(userServiceMock.saveProfileImage(refEq(profileImage, "imagePath"))).thenReturn(profileImage);
+        when(s3ServiceMock.uploadFile(anyString(),eq(profileImage.getImagePath()))).thenReturn(true);
 
         this.profileImageList = new ArrayList<>();
         this.profileImageList.add(profileImage);

@@ -11,6 +11,7 @@ import it.unisalento.mylinkedin.exception.user.*;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import it.unisalento.mylinkedin.service.iservice.IS3Service;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -66,11 +67,14 @@ public class UserRestController {
     @PostMapping(value=Constants.URI_PROFILEIMAGE+Constants.URI_SAVE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ProfileImageDTO saveProfileImage(@RequestBody @Valid ProfileImageDTO profileImageDTO) throws ParseException, ProfileImageSavingException {
 
-        s3Service.uploadFile("jsa-s3-upload-file.jpg", profileImageDTO.getImagePath());
-
+        String identifier = RandomStringUtils.randomAlphanumeric(32);
+        s3Service.uploadFile(identifier, profileImageDTO.getImagePath());
+        // s3Service.downloadFile("jsa-s3-upload-file.jpg");
+        profileImageDTO.setImagePath(Constants.S3_IMAGEPREFIX+identifier);
         ProfileImage profileImage = new ProfileImage().convertToEntity(profileImageDTO);
         ProfileImage profileImageSaved = userService.saveProfileImage(profileImage);
         profileImageDTO.setId(profileImageSaved.getId());
+
         return profileImageDTO;
     }
 

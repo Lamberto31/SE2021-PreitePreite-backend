@@ -3,9 +3,7 @@ package it.unisalento.mylinkedin.service.serviceimpl;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.*;
 import it.unisalento.mylinkedin.service.iservice.IS3Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +56,23 @@ public class S3ServiceImpl implements IS3Service {
         try {
 
             File file = new File(uploadFilePath);
-            s3client.putObject(new PutObjectRequest(bucketName, keyName, file));
+
+            PutObjectRequest request = new PutObjectRequest(bucketName, keyName, file);
+
+            /*Metadata
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType("image/jpeg");
+            request.setMetadata(metadata);
+             */
+
+            //ACL Permission
+            AccessControlList accessControlList = new AccessControlList();
+            Grantee grantee = GroupGrantee.AllUsers;
+            accessControlList.grantPermission(grantee, Permission.Read);
+            request.withAccessControlList(accessControlList);
+
+            //Request send
+            s3client.putObject(request);
             logger.info("===================== Upload File - Done! =====================");
 
         } catch (AmazonServiceException ase) {

@@ -51,7 +51,7 @@ public class S3ServiceImpl implements IS3Service {
     }
 
     @Override
-    public void uploadFile(String keyName, String uploadFilePath) {
+    public boolean uploadFile(String keyName, String uploadFilePath) {
 
         try {
 
@@ -74,6 +74,7 @@ public class S3ServiceImpl implements IS3Service {
             //Request send
             s3client.putObject(request);
             logger.info("===================== Upload File - Done! =====================");
+            return true;
 
         } catch (AmazonServiceException ase) {
             logger.info("Caught an AmazonServiceException from PUT requests, rejected reasons:");
@@ -82,9 +83,11 @@ public class S3ServiceImpl implements IS3Service {
             logger.info("AWS Error Code:   " + ase.getErrorCode());
             logger.info("Error Type:       " + ase.getErrorType());
             logger.info("Request ID:       " + ase.getRequestId());
+            return false;
         } catch (AmazonClientException ace) {
             logger.info("Caught an AmazonClientException: ");
             logger.info("Error Message: " + ace.getMessage());
+            return false;
         }
     }
 }

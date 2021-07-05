@@ -75,16 +75,6 @@ public class AdminRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping(value = Constants.URI_POST+Constants.URI_GETALL, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PostDTO> getAllPost() {
-        List<Post> postList = postService.getAllOrderByPubblicationDateDesc();
-        List<PostDTO> postDTOList = new ArrayList<>();
-        for(Post post: postList) {
-            postDTOList.add(new PostDTO().convertToDto(post));
-        }
-        return postDTOList;
-    }
-
     @PutMapping(value = Constants.URI_POST+Constants.URI_UPDATEISHIDDEN, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PostDTO> updatePostIsHidden(@PathVariable("id") int id, @PathVariable("isHidden") boolean isHidden) throws PostNotFoundException, InvalidValueException {
         postService.updateIsHidden(isHidden, id);

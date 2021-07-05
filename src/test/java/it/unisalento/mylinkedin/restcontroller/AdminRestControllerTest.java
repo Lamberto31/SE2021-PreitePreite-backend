@@ -181,14 +181,6 @@ public class AdminRestControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    void getAllPostTest() throws Exception {
-        mockMvc.perform(get(Constants.URI_ADMIN+Constants.URI_POST+Constants.URI_GETALL)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @WithMockUser(roles = "ADMIN")
     void updatePostIsHiddenTest() throws Exception {
         mockMvc.perform(put(Constants.URI_ADMIN +Constants.URI_POST + Constants.URI_UPDATEISHIDDEN, post.getId(), post.isHidden())
                 .contentType(MediaType.APPLICATION_JSON))

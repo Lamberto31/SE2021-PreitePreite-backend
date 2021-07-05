@@ -129,7 +129,7 @@ public class RegisteredUserRestController {
 
     @GetMapping(value = Constants.URI_POST+Constants.URI_GETALL, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PostDTO> getAllPost() {
-        List<Post> postList = postService.getAll();
+        List<Post> postList = postService.getAllOrderByPubblicationDateDesc();
         List<PostDTO> postDTOList = new ArrayList<>();
         for(Post post: postList) {
             postDTOList.add(new PostDTO().convertToDto(post));

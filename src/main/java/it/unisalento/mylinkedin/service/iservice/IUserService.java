@@ -82,7 +82,8 @@ public interface IUserService {
 
     Company deleteCompany(Company company) throws CompanyNotFoundException;
 
-    //NOTIFICATIONTOKEN
+
+    //NOTIFICATION TOKEN
     List<NotificationToken> getAllNotificationToken();
 
     NotificationToken saveNotificationToken(NotificationToken notificationToken) throws NotificationTokenSavingException;

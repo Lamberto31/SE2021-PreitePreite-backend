@@ -4,7 +4,6 @@ import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dao.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
-import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.user.*;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,6 +53,9 @@ public class IUserServiceTest {
     @MockBean
     private CompanyRepository companyRepository;
 
+    @MockBean
+    private NotificationTokenRepository notificationTokenRepository;
+
     private User user;
     private User wrongUser;
     private int correctId;
@@ -79,6 +81,10 @@ public class IUserServiceTest {
 
     private Company company;
     private Company wrongCompany;
+
+    private NotificationToken notificationToken;
+    private NotificationToken wrongNotificationToken;
+    private List<NotificationToken> notificationTokenList;
 
     @BeforeEach
     void init() throws ParseException {
@@ -248,6 +254,33 @@ public class IUserServiceTest {
 
         doThrow(new IllegalArgumentException()).when(companyRepository).delete(wrongCompany);
 
+        //NotificationToken
+
+        this.notificationToken = new NotificationToken();
+        this.notificationToken.setToken("testToken");
+        this.notificationToken.setUser(user);
+
+        when(notificationTokenRepository.save(refEq(notificationToken))).thenReturn(notificationToken);
+
+        this.wrongNotificationToken = new NotificationToken();
+        this.wrongNotificationToken.setToken("wrongToken");
+
+        when(notificationTokenRepository.save(refEq(wrongNotificationToken))).thenThrow(IllegalArgumentException.class);
+
+        when(notificationTokenRepository.findById(correctId)).thenReturn(java.util.Optional.ofNullable(notificationToken));
+
+        doThrow(new IllegalArgumentException()).when(notificationTokenRepository).delete(wrongNotificationToken);
+
+        this.notificationTokenList = new ArrayList<>();
+        notificationTokenList.add(notificationToken);
+
+        when(notificationTokenRepository.findByUser(refEq(user))).thenReturn(notificationTokenList);
+
+        when(notificationTokenRepository.findByUser(refEq(wrongUser))).thenThrow(IllegalArgumentException.class);
+
+        when(notificationTokenRepository.findByToken(notificationToken.getToken())).thenReturn(notificationToken);
+
+        when(notificationTokenRepository.findByToken(wrongNotificationToken.getToken())).thenThrow(IllegalArgumentException.class);
     }
 
     @Test
@@ -604,4 +637,69 @@ public class IUserServiceTest {
         assertThat(exp).isNotNull();
     }
 
+    //NotificationToken
+    @Test
+    void getAllNotificationTokenTest() {
+        assertThat(userService.getAllNotificationToken()).isNotNull();
+    }
+
+    @Test
+    void saveNotificationTokenTest() throws NotificationTokenSavingException {
+        NotificationToken notificationTokenSaved = userService.saveNotificationToken(notificationToken);
+        assertThat(notificationToken.equals(notificationTokenSaved)).isTrue();
+    }
+
+    @Test
+    void saveNotificationTokenThrowsExTest() {
+        Exception exp = assertThrows(NotificationTokenSavingException.class, () -> userService.saveNotificationToken(wrongNotificationToken));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getNotificationTokenByIdTest() throws NotificationTokenNotFoundException {
+        NotificationToken NotificationTokenFound = userService.getNotificationTokenById(correctId);
+        assertThat(notificationToken.equals(NotificationTokenFound)).isTrue();
+    }
+
+    @Test
+    void getNotificationTokenByIdThrowsExTest() {
+        Exception exp = assertThrows(NotificationTokenNotFoundException.class, () -> userService.getNotificationTokenById(wrongNotificationToken.getId()));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void deleteNotificationTokenTest() throws NotificationTokenNotFoundException {
+        NotificationToken NotificationTokenDeleted = userService.deleteNotificationToken(notificationToken);
+        assertThat(notificationToken.equals(NotificationTokenDeleted)).isTrue();
+    }
+
+    @Test
+    void deleteNotificationTokenThrowsExTest() {
+        Exception exp = assertThrows(NotificationTokenNotFoundException.class, () -> userService.deleteNotificationToken(wrongNotificationToken));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getNotificationTokenByUserTest() throws NotificationTokenNotFoundException {
+        List<NotificationToken> NotificationTokenFoundList = userService.getNotificationTokenByUser(user);
+        assertThat(notificationTokenList.equals(NotificationTokenFoundList)).isTrue();
+    }
+
+    @Test
+    void getNotificationTokenByUserThrowsExTest() {
+        Exception exp = assertThrows(NotificationTokenNotFoundException.class, () -> userService.getNotificationTokenByUser(wrongUser));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getNotificationTokenByTokenTest() throws NotificationTokenNotFoundException {
+        NotificationToken NotificationTokenFound = userService.getNotificationTokenByToken(notificationToken.getToken());
+        assertThat(notificationToken.equals(NotificationTokenFound)).isTrue();
+    }
+
+    @Test
+    void getNotificationTokenByTokenThrowsExTest() {
+        Exception exp = assertThrows(NotificationTokenNotFoundException.class, () -> userService.getNotificationTokenByToken(wrongNotificationToken.getToken()));
+        assertThat(exp).isNotNull();
+    }
 }

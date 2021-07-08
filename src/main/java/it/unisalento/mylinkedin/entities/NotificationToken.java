@@ -1,12 +1,9 @@
 package it.unisalento.mylinkedin.entities;
 
-import it.unisalento.mylinkedin.configurations.Constants;
-import it.unisalento.mylinkedin.dto.MessageDTO;
+import it.unisalento.mylinkedin.dto.NotificationTokenDTO;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 
 import javax.persistence.*;
-import java.text.ParseException;
 
 @Entity
 public class NotificationToken {
@@ -49,7 +46,6 @@ public class NotificationToken {
     public NotificationToken convertToEntity(NotificationTokenDTO dto) {
         ModelMapper modelMapper =  new ModelMapper();
 
-        NotificationToken entity = modelMapper.map(dto, NotificationToken.class);
-        return entity;
+        return modelMapper.map(dto, NotificationToken.class);
     }
 }

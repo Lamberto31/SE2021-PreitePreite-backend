@@ -9,4 +9,5 @@ import java.util.List;
 public interface NotificationTokenRepository extends JpaRepository<NotificationToken, Integer> {
 
     List<NotificationToken> findByUser(User user);
+    NotificationToken findByToken(String token);
 }

@@ -381,7 +381,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackOn = NotificationTokenSavingException.class)
     public NotificationToken saveNotificationToken(NotificationToken notificationToken) throws NotificationTokenSavingException {
         try {
             return notificationTokenRepository.save(notificationToken);
@@ -391,13 +391,13 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackOn = NotificationTokenNotFoundException.class)
     public NotificationToken getNotificationTokenById(int id) throws NotificationTokenNotFoundException {
         return notificationTokenRepository.findById(id).orElseThrow(NotificationTokenNotFoundException::new);
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackOn = NotificationTokenNotFoundException.class)
     public NotificationToken deleteNotificationToken(NotificationToken notificationToken) throws NotificationTokenNotFoundException {
         try {
             notificationTokenRepository.delete(notificationToken);
@@ -408,7 +408,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackOn = NotificationTokenNotFoundException.class)
     public List<NotificationToken> getNotificationTokenByUser(User user) throws NotificationTokenNotFoundException {
         try {
             List<NotificationToken> notificationTokenFoundList = notificationTokenRepository.findByUser(user);
@@ -422,7 +422,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackOn = NotificationTokenNotFoundException.class)
     public NotificationToken getNotificationTokenByToken(String token) throws NotificationTokenNotFoundException {
         try {
             NotificationToken notificationTokenFound = notificationTokenRepository.findByToken(token);

@@ -82,4 +82,17 @@ public interface IUserService {
     Company getCompanyById(int id) throws CompanyNotFoundException;
 
     Company deleteCompany(Company company) throws CompanyNotFoundException;
+
+    //NOTIFICATIONTOKEN
+    List<NotificationToken> getAllNotificationToken();
+
+    NotificationToken saveNotificationToken(NotificationToken notificationToken) throws NotificationTokenSavingException;
+
+    NotificationToken getNotificationTokenById(int id) throws NotificationTokenNotFoundException;
+
+    NotificationToken deleteNotificationToken(NotificationToken notificationToken) throws NotificationTokenNotFoundException;
+
+    List<NotificationToken> getNotificationTokenByUser(User user) throws NotificationTokenNotFoundException;
+
+    NotificationToken getNotificationTokenByToken(String token) throws  NotificationTokenNotFoundException;
 }

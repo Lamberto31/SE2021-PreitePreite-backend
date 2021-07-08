@@ -5,9 +5,7 @@ import it.unisalento.mylinkedin.dto.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.post.*;
-import it.unisalento.mylinkedin.exception.user.MessageNotFoundException;
-import it.unisalento.mylinkedin.exception.user.MessageSavingException;
-import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
+import it.unisalento.mylinkedin.exception.user.*;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -227,5 +225,19 @@ public class RegisteredUserRestController {
 
         User user = userService.getById(id);
         return new UserDTO().convertToDto(user);
+    }
+
+    @PostMapping(value=Constants.URI_NOTIFICATIONTOKEN+Constants.URI_SAVE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public NotificationTokenDTO saveNotificationToken(@RequestBody @Valid NotificationTokenDTO notificationTokenDTO) throws NotificationTokenSavingException {
+        NotificationToken notificationToken = new NotificationToken().convertToEntity(notificationTokenDTO);
+        NotificationToken notificationTokenSaved = userService.saveNotificationToken(notificationToken);
+        notificationTokenDTO.setId(notificationTokenSaved.getId());
+        return notificationTokenDTO;
+    }
+
+    @GetMapping(value = Constants.URI_NOTIFICATIONTOKEN+Constants.URI_GETBYID, produces = MediaType.APPLICATION_JSON_VALUE)
+    public NotificationTokenDTO getNotificationTokenById(@PathVariable int id) throws NotificationTokenNotFoundException {
+        NotificationToken notificationToken = userService.getNotificationTokenById(id);
+        return new NotificationTokenDTO().convertToDto(notificationToken);
     }
 }

@@ -89,6 +89,8 @@ public interface Constants {
 
     String URI_GETBYSTRUCTURE = "/getByStructure/{structureId}";
 
+    String URI_NOTIFICATIONTOKEN = "/notificationToken";
+
     //UserRestController
     String URI_USER = "/user";
 

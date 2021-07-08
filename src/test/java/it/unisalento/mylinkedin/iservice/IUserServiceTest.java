@@ -276,11 +276,7 @@ public class IUserServiceTest {
 
         when(notificationTokenRepository.findByUser(refEq(user))).thenReturn(notificationTokenList);
 
-        when(notificationTokenRepository.findByUser(refEq(wrongUser))).thenThrow(IllegalArgumentException.class);
-
         when(notificationTokenRepository.findByToken(notificationToken.getToken())).thenReturn(notificationToken);
-
-        when(notificationTokenRepository.findByToken(wrongNotificationToken.getToken())).thenThrow(IllegalArgumentException.class);
     }
 
     @Test
@@ -338,7 +334,7 @@ public class IUserServiceTest {
 
     @Test
     void getAllApplicantTest() {
-        assertThat(userService.getAll()).isNotNull();
+        assertThat(userService.getAllApplicant()).isNotNull();
     }
 
     @Test
@@ -367,7 +363,7 @@ public class IUserServiceTest {
 
     @Test
     void getAllOfferorTest() {
-        assertThat(userService.getAll()).isNotNull();
+        assertThat(userService.getAllOfferor()).isNotNull();
     }
 
     @Test

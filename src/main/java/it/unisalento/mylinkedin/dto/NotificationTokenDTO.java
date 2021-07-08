@@ -1,13 +1,14 @@
 package it.unisalento.mylinkedin.dto;
 
-import it.unisalento.mylinkedin.configurations.Constants;
-import it.unisalento.mylinkedin.entities.Message;
 import it.unisalento.mylinkedin.entities.NotificationToken;
 import org.modelmapper.ModelMapper;
+
+import javax.validation.constraints.NotBlank;
 
 public class NotificationTokenDTO {
 
     int id;
+    @NotBlank
     String token;
 
     UserDTO user;

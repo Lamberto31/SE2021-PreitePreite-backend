@@ -4,12 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dto.CommentDTO;
 import it.unisalento.mylinkedin.dto.MessageDTO;
+import it.unisalento.mylinkedin.dto.NotificationTokenDTO;
 import it.unisalento.mylinkedin.dto.PostDTO;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.post.CommentSavingException;
 import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.post.PostSavingException;
 import it.unisalento.mylinkedin.exception.user.MessageSavingException;
+import it.unisalento.mylinkedin.exception.user.NotificationTokenNotFoundException;
+import it.unisalento.mylinkedin.exception.user.NotificationTokenSavingException;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
@@ -56,9 +59,11 @@ public class RegisteredUserRestControllerTest {
     private CommentDTO commentDTO;
     private Comment comment;
     private Structure structure;
+    private NotificationToken notificationToken;
+    private NotificationTokenDTO notificationTokenDTO;
 
     @BeforeEach
-    void init() throws ParseException, MessageSavingException, UserNotFoundException, PostNotFoundException, PostSavingException, CommentSavingException {
+    void init() throws ParseException, MessageSavingException, UserNotFoundException, PostNotFoundException, PostSavingException, CommentSavingException, NotificationTokenSavingException, NotificationTokenNotFoundException {
 
         this.messageDTO = new MessageDTO();
         this.messageDTO.setId(1);
@@ -112,6 +117,16 @@ public class RegisteredUserRestControllerTest {
         this.structure.setTitle("testTitle");
         this.structure.setDescription("testDescription");
         this.structure.setUserCanPublish(Constants.CAN_PUBLISH_BOTH);
+
+        this.notificationToken = new NotificationToken();
+        this.notificationToken.setId(1);
+        this.notificationToken.setToken("testToken");
+
+        this.notificationTokenDTO = new NotificationTokenDTO().convertToDto(notificationToken);
+
+        when(userServiceMock.saveNotificationToken(refEq(notificationToken))).thenReturn(notificationToken);
+
+        when(userServiceMock.getNotificationTokenById(notificationToken.getId())).thenReturn(notificationToken);
     }
 
     @Test
@@ -122,7 +137,6 @@ public class RegisteredUserRestControllerTest {
                 .andExpect(status().isOk());
     }
 
-    //TODO: Risolvere problema objectmapper con data
     @Test
     @WithMockUser(roles = "REGISTEREDUSER")
     void saveMessageTest() throws Exception {
@@ -204,7 +218,6 @@ public class RegisteredUserRestControllerTest {
                 .andExpect(status().isOk());
     }
 
-    //TODO: Risolvere problema objectmapper con data
     @Test
     @WithMockUser(roles = "REGISTEREDUSER")
     void savePostTest() throws Exception {
@@ -267,6 +280,23 @@ public class RegisteredUserRestControllerTest {
     @WithMockUser(roles = "REGISTEREDUSER")
     void getUserById() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_GETBYID, user.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
+    void saveNotificationTokenTest() throws Exception {
+        mockMvc.perform(post(Constants.URI_REGISTEREDUSER + Constants.URI_NOTIFICATIONTOKEN + Constants.URI_SAVE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objMapper.writeValueAsString(notificationTokenDTO)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
+    void getNotificationTokenById() throws Exception {
+        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_NOTIFICATIONTOKEN+Constants.URI_GETBYID, notificationToken.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

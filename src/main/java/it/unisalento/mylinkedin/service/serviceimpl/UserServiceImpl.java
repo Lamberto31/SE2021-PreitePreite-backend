@@ -4,7 +4,9 @@ import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dao.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
-import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
+import it.unisalento.mylinkedin.exception.post.AttributeNotFoundException;
+import it.unisalento.mylinkedin.exception.post.StructureAttributeNotFoundException;
+import it.unisalento.mylinkedin.exception.post.StructureAttributeSavingException;
 import it.unisalento.mylinkedin.exception.user.*;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -39,6 +40,9 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     CompanyRepository companyRepository;
+
+    @Autowired
+    NotificationTokenRepository notificationTokenRepository;
 
 
     @Override
@@ -367,6 +371,67 @@ public class UserServiceImpl implements IUserService {
             return company;
         } catch (Exception e) {
             throw new CompanyNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<NotificationToken> getAllNotificationToken() {
+        return notificationTokenRepository.findAll();
+    }
+
+    @Override
+    @Transactional
+    public NotificationToken saveNotificationToken(NotificationToken notificationToken) throws NotificationTokenSavingException {
+        try {
+            return notificationTokenRepository.save(notificationToken);
+        } catch (Exception e) {
+            throw new NotificationTokenSavingException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public NotificationToken getNotificationTokenById(int id) throws NotificationTokenNotFoundException {
+        return notificationTokenRepository.findById(id).orElseThrow(NotificationTokenNotFoundException::new);
+    }
+
+    @Override
+    @Transactional
+    public NotificationToken deleteNotificationToken(NotificationToken notificationToken) throws NotificationTokenNotFoundException {
+        try {
+            notificationTokenRepository.delete(notificationToken);
+            return notificationToken;
+        } catch (Exception e) {
+            throw new NotificationTokenNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<NotificationToken> getNotificationTokenByUser(User user) throws NotificationTokenNotFoundException {
+        try {
+            List<NotificationToken> notificationTokenFoundList = notificationTokenRepository.findByUser(user);
+            if (notificationTokenFoundList.isEmpty()) {
+                throw new NotificationTokenNotFoundException();
+            }
+            return notificationTokenFoundList;
+        } catch (Exception e) {
+            throw new NotificationTokenNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public NotificationToken getNotificationTokenByToken(String token) throws NotificationTokenNotFoundException {
+        try {
+            NotificationToken notificationTokenFound = notificationTokenRepository.findByToken(token);
+            if (notificationTokenFound == null) {
+                throw new NotificationTokenNotFoundException();
+            }
+            return notificationTokenFound;
+        } catch (Exception e) {
+            throw new NotificationTokenNotFoundException();
         }
     }
 }

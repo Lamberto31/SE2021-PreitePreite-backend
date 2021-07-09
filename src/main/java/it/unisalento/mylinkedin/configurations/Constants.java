@@ -106,4 +106,13 @@ public interface Constants {
 
     String S3_IMAGEPREFIX = "mylinkedinpp-picture.s3.amazonaws.com/";
 
+
+    //AWS API GATEWAY REST URI
+
+    String AWS_URI_API = "https://9d9g5q4w06.execute-api.us-east-1.amazonaws.com/beta";
+
+    String AWS_URI_PUSHNOTIFICATION = "/pushNotification";
+
+    String AWS_URI_TOKEN = "/token";
+
 }

@@ -383,6 +383,7 @@ public class UserServiceImpl implements IUserService {
     @Transactional(rollbackOn = NotificationTokenSavingException.class)
     public NotificationToken saveNotificationToken(NotificationToken notificationToken) throws NotificationTokenSavingException {
         try {
+            notificationToken = saveAwsEndpointArn(notificationToken);
             return notificationTokenRepository.save(notificationToken);
         } catch (Exception e) {
             throw new NotificationTokenSavingException();
@@ -440,13 +441,15 @@ public class UserServiceImpl implements IUserService {
         RestTemplate restTemplate = new RestTemplate();
 
         String uri = Constants.AWS_URI_API + Constants.AWS_URI_PUSHNOTIFICATION +Constants.AWS_URI_TOKEN;
-        String reqBody = "{\"token\":\"" + notificationToken.getToken() + "\"}";
 
         try {
-            NotificationToken result = restTemplate.postForObject(uri, reqBody, NotificationToken.class);
-            if (result == null) {
+            if ( notificationToken.getToken() == null) {
                 throw new NotificationTokenSavingException();
             }
+            String reqBody = "{\"token\":\"" + notificationToken.getToken() + "\"}";
+
+            NotificationToken result = restTemplate.postForObject(uri, reqBody, NotificationToken.class);
+            assert result != null : "Result is null";
             notificationToken.setAwsEndpointArn(result.getAwsEndpointArn());
             return notificationToken;
         } catch (Exception e) {

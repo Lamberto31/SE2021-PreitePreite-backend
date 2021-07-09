@@ -85,6 +85,7 @@ public class IUserServiceTest {
     private NotificationToken notificationToken;
     private NotificationToken wrongNotificationToken;
     private List<NotificationToken> notificationTokenList;
+    private NotificationToken wrongNotificationTokenWithoutToken;
 
     @BeforeEach
     void init() throws ParseException {
@@ -277,6 +278,9 @@ public class IUserServiceTest {
         when(notificationTokenRepository.findByUser(refEq(user))).thenReturn(notificationTokenList);
 
         when(notificationTokenRepository.findByToken(notificationToken.getToken())).thenReturn(notificationToken);
+
+        this.wrongNotificationTokenWithoutToken = new NotificationToken();
+
     }
 
     @Test
@@ -700,8 +704,16 @@ public class IUserServiceTest {
     }
 
     @Test
-    void saveAwsEndpointArnTest() {
+    void saveAwsEndpointArnTest() throws NotificationTokenSavingException {
         NotificationToken notificationTokenWithEndpointArn = userService.saveAwsEndpointArn(notificationToken);
-        assertThat(notificationTokenWithEndpointArn.equals(notificationToken)).isTrue();
+        assertThat(notificationTokenWithEndpointArn.getId()).isEqualTo(notificationToken.getId());
+        assertThat(notificationTokenWithEndpointArn.getToken()).isEqualTo(notificationToken.getToken());
+        assertThat(notificationTokenWithEndpointArn.getUser()).isEqualTo(notificationToken.getUser());
+    }
+
+    @Test
+    void saveAwsEndpointArnThrowsExTest() {
+        Exception exp = assertThrows(NotificationTokenSavingException.class, () -> userService.saveAwsEndpointArn(wrongNotificationTokenWithoutToken));
+        assertThat(exp).isNotNull();
     }
 }

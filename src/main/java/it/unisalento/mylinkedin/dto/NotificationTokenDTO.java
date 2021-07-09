@@ -10,6 +10,7 @@ public class NotificationTokenDTO {
     int id;
     @NotBlank
     String token;
+    String awsEndpointArn;
 
     UserDTO user;
 
@@ -27,6 +28,14 @@ public class NotificationTokenDTO {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getAwsEndpointArn() {
+        return awsEndpointArn;
+    }
+
+    public void setAwsEndpointArn(String awsEndpointArn) {
+        this.awsEndpointArn = awsEndpointArn;
     }
 
     public UserDTO getUser() {

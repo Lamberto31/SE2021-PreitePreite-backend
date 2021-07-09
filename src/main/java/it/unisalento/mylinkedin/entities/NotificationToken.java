@@ -15,7 +15,7 @@ public class NotificationToken {
     int id;
 
     String token;
-    String awsEndpointARN;
+    String awsEndpointArn;
 
     @ManyToOne(optional = false)
     User user;
@@ -36,12 +36,12 @@ public class NotificationToken {
         this.token = token;
     }
 
-    public String getAwsEndpointARN() {
-        return awsEndpointARN;
+    public String getAwsEndpointArn() {
+        return awsEndpointArn;
     }
 
-    public void setAwsEndpointARN(String awsEndpointARN) {
-        this.awsEndpointARN = awsEndpointARN;
+    public void setAwsEndpointArn(String awsEndpointARN) {
+        this.awsEndpointArn = awsEndpointARN;
     }
 
     public User getUser() {

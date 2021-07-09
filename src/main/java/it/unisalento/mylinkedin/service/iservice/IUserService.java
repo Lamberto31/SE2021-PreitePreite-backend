@@ -95,4 +95,6 @@ public interface IUserService {
     List<NotificationToken> getNotificationTokenByUser(User user) throws NotificationTokenNotFoundException;
 
     NotificationToken getNotificationTokenByToken(String token) throws  NotificationTokenNotFoundException;
+
+    NotificationToken saveAwsEndpointArn(NotificationToken notificationToken) throws NotificationTokenSavingException;
 }

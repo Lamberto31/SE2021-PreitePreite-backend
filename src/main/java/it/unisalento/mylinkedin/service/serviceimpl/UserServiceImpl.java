@@ -4,13 +4,12 @@ import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dao.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
-import it.unisalento.mylinkedin.exception.post.AttributeNotFoundException;
-import it.unisalento.mylinkedin.exception.post.StructureAttributeNotFoundException;
-import it.unisalento.mylinkedin.exception.post.StructureAttributeSavingException;
 import it.unisalento.mylinkedin.exception.user.*;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -432,6 +431,26 @@ public class UserServiceImpl implements IUserService {
             return notificationTokenFound;
         } catch (Exception e) {
             throw new NotificationTokenNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = NotificationTokenSavingException.class)
+    public NotificationToken saveAwsEndpointArn(NotificationToken notificationToken) throws NotificationTokenSavingException {
+        RestTemplate restTemplate = new RestTemplate();
+
+        String uri = Constants.AWS_URI_API + Constants.AWS_URI_PUSHNOTIFICATION +Constants.AWS_URI_TOKEN;
+        String reqBody = "{\"token\":\"" + notificationToken.getToken() + "\"}";
+
+        try {
+            NotificationToken result = restTemplate.postForObject(uri, reqBody, NotificationToken.class);
+            if (result == null) {
+                throw new NotificationTokenSavingException();
+            }
+            notificationToken.setAwsEndpointArn(result.getAwsEndpointArn());
+            return notificationToken;
+        } catch (Exception e) {
+            throw new NotificationTokenSavingException();
         }
     }
 }

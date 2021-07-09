@@ -698,4 +698,10 @@ public class IUserServiceTest {
         Exception exp = assertThrows(NotificationTokenNotFoundException.class, () -> userService.getNotificationTokenByToken(wrongNotificationToken.getToken()));
         assertThat(exp).isNotNull();
     }
+
+    @Test
+    void saveAwsEndpointArnTest() {
+        NotificationToken notificationTokenWithEndpointArn = userService.saveAwsEndpointArn(notificationToken);
+        assertThat(notificationTokenWithEndpointArn.equals(notificationToken)).isTrue();
+    }
 }

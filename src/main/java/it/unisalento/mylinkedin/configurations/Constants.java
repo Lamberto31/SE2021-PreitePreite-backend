@@ -102,6 +102,6 @@ public interface Constants {
 
     String URI_GETBYINTERESTED = "/getByInterested/{postId}";
 
-    String S3_IMAGEPREFIX = "mylinkedinpp-picture.s3.amazonaws.com/";
+    String S3_IMAGEPREFIX = "https://mylinkedinpp-picture.s3.amazonaws.com/";
 
 }

@@ -317,6 +317,14 @@ public class PostServiceImpl implements IPostService {
     @Override
     @Transactional(rollbackOn = UserInterestedPostSavingException.class)
     public UserInterestedPost saveUserInterestedPost(UserInterestedPost userInterestedPost) throws UserInterestedPostSavingException {
+        User newUserInterested = userInterestedPost.getUser();
+        List<User> UserAlreadyInterestedList = userInterestedPostRepository.findUserByPost(userInterestedPost.getPost().getId());
+
+        for(User userAlreadyInterested: UserAlreadyInterestedList) {
+            if (newUserInterested.getId() == userAlreadyInterested.getId()) {
+                throw new UserInterestedPostSavingException();
+            }
+        }
         try {
             return userInterestedPostRepository.save(userInterestedPost);
         } catch (Exception e) {

@@ -19,6 +19,8 @@ public interface IPostService {
 
     List<Post> getByIsPrivateAndIsHidden(boolean isPrivate, boolean isHidden) throws PostNotFoundException;
 
+    List<Post> getByIsHidden(boolean isHidden) throws PostNotFoundException;
+
     void updateIsHidden(boolean isHidden, int id) throws PostNotFoundException, InvalidValueException;
 
     User getUser(Post post) throws UserNotFoundException;

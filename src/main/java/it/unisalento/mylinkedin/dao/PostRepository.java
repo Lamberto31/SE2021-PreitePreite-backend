@@ -14,6 +14,8 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> findByIsPrivateAndIsHidden(boolean isPrivate, boolean isHidden);
 
+    List<Post> findByIsHidden(boolean isHidden);
+
     @Modifying
     @Query("update Post p set p.isHidden = :isHidden where p.id = :id")
     void updateIsHidden(@Param("isHidden") boolean isHidden, @Param("id") int id);

@@ -212,6 +212,14 @@ public class RegisteredUserRestControllerTest {
 
     @Test
     @WithMockUser(roles = "REGISTEREDUSER")
+    void getPostShownTest() throws Exception {
+        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_POST+Constants.URI_GETSHOWN)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
     void getPostByIdTest() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_POST+Constants.URI_GETBYID, post.getId())
                 .contentType(MediaType.APPLICATION_JSON))

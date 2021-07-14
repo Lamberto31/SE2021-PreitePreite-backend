@@ -107,6 +107,8 @@ public class IPostServiceTest {
 
         when(postRepository.findByIsPrivateAndIsHidden(post.isPrivate(), post.isHidden())).thenReturn(postList);
 
+        when(postRepository.findByIsHidden( post.isHidden())).thenReturn(postList);
+
         this.user = new User();
         this.user.setName("testName");
         this.user.setSurname("testSurname");
@@ -270,6 +272,18 @@ public class IPostServiceTest {
     @Test
     void getByIsPrivateAndIsHiddenThrowsExTest() {
         Exception exp = assertThrows(PostNotFoundException.class, () -> postService.getByIsPrivateAndIsHidden(postNotFoundIsPrivate, postNotFoundIsPrivate));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getByIsHiddenTest() throws PostNotFoundException{
+        List<Post> postFoundList = postService.getByIsHidden(post.isHidden());
+        assertThat(postList.equals(postFoundList)).isTrue();
+    }
+
+    @Test
+    void getByIsHiddenThrowsExTest() {
+        Exception exp = assertThrows(PostNotFoundException.class, () -> postService.getByIsHidden(postNotFoundIsPrivate));
         assertThat(exp).isNotNull();
     }
 

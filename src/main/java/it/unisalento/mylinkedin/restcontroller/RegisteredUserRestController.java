@@ -135,6 +135,17 @@ public class RegisteredUserRestController {
         return postDTOList;
     }
 
+    @GetMapping(value = Constants.URI_POST+Constants.URI_GETSHOWN, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PostDTO> getPostPublic() throws PostNotFoundException {
+
+        List<Post> postList = postService.getByIsHidden(false);
+        List<PostDTO> postDTOList = new ArrayList<>();
+        for(Post post: postList) {
+            postDTOList.add(new PostDTO().convertToDto(post));
+        }
+        return postDTOList;
+    }
+
     @GetMapping(value = Constants.URI_POST+Constants.URI_GETBYID, produces = MediaType.APPLICATION_JSON_VALUE)
     public PostDTO getPostById(@PathVariable int id) throws PostNotFoundException {
 

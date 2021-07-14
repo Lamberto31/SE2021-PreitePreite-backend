@@ -84,6 +84,20 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     @Transactional(rollbackOn = PostNotFoundException.class)
+    public List<Post> getByIsHidden(boolean isHidden) throws PostNotFoundException {
+        try {
+            List<Post> postFoundList = postRepository.findByIsHidden(isHidden);
+            if (postFoundList.isEmpty()) {
+                throw new PostNotFoundException();
+            }
+            return postFoundList;
+        } catch (Exception e) {
+            throw new PostNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = PostNotFoundException.class)
     public void updateIsHidden(boolean isHidden, int id) throws PostNotFoundException {
         try {
             postRepository.findById(id).orElseThrow(PostNotFoundException::new);

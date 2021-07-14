@@ -70,9 +70,9 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     @Transactional(rollbackOn = PostNotFoundException.class)
-    public List<Post> getByIsPrivate(boolean isPrivate) throws PostNotFoundException {
+    public List<Post> getByIsPrivateAndIsHidden(boolean isPrivate, boolean isHidden) throws PostNotFoundException {
         try {
-            List<Post> postFoundList = postRepository.findByIsPrivate(isPrivate);
+            List<Post> postFoundList = postRepository.findByIsPrivateAndIsHidden(isPrivate, isHidden);
             if (postFoundList.isEmpty()) {
                 throw new PostNotFoundException();
             }

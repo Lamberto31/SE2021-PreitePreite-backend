@@ -116,7 +116,7 @@ public class UserRestController {
     @GetMapping(value = Constants.URI_POST+Constants.URI_GETPUBLIC, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PostDTO> getPostPublic() throws PostNotFoundException {
 
-        List<Post> postList = postService.getByIsPrivate(false);
+        List<Post> postList = postService.getByIsPrivateAndIsHidden(false, false);
         List<PostDTO> postDTOList = new ArrayList<>();
         for(Post post: postList) {
             postDTOList.add(new PostDTO().convertToDto(post));

@@ -108,6 +108,8 @@ public interface Constants {
 
     String S3_IMAGEPREFIX = "https://mylinkedinpp-picture.s3.amazonaws.com/";
 
+    String URI_USERINTERESTEDPOSTID = "/userInterestedPost/{userId}/{postId}";
+
 
     //AWS API GATEWAY REST URI
 

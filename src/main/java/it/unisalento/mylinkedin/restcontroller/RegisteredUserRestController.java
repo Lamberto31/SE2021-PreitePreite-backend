@@ -251,4 +251,19 @@ public class RegisteredUserRestController {
         NotificationToken notificationToken = userService.getNotificationTokenById(id);
         return new NotificationTokenDTO().convertToDto(notificationToken);
     }
+
+    @PostMapping(value=Constants.URI_POST+Constants.URI_SAVE +Constants.URI_USERINTERESTEDPOSTID, produces = MediaType.APPLICATION_JSON_VALUE)
+    public PostDTO saveUserInterestedPost(@PathVariable("userId") int userId, @PathVariable("postId") int postId) throws UserNotFoundException, PostNotFoundException, UserInterestedPostSavingException {
+
+        UserInterestedPost userInterestedPost= new UserInterestedPost();
+        User user = userService.getById(userId);
+        Post post = postService.getById(postId);
+
+        userInterestedPost.setUser(user);
+        userInterestedPost.setPost(post);
+
+        UserInterestedPost userInterestedPostSaved = postService.saveUserInterestedPost(userInterestedPost);
+
+        return new PostDTO().convertToDto(post);
+    }
 }

@@ -108,6 +108,10 @@ public interface Constants {
 
     String S3_IMAGEPREFIX = "https://mylinkedinpp-picture.s3.amazonaws.com/";
 
+    String S3_USERPROFILEIMAGEDEFAULT = "https://mylinkedinpp-picture.s3.amazonaws.com/UserProfileImageDefault.png";
+
+    String S3_COMPANYPROFILEIMAGEDEFAULT = "https://mylinkedinpp-picture.s3.amazonaws.com/CompanyProfileImageDefault.jpg";
+
     String URI_USERINTERESTEDPOSTID = "/userInterestedPost/{userId}/{postId}";
 
 

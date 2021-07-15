@@ -1,10 +1,7 @@
 package it.unisalento.mylinkedin.restcontroller;
 
 import it.unisalento.mylinkedin.configurations.Constants;
-import it.unisalento.mylinkedin.dto.CompanyDTO;
-import it.unisalento.mylinkedin.dto.PostDTO;
-import it.unisalento.mylinkedin.dto.ProfileImageDTO;
-import it.unisalento.mylinkedin.dto.UserDTO;
+import it.unisalento.mylinkedin.dto.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.user.*;
@@ -113,6 +110,16 @@ public class UserRestController {
         Offeror offeror =  userService.getOfferorById(offerorId);
         Company company = offeror.getCompany();
         return new CompanyDTO().convertToDto(company);
+    }
+
+    @GetMapping(value = Constants.URI_COMPANY+Constants.URI_GETALL, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<CompanyDTO> getAllCompany() {
+        List<Company> companyList = userService.getAllCompany();
+        List<CompanyDTO> companyDTOList = new ArrayList<>();
+        for(Company company: companyList) {
+            companyDTOList.add(new CompanyDTO().convertToDto(company));
+        }
+        return companyDTOList;
     }
 
     @GetMapping(value = Constants.URI_POST+Constants.URI_GETPUBLIC, produces = MediaType.APPLICATION_JSON_VALUE)

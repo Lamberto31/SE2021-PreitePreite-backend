@@ -60,9 +60,11 @@ public class IUserServiceTest {
     private User wrongUser;
     private int correctId;
     private Applicant applicant;
+    private Applicant wrongApplicant;
     private List<Applicant> applicantList;
     private String registeredUserNotFoundStatus;
     private Offeror offeror;
+    private Offeror wrongOfferor;
     private List<Offeror> offerorList;
     private String wrongUserRegisteredStatus;
 
@@ -122,6 +124,12 @@ public class IUserServiceTest {
         this.applicant.setDescription("testDescription");
         this.applicant.setStatus(Constants.REGISTRATION_PENDING);
 
+        when(applicantRepository.save(refEq(applicant))).thenReturn(applicant);
+
+        this.wrongApplicant = new Applicant();
+
+        when(applicantRepository.save(refEq(wrongApplicant))).thenThrow(IllegalArgumentException.class);
+
         when(applicantRepository.findById(correctId)).thenReturn(java.util.Optional.ofNullable(applicant));
 
         this.applicantList = new ArrayList<>();
@@ -141,6 +149,12 @@ public class IUserServiceTest {
         this.offeror.setBirthDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
         this.offeror.setDescription("testDescription");
         this.offeror.setStatus(Constants.REGISTRATION_PENDING);
+
+        when(offerorRepository.save(refEq(offeror))).thenReturn(offeror);
+
+        this.wrongOfferor = new Offeror();
+
+        when(offerorRepository.save(refEq(wrongOfferor))).thenThrow(IllegalArgumentException.class);
 
         when(offerorRepository.findById(correctId)).thenReturn(java.util.Optional.ofNullable(offeror));
 
@@ -337,6 +351,18 @@ public class IUserServiceTest {
     }
 
     @Test
+    void saveApplicantTest() throws UserSavingException {
+        Applicant applicantSaved = userService.saveApplicant(applicant);
+        assertThat(applicant.equals(applicantSaved)).isTrue();
+    }
+
+    @Test
+    void saveApplicantThrowsExTest() {
+        Exception exp = assertThrows(UserSavingException.class, () -> userService.saveApplicant(wrongApplicant));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
     void getAllApplicantTest() {
         assertThat(userService.getAllApplicant()).isNotNull();
     }
@@ -362,6 +388,18 @@ public class IUserServiceTest {
     @Test
     void getApplicantByStatusThrowsExTest() {
         Exception exp = assertThrows(UserNotFoundException.class, () -> userService.getApplicantByStatus(registeredUserNotFoundStatus));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void saveOfferorTest() throws UserSavingException {
+        Offeror offerorSaved = userService.saveOfferor(offeror);
+        assertThat(offeror.equals(offerorSaved)).isTrue();
+    }
+
+    @Test
+    void saveOfferorThrowsExTest() {
+        Exception exp = assertThrows(UserSavingException.class, () -> userService.saveOfferor(wrongOfferor));
         assertThat(exp).isNotNull();
     }
 

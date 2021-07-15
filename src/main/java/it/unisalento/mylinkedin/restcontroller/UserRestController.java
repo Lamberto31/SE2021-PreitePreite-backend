@@ -54,6 +54,24 @@ public class UserRestController {
         return userDTO;
     }
 
+    @PostMapping(value=Constants.URI_APPLICANT+Constants.URI_SAVE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ApplicantDTO saveApplicant(@RequestBody @Valid ApplicantDTO applicantDTO) throws UserSavingException, ParseException {
+
+        Applicant applicant = new Applicant().convertToEntity(applicantDTO);
+        Applicant applicantSaved = userService.saveApplicant(applicant);
+        applicantDTO.setId(applicantSaved.getId());
+        return applicantDTO;
+    }
+
+    @PostMapping(value=Constants.URI_OFFEROR+Constants.URI_SAVE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public OfferorDTO saveOfferor(@RequestBody @Valid OfferorDTO offerorDTO) throws UserSavingException, ParseException {
+
+        Offeror offeror = new Offeror().convertToEntity(offerorDTO);
+        Offeror offerorSaved = userService.saveOfferor(offeror);
+        offerorDTO.setId(offerorSaved.getId());
+        return offerorDTO;
+    }
+
     @GetMapping(value = Constants.URI_PROFILEIMAGE+Constants.URI_GETBYID, produces = MediaType.APPLICATION_JSON_VALUE)
     public ProfileImageDTO getProfileImageById(@PathVariable int id) throws ProfileImageNotFoundException {
 

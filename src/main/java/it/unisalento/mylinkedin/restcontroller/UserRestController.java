@@ -82,7 +82,7 @@ public class UserRestController {
     @PostMapping(value=Constants.URI_PROFILEIMAGE+Constants.URI_SAVE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ProfileImageDTO saveProfileImage(@RequestBody @Valid ProfileImageDTO profileImageDTO) throws ParseException, ProfileImageSavingException {
 
-        if (!profileImageDTO.getImagePath().equals(Constants.S3_USERPROFILEIMAGEDEFAULT) || !profileImageDTO.getImagePath().equals(Constants.S3_COMPANYPROFILEIMAGEDEFAULT)) {
+        if (!profileImageDTO.getImagePath().equals(Constants.S3_USERPROFILEIMAGEDEFAULT) && !profileImageDTO.getImagePath().equals(Constants.S3_COMPANYPROFILEIMAGEDEFAULT)) {
             String identifier = RandomStringUtils.randomAlphanumeric(64);
             if ( !s3Service.uploadFile(identifier, profileImageDTO.getImagePath())){
                 throw new ProfileImageSavingException();

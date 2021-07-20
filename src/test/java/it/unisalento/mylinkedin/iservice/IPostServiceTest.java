@@ -107,9 +107,9 @@ public class IPostServiceTest {
         this.postList = new ArrayList<>();
         postList.add(post);
 
-        when(postRepository.findByIsPrivateAndIsHidden(post.isPrivate(), post.isHidden())).thenReturn(postList);
+        when(postRepository.findByIsPrivateAndIsHiddenOrderByPubblicationDateDesc(post.isPrivate(), post.isHidden())).thenReturn(postList);
 
-        when(postRepository.findByIsHidden( post.isHidden())).thenReturn(postList);
+        when(postRepository.findByIsHiddenOrderByPubblicationDateDesc( post.isHidden())).thenReturn(postList);
 
         this.user = new User();
         this.user.setId(1);

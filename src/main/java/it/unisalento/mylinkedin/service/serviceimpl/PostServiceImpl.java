@@ -72,7 +72,7 @@ public class PostServiceImpl implements IPostService {
     @Transactional(rollbackOn = PostNotFoundException.class)
     public List<Post> getByIsPrivateAndIsHidden(boolean isPrivate, boolean isHidden) throws PostNotFoundException {
         try {
-            List<Post> postFoundList = postRepository.findByIsPrivateAndIsHidden(isPrivate, isHidden);
+            List<Post> postFoundList = postRepository.findByIsPrivateAndIsHiddenOrderByPubblicationDateDesc(isPrivate, isHidden);
             if (postFoundList.isEmpty()) {
                 throw new PostNotFoundException();
             }
@@ -86,7 +86,7 @@ public class PostServiceImpl implements IPostService {
     @Transactional(rollbackOn = PostNotFoundException.class)
     public List<Post> getByIsHidden(boolean isHidden) throws PostNotFoundException {
         try {
-            List<Post> postFoundList = postRepository.findByIsHidden(isHidden);
+            List<Post> postFoundList = postRepository.findByIsHiddenOrderByPubblicationDateDesc(isHidden);
             if (postFoundList.isEmpty()) {
                 throw new PostNotFoundException();
             }

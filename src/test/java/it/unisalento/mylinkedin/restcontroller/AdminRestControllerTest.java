@@ -87,6 +87,7 @@ public class AdminRestControllerTest {
         this.attributeDTO.setId(1);
         this.attributeDTO.setTitle("testTitle");
         this.attributeDTO.setType("testType");
+        this.attributeDTO.setRequired(true);
 
         this.attribute = new Attribute().convertToEntity(attributeDTO);
 

@@ -79,6 +79,8 @@ public class IPostServiceTest {
     private UserInterestedPost wrongUserInterestedPost;
     private User user;
     private List<User> userList;
+    private User correctUserInterested;
+    private UserInterestedPost wrongUserInterestedPost1;
 
     @BeforeEach
     void init() throws ParseException {
@@ -105,9 +107,12 @@ public class IPostServiceTest {
         this.postList = new ArrayList<>();
         postList.add(post);
 
-        when(postRepository.findByIsPrivate(post.isPrivate())).thenReturn(postList);
+        when(postRepository.findByIsPrivateAndIsHiddenOrderByPubblicationDateDesc(post.isPrivate(), post.isHidden())).thenReturn(postList);
+
+        when(postRepository.findByIsHiddenOrderByPubblicationDateDesc( post.isHidden())).thenReturn(postList);
 
         this.user = new User();
+        this.user.setId(1);
         this.user.setName("testName");
         this.user.setSurname("testSurname");
         this.user.setEmail("emailtest@test.com");
@@ -199,13 +204,18 @@ public class IPostServiceTest {
         when(structureAttributeRepository.findAttributeByStructure(structure.getId())).thenReturn(attributeList);
 
         //UserInterestedPost
+        this.correctUserInterested = new User();
+        this.correctUserInterested.setId(2);
+
         this.userInterestedPost = new UserInterestedPost();
-        this.userInterestedPost.setUser(user);
+        this.userInterestedPost.setUser(correctUserInterested);
         this.userInterestedPost.setPost(post);
 
         when(userInterestedPostRepository.save(refEq(userInterestedPost))).thenReturn(userInterestedPost);
 
         this.wrongUserInterestedPost = new UserInterestedPost();
+        this.wrongUserInterestedPost.setUser(user);
+        this.wrongUserInterestedPost.setPost(wrongPost);
 
         when(userInterestedPostRepository.save(refEq(wrongUserInterestedPost))).thenThrow(IllegalArgumentException.class);
 
@@ -217,6 +227,10 @@ public class IPostServiceTest {
         userList.add(user);
 
         when(userInterestedPostRepository.findUserByPost(correctId)).thenReturn(userList);
+
+        this.wrongUserInterestedPost1 = new UserInterestedPost();
+        this.wrongUserInterestedPost1.setUser(user);
+        this.wrongUserInterestedPost1.setPost(post);
     }
 
     //Post
@@ -262,14 +276,26 @@ public class IPostServiceTest {
     }
 
     @Test
-    void getByIsPrivateTest() throws PostNotFoundException{
-        List<Post> postFoundList = postService.getByIsPrivate(post.isPrivate());
+    void getByIsPrivateAndIsHiddenTest() throws PostNotFoundException{
+        List<Post> postFoundList = postService.getByIsPrivateAndIsHidden(post.isPrivate(), post.isHidden());
         assertThat(postList.equals(postFoundList)).isTrue();
     }
 
     @Test
-    void getByIsPrivateThrowsExTest() {
-        Exception exp = assertThrows(PostNotFoundException.class, () -> postService.getByIsPrivate(postNotFoundIsPrivate));
+    void getByIsPrivateAndIsHiddenThrowsExTest() {
+        Exception exp = assertThrows(PostNotFoundException.class, () -> postService.getByIsPrivateAndIsHidden(postNotFoundIsPrivate, postNotFoundIsPrivate));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getByIsHiddenTest() throws PostNotFoundException{
+        List<Post> postFoundList = postService.getByIsHidden(post.isHidden());
+        assertThat(postList.equals(postFoundList)).isTrue();
+    }
+
+    @Test
+    void getByIsHiddenThrowsExTest() {
+        Exception exp = assertThrows(PostNotFoundException.class, () -> postService.getByIsHidden(postNotFoundIsPrivate));
         assertThat(exp).isNotNull();
     }
 
@@ -522,6 +548,12 @@ public class IPostServiceTest {
     void saveUserInterestedPostTest() throws UserInterestedPostSavingException {
         UserInterestedPost userInterestedPostSaved = postService.saveUserInterestedPost(userInterestedPost);
         assertThat(userInterestedPost.equals(userInterestedPostSaved)).isTrue();
+    }
+
+    @Test
+    void saveUserInterestedPostThrowsAlreadyExTest() {
+        Exception exp = assertThrows(UserInterestedPostSavingException.class, () -> postService.saveUserInterestedPost(wrongUserInterestedPost1));
+        assertThat(exp).isNotNull();
     }
 
     @Test

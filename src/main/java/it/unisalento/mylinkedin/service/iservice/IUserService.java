@@ -19,6 +19,8 @@ public interface IUserService {
 
 
     //APPLICANT
+    Applicant saveApplicant(Applicant applicant) throws UserSavingException;
+
     List<Applicant> getAllApplicant();
 
     Applicant getApplicantById(int id) throws UserNotFoundException;
@@ -29,8 +31,9 @@ public interface IUserService {
 
 
     //OFFEROR
-    List<Offeror> getAllOfferor();
+    Offeror saveOfferor(Offeror offeror) throws UserSavingException;
 
+    List<Offeror> getAllOfferor();
 
     Offeror getOfferorById(int id) throws UserNotFoundException;
 

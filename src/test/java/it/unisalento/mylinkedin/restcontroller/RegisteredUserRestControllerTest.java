@@ -10,6 +10,7 @@ import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.post.CommentSavingException;
 import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.post.PostSavingException;
+import it.unisalento.mylinkedin.exception.post.UserInterestedPostSavingException;
 import it.unisalento.mylinkedin.exception.user.MessageSavingException;
 import it.unisalento.mylinkedin.exception.user.NotificationTokenNotFoundException;
 import it.unisalento.mylinkedin.exception.user.NotificationTokenSavingException;
@@ -61,9 +62,10 @@ public class RegisteredUserRestControllerTest {
     private Structure structure;
     private NotificationToken notificationToken;
     private NotificationTokenDTO notificationTokenDTO;
+    private UserInterestedPost userInterestedPost;
 
     @BeforeEach
-    void init() throws ParseException, MessageSavingException, UserNotFoundException, PostNotFoundException, PostSavingException, CommentSavingException, NotificationTokenSavingException, NotificationTokenNotFoundException {
+    void init() throws ParseException, MessageSavingException, UserNotFoundException, PostNotFoundException, PostSavingException, CommentSavingException, NotificationTokenSavingException, NotificationTokenNotFoundException, UserInterestedPostSavingException {
 
         this.messageDTO = new MessageDTO();
         this.messageDTO.setId(1);
@@ -127,6 +129,12 @@ public class RegisteredUserRestControllerTest {
         when(userServiceMock.saveNotificationToken(refEq(notificationToken))).thenReturn(notificationToken);
 
         when(userServiceMock.getNotificationTokenById(notificationToken.getId())).thenReturn(notificationToken);
+
+        this.userInterestedPost = new UserInterestedPost();
+        this.userInterestedPost.setUser(user);
+        this.userInterestedPost.setPost(post);
+
+        when(postServiceMock.saveUserInterestedPost(userInterestedPost)).thenReturn(userInterestedPost);
     }
 
     @Test
@@ -206,6 +214,14 @@ public class RegisteredUserRestControllerTest {
     @WithMockUser(roles = "REGISTEREDUSER")
     void getAllPostTest() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_POST+Constants.URI_GETALL)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
+    void getPostShownTest() throws Exception {
+        mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_POST+Constants.URI_GETSHOWN)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -297,6 +313,14 @@ public class RegisteredUserRestControllerTest {
     @WithMockUser(roles = "REGISTEREDUSER")
     void getNotificationTokenById() throws Exception {
         mockMvc.perform(get(Constants.URI_REGISTEREDUSER+Constants.URI_NOTIFICATIONTOKEN+Constants.URI_GETBYID, notificationToken.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "REGISTEREDUSER")
+    void saveUserInterestedPostTest() throws Exception {
+        mockMvc.perform(post(Constants.URI_REGISTEREDUSER + Constants.URI_POST + Constants.URI_SAVE + Constants.URI_USERINTERESTEDPOSTID, user.getId(), post.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

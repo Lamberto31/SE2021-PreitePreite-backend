@@ -2,9 +2,8 @@ package it.unisalento.mylinkedin.restcontroller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unisalento.mylinkedin.configurations.Constants;
-import it.unisalento.mylinkedin.dto.CompanyDTO;
-import it.unisalento.mylinkedin.dto.ProfileImageDTO;
-import it.unisalento.mylinkedin.dto.UserDTO;
+import it.unisalento.mylinkedin.dao.OfferorRepository;
+import it.unisalento.mylinkedin.dto.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.user.*;
@@ -23,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -60,9 +60,13 @@ public class UserRestControllerTest {
     private CompanyDTO companyDTO;
     private Offeror offeror;
     private Post post;
+    private ApplicantDTO applicantDTO;
+    private Applicant applicant;
+    private OfferorDTO offerorDTO;
+    private Offeror offeror1;
 
     @BeforeEach
-    void init() throws UserNotFoundException, UserSavingException, ProfileImageNotFoundException, ProfileImageSavingException, CompanyNotFoundException, CompanySavingException, PostNotFoundException {
+    void init() throws UserNotFoundException, UserSavingException, ProfileImageNotFoundException, ProfileImageSavingException, CompanyNotFoundException, CompanySavingException, PostNotFoundException, ParseException {
 
         this.user = new User();
         this.user.setId(1);
@@ -140,6 +144,38 @@ public class UserRestControllerTest {
 
         when(postServiceMock.getById(post.getId())).thenReturn(post);
         when(postServiceMock.getUser(refEq(post))).thenReturn(user);
+
+        this.applicantDTO = new ApplicantDTO();
+        this.applicantDTO.setName("testName");
+        this.applicantDTO.setSurname("testSurname");
+        this.applicantDTO.setEmail("emailtest@test.com");
+        this.applicantDTO.setPassword("testPassword");
+        this.applicantDTO.setDescription("testDescription");
+        this.applicantDTO.setStatus(Constants.REGISTRATION_PENDING);
+        this.applicantDTO.setFixedAttributes("testFixedAttributes");
+        this.applicantDTO.setType(Constants.TYPE_APPLICANT);
+        this.applicantDTO.setPasswordToVerify(applicantDTO.getPassword());
+        this.applicantDTO.setEmailToVerify(applicantDTO.getEmail());
+
+        this.applicant = new Applicant().convertToEntity(applicantDTO);
+
+        when(userServiceMock.saveApplicant(refEq(applicant))).thenReturn(applicant);
+
+        this.offerorDTO = new OfferorDTO();
+        this.offerorDTO.setName("testName");
+        this.offerorDTO.setSurname("testSurname");
+        this.offerorDTO.setEmail("emailtest@test.com");
+        this.offerorDTO.setPassword("testPassword");
+        this.offerorDTO.setDescription("testDescription");
+        this.offerorDTO.setStatus(Constants.REGISTRATION_PENDING);
+        this.offerorDTO.setType(Constants.TYPE_OFFEROR);
+        this.offerorDTO.setPasswordToVerify(offerorDTO.getPassword());
+        this.offerorDTO.setEmailToVerify(offerorDTO.getEmail());
+
+        this.offeror1 = new Offeror().convertToEntity(offerorDTO);
+
+        when(userServiceMock.saveOfferor(refEq(offeror1))).thenReturn(offeror1);
+
     }
 
     @Test
@@ -154,6 +190,22 @@ public class UserRestControllerTest {
         mockMvc.perform(post(Constants.URI_USER+Constants.URI_SAVE)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objMapper.writeValueAsString(userDTO)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void saveApplicantTest() throws Exception {
+        mockMvc.perform(post(Constants.URI_USER+Constants.URI_APPLICANT+Constants.URI_SAVE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objMapper.writeValueAsString(applicantDTO)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void saveOfferorTest() throws Exception {
+        mockMvc.perform(post(Constants.URI_USER+Constants.URI_OFFEROR+Constants.URI_SAVE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objMapper.writeValueAsString(offerorDTO)))
                 .andExpect(status().isOk());
     }
 
@@ -197,6 +249,13 @@ public class UserRestControllerTest {
     @Test
     void getCompanyByOfferorTest() throws Exception {
         mockMvc.perform(get(Constants.URI_USER+Constants.URI_COMPANY+Constants.URI_GETBYOFFERORID, offeror.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getAllCompanyTest() throws Exception {
+        mockMvc.perform(get(Constants.URI_USER+Constants.URI_COMPANY+Constants.URI_GETALL)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

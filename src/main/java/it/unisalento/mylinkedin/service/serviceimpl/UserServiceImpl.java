@@ -88,6 +88,16 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional(rollbackOn = UserSavingException.class)
+    public Applicant saveApplicant(Applicant applicant) throws UserSavingException {
+        try {
+            return applicantRepository.save(applicant);
+        } catch (Exception e) {
+            throw new UserSavingException();
+        }
+    }
+
+    @Override
     @Transactional
     public List<Applicant> getAllApplicant() {
         return applicantRepository.findAll();
@@ -110,6 +120,16 @@ public class UserServiceImpl implements IUserService {
             return applicantFoundList;
         } catch (Exception e) {
             throw new UserNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = UserSavingException.class)
+    public Offeror saveOfferor(Offeror offeror) throws UserSavingException {
+        try {
+            return offerorRepository.save(offeror);
+        } catch (Exception e) {
+            throw new UserSavingException();
         }
     }
 

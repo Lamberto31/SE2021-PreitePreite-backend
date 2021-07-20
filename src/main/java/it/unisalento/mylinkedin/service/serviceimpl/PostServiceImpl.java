@@ -70,9 +70,23 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     @Transactional(rollbackOn = PostNotFoundException.class)
-    public List<Post> getByIsPrivate(boolean isPrivate) throws PostNotFoundException {
+    public List<Post> getByIsPrivateAndIsHidden(boolean isPrivate, boolean isHidden) throws PostNotFoundException {
         try {
-            List<Post> postFoundList = postRepository.findByIsPrivate(isPrivate);
+            List<Post> postFoundList = postRepository.findByIsPrivateAndIsHiddenOrderByPubblicationDateDesc(isPrivate, isHidden);
+            if (postFoundList.isEmpty()) {
+                throw new PostNotFoundException();
+            }
+            return postFoundList;
+        } catch (Exception e) {
+            throw new PostNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = PostNotFoundException.class)
+    public List<Post> getByIsHidden(boolean isHidden) throws PostNotFoundException {
+        try {
+            List<Post> postFoundList = postRepository.findByIsHiddenOrderByPubblicationDateDesc(isHidden);
             if (postFoundList.isEmpty()) {
                 throw new PostNotFoundException();
             }
@@ -303,6 +317,14 @@ public class PostServiceImpl implements IPostService {
     @Override
     @Transactional(rollbackOn = UserInterestedPostSavingException.class)
     public UserInterestedPost saveUserInterestedPost(UserInterestedPost userInterestedPost) throws UserInterestedPostSavingException {
+        User newUserInterested = userInterestedPost.getUser();
+        List<User> UserAlreadyInterestedList = userInterestedPostRepository.findUserByPost(userInterestedPost.getPost().getId());
+
+        for(User userAlreadyInterested: UserAlreadyInterestedList) {
+            if (newUserInterested.getId() == userAlreadyInterested.getId()) {
+                throw new UserInterestedPostSavingException();
+            }
+        }
         try {
             return userInterestedPostRepository.save(userInterestedPost);
         } catch (Exception e) {

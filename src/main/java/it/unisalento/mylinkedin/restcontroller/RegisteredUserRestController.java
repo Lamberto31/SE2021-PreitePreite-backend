@@ -135,6 +135,17 @@ public class RegisteredUserRestController {
         return postDTOList;
     }
 
+    @GetMapping(value = Constants.URI_POST+Constants.URI_GETSHOWN, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PostDTO> getPostPublic() throws PostNotFoundException {
+
+        List<Post> postList = postService.getByIsHidden(false);
+        List<PostDTO> postDTOList = new ArrayList<>();
+        for(Post post: postList) {
+            postDTOList.add(new PostDTO().convertToDto(post));
+        }
+        return postDTOList;
+    }
+
     @GetMapping(value = Constants.URI_POST+Constants.URI_GETBYID, produces = MediaType.APPLICATION_JSON_VALUE)
     public PostDTO getPostById(@PathVariable int id) throws PostNotFoundException {
 
@@ -239,5 +250,20 @@ public class RegisteredUserRestController {
     public NotificationTokenDTO getNotificationTokenById(@PathVariable int id) throws NotificationTokenNotFoundException {
         NotificationToken notificationToken = userService.getNotificationTokenById(id);
         return new NotificationTokenDTO().convertToDto(notificationToken);
+    }
+
+    @PostMapping(value=Constants.URI_POST+Constants.URI_SAVE +Constants.URI_USERINTERESTEDPOSTID, produces = MediaType.APPLICATION_JSON_VALUE)
+    public PostDTO saveUserInterestedPost(@PathVariable("userId") int userId, @PathVariable("postId") int postId) throws UserNotFoundException, PostNotFoundException, UserInterestedPostSavingException {
+
+        UserInterestedPost userInterestedPost= new UserInterestedPost();
+        User user = userService.getById(userId);
+        Post post = postService.getById(postId);
+
+        userInterestedPost.setUser(user);
+        userInterestedPost.setPost(post);
+
+        UserInterestedPost userInterestedPostSaved = postService.saveUserInterestedPost(userInterestedPost);
+
+        return new PostDTO().convertToDto(post);
     }
 }

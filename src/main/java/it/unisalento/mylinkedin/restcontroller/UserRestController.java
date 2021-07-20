@@ -1,10 +1,7 @@
 package it.unisalento.mylinkedin.restcontroller;
 
 import it.unisalento.mylinkedin.configurations.Constants;
-import it.unisalento.mylinkedin.dto.CompanyDTO;
-import it.unisalento.mylinkedin.dto.PostDTO;
-import it.unisalento.mylinkedin.dto.ProfileImageDTO;
-import it.unisalento.mylinkedin.dto.UserDTO;
+import it.unisalento.mylinkedin.dto.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.user.*;
@@ -57,6 +54,24 @@ public class UserRestController {
         return userDTO;
     }
 
+    @PostMapping(value=Constants.URI_APPLICANT+Constants.URI_SAVE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ApplicantDTO saveApplicant(@RequestBody @Valid ApplicantDTO applicantDTO) throws UserSavingException, ParseException {
+
+        Applicant applicant = new Applicant().convertToEntity(applicantDTO);
+        Applicant applicantSaved = userService.saveApplicant(applicant);
+        applicantDTO.setId(applicantSaved.getId());
+        return applicantDTO;
+    }
+
+    @PostMapping(value=Constants.URI_OFFEROR+Constants.URI_SAVE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public OfferorDTO saveOfferor(@RequestBody @Valid OfferorDTO offerorDTO) throws UserSavingException, ParseException {
+
+        Offeror offeror = new Offeror().convertToEntity(offerorDTO);
+        Offeror offerorSaved = userService.saveOfferor(offeror);
+        offerorDTO.setId(offerorSaved.getId());
+        return offerorDTO;
+    }
+
     @GetMapping(value = Constants.URI_PROFILEIMAGE+Constants.URI_GETBYID, produces = MediaType.APPLICATION_JSON_VALUE)
     public ProfileImageDTO getProfileImageById(@PathVariable int id) throws ProfileImageNotFoundException {
 
@@ -67,11 +82,13 @@ public class UserRestController {
     @PostMapping(value=Constants.URI_PROFILEIMAGE+Constants.URI_SAVE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ProfileImageDTO saveProfileImage(@RequestBody @Valid ProfileImageDTO profileImageDTO) throws ParseException, ProfileImageSavingException {
 
-        String identifier = RandomStringUtils.randomAlphanumeric(64);
-        if ( !s3Service.uploadFile(identifier, profileImageDTO.getImagePath())){
-            throw new ProfileImageSavingException();
+        if (!profileImageDTO.getImagePath().equals(Constants.S3_USERPROFILEIMAGEDEFAULT) && !profileImageDTO.getImagePath().equals(Constants.S3_COMPANYPROFILEIMAGEDEFAULT)) {
+            String identifier = RandomStringUtils.randomAlphanumeric(64);
+            if ( !s3Service.uploadFile(identifier, profileImageDTO.getImagePath())){
+                throw new ProfileImageSavingException();
+            }
+            profileImageDTO.setImagePath(Constants.S3_IMAGEPREFIX+identifier);
         }
-        profileImageDTO.setImagePath(Constants.S3_IMAGEPREFIX+identifier);
         ProfileImage profileImage = new ProfileImage().convertToEntity(profileImageDTO);
         ProfileImage profileImageSaved = userService.saveProfileImage(profileImage);
         profileImageDTO.setId(profileImageSaved.getId());
@@ -113,10 +130,20 @@ public class UserRestController {
         return new CompanyDTO().convertToDto(company);
     }
 
+    @GetMapping(value = Constants.URI_COMPANY+Constants.URI_GETALL, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<CompanyDTO> getAllCompany() {
+        List<Company> companyList = userService.getAllCompany();
+        List<CompanyDTO> companyDTOList = new ArrayList<>();
+        for(Company company: companyList) {
+            companyDTOList.add(new CompanyDTO().convertToDto(company));
+        }
+        return companyDTOList;
+    }
+
     @GetMapping(value = Constants.URI_POST+Constants.URI_GETPUBLIC, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PostDTO> getPostPublic() throws PostNotFoundException {
 
-        List<Post> postList = postService.getByIsPrivate(false);
+        List<Post> postList = postService.getByIsPrivateAndIsHidden(false, false);
         List<PostDTO> postDTOList = new ArrayList<>();
         for(Post post: postList) {
             postDTOList.add(new PostDTO().convertToDto(post));

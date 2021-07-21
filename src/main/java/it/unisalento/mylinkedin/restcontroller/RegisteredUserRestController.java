@@ -277,12 +277,12 @@ public class RegisteredUserRestController {
 
         Date dateFirstDate = null;
         if (!firstDate.equals("null")) {
-            dateFirstDate = Constants.SIMPLE_DATE_FORMAT.parse(firstDate);
+            dateFirstDate = Constants.SIMPLE_DATE_FORMAT_ONLYDATE.parse(firstDate);
         }
 
         Date dateLastDate = null;
         if (!lastDate.equals("null")) {
-            dateLastDate = Constants.SIMPLE_DATE_FORMAT.parse(lastDate);
+            dateLastDate = Constants.SIMPLE_DATE_FORMAT_ONLYDATE.parse(lastDate);
         }
         if (skillIdentifier.equals("null")) {
             skillIdentifier = null;

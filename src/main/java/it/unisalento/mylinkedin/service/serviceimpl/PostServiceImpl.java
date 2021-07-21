@@ -154,7 +154,7 @@ public class PostServiceImpl implements IPostService {
                     continue;
                 }
 
-                if (dateFilter && !firstDate.before(post.getPubblicationDate()) || !lastDate.after(post.getPubblicationDate())) {
+                if (dateFilter && (!firstDate.before(post.getPubblicationDate()) || !lastDate.after(post.getPubblicationDate()))) {
                     postFoundList.remove(post);
                     continue;
                 }

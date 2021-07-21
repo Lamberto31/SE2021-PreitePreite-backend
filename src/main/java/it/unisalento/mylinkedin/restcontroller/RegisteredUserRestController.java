@@ -269,14 +269,26 @@ public class RegisteredUserRestController {
     }
 
     @GetMapping(value = Constants.URI_POST+Constants.URI_GETFILTEREDJOBOFFER, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PostDTO> getFilteredJobOffer(@PathVariable("offerorId") int offerorId, @PathVariable("firstDate") Date firstDate, @PathVariable("lastDate") Date lastDate, @PathVariable("skillIdentifier") String skillIdentifier) throws UserNotFoundException, PostNotFoundException {
-        User offeror;
-        if (offerorId == 0) {
-            offeror = null;
-        } else {
+    public List<PostDTO> getFilteredJobOffer(@PathVariable("offerorId") int offerorId, @PathVariable("firstDate") String firstDate, @PathVariable("lastDate") String lastDate, @PathVariable("skillIdentifier") String skillIdentifier) throws UserNotFoundException, PostNotFoundException, ParseException {
+        User offeror = null;
+        if (offerorId != 0) {
             offeror = userService.getById(offerorId);
         }
-        List<Post> postList = postService.getJobOfferByOfferorAndByPubblicationDateBetweenAndSkill(offeror, firstDate, lastDate, skillIdentifier);
+
+        Date dateFirstDate = null;
+        if (!firstDate.equals("null")) {
+            dateFirstDate = Constants.SIMPLE_DATE_FORMAT.parse(firstDate);
+        }
+
+        Date dateLastDate = null;
+        if (!lastDate.equals("null")) {
+            dateLastDate = Constants.SIMPLE_DATE_FORMAT.parse(lastDate);
+        }
+        if (skillIdentifier.equals("null")) {
+            skillIdentifier = null;
+        }
+
+        List<Post> postList = postService.getJobOfferByOfferorAndByPubblicationDateBetweenAndSkill(offeror, dateFirstDate, dateLastDate, skillIdentifier);
         List<PostDTO> postDTOList = new ArrayList<>();
         for(Post post: postList) {
             postDTOList.add(new PostDTO().convertToDto(post));

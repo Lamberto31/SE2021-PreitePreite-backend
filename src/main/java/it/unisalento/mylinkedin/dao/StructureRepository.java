@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface StructureRepository extends JpaRepository<Structure, Integer> {
     List<Structure> findByUserCanPublish(String userCanPublish);
+
+    Structure findByTitle(String title);
 }

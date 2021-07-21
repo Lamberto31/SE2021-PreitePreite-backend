@@ -270,8 +270,12 @@ public class RegisteredUserRestController {
 
     @GetMapping(value = Constants.URI_POST+Constants.URI_GETFILTEREDJOBOFFER, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PostDTO> getFilteredJobOffer(@PathVariable("offerorId") int offerorId, @PathVariable("firstDate") Date firstDate, @PathVariable("lastDate") Date lastDate, @PathVariable("skillIdentifier") String skillIdentifier) throws UserNotFoundException, PostNotFoundException {
-        User offeror = userService.getById(offerorId);
-
+        User offeror;
+        if (offerorId == 0) {
+            offeror = null;
+        } else {
+            offeror = userService.getById(offerorId);
+        }
         List<Post> postList = postService.getJobOfferByOfferorAndByPubblicationDateBetweenAndSkill(offeror, firstDate, lastDate, skillIdentifier);
         List<PostDTO> postDTOList = new ArrayList<>();
         for(Post post: postList) {

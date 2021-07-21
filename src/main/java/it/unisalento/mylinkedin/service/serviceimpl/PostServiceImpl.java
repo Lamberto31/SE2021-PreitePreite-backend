@@ -169,6 +169,9 @@ public class PostServiceImpl implements IPostService {
                     }
                 }
             }
+            if (filteredPostList.isEmpty()) {
+                throw new PostNotFoundException();
+            }
             return filteredPostList;
         } catch (Exception e) {
             throw new PostNotFoundException();

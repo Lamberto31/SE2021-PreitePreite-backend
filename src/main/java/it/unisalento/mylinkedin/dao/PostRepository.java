@@ -27,5 +27,5 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     List<Post> findAllByOrderByPubblicationDateDesc();
 
-    List<Post> findByStructureAndUserAndPubblicationDateBetween(Structure structure, User user, Date firstDate, Date lastDate);
+    List<Post> findByStructureAndIsHidden(Structure structure, boolean isHidden);
 }

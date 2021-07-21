@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -136,43 +135,60 @@ public class PostServiceImpl implements IPostService {
     @Transactional(rollbackOn = PostNotFoundException.class)
     public List<Post> getJobOfferByOfferorAndByPubblicationDateBetweenAndSkill(User offeror, Date firstDate, Date lastDate, String skillIdentifier) throws PostNotFoundException {
         try {
-            List<Post> filteredPostList = new ArrayList<>();
             Structure jobOffer = structureRepository.findByTitle("job offer");
-            List<Post> postFoundList = postRepository.findByStructureAndUserAndPubblicationDateBetween(jobOffer, offeror, firstDate, lastDate);
+            List<Post> postFoundList = postRepository.findByStructureAndIsHidden(jobOffer, false);
+
             if (postFoundList.isEmpty()) {
                 throw new PostNotFoundException();
             }
 
+            boolean userFilter = offeror != null;
+            boolean dateFilter = firstDate != null;
+            boolean skillFilter = skillIdentifier != null;
+
             ObjectMapper mapper = new ObjectMapper();
             for (Post post: postFoundList) {
-                List<Object> postDataList = mapper.readValue(post.getData(), new TypeReference<List<Object>>(){});
-                for (Object postData: postDataList){
-                    Class<?> postDataClass = postData.getClass();
 
-                    Field postDataTypeField = postDataClass.getField("type");
-                    Object postDataType = postDataTypeField.get(postData);
+                if (userFilter && post.getUser().getId() != offeror.getId()) {
+                    postFoundList.remove(post);
+                    continue;
+                }
 
-                    if (postDataType.equals("skills")) {
-                        Field postDataValueField = postDataClass.getField("value");
-                        List<Object> postDataSkillList = (List<Object>) postDataValueField.get(postData);
+                if (dateFilter && !firstDate.before(post.getPubblicationDate()) || !lastDate.after(post.getPubblicationDate())) {
+                    postFoundList.remove(post);
+                    continue;
+                }
 
-                        for (Object postDataSkill: postDataSkillList) {
-                            Class<?> postDataSkillClass = postDataSkill.getClass();
+                if (skillFilter) {
+                    List<Object> postDataList = mapper.readValue(post.getData(), new TypeReference<List<Object>>(){});
+                    for (Object postData: postDataList){
+                        Class<?> postDataClass = postData.getClass();
 
-                            Field postDataSkillIdentifierField = postDataSkillClass.getField("identifier");
-                            Object postDataSkillIdentifier = postDataSkillIdentifierField.get(postDataSkill);
+                        Field postDataTypeField = postDataClass.getField("type");
+                        Object postDataType = postDataTypeField.get(postData);
 
-                            if (postDataSkillIdentifier.equals(skillIdentifier)) {
-                                filteredPostList.add(post);
+                        if (postDataType.equals("skills")) {
+                            Field postDataValueField = postDataClass.getField("value");
+                            List<Object> postDataSkillList = (List<Object>) postDataValueField.get(postData);
+
+                            for (Object postDataSkill: postDataSkillList) {
+                                Class<?> postDataSkillClass = postDataSkill.getClass();
+
+                                Field postDataSkillIdentifierField = postDataSkillClass.getField("identifier");
+                                Object postDataSkillIdentifier = postDataSkillIdentifierField.get(postDataSkill);
+
+                                if (!postDataSkillIdentifier.equals(skillIdentifier)) {
+                                    postFoundList.remove(post);
+                                }
                             }
                         }
                     }
                 }
             }
-            if (filteredPostList.isEmpty()) {
+            if (postFoundList.isEmpty()) {
                 throw new PostNotFoundException();
             }
-            return filteredPostList;
+            return postFoundList;
         } catch (Exception e) {
             throw new PostNotFoundException();
         }

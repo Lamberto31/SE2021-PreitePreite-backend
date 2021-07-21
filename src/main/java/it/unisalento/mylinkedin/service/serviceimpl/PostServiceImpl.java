@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -147,6 +148,9 @@ public class PostServiceImpl implements IPostService {
             boolean dateFilter = firstDate != null;
             boolean skillFilter = skillIdentifier != null;
 
+
+            Timestamp firstDateTs = new Timestamp(firstDate.getTime());
+            Timestamp lastDateTs = new Timestamp(lastDate.getTime());
             ObjectMapper mapper = new ObjectMapper();
             for (Post post: postFoundList) {
 
@@ -155,7 +159,7 @@ public class PostServiceImpl implements IPostService {
                     continue;
                 }
 
-                if (dateFilter && (!firstDate.before(post.getPubblicationDate()) || !lastDate.after(post.getPubblicationDate()))) {
+                if (dateFilter && (!firstDateTs.before(post.getPubblicationDate()) || !lastDateTs.after(post.getPubblicationDate()))) {
                     postFilteredList.remove(post);
                     continue;
                 }

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -125,6 +126,22 @@ public class PostServiceImpl implements IPostService {
     @Transactional
     public List<Post> getAllOrderByPubblicationDateDesc() {
         return postRepository.findAllByOrderByPubblicationDateDesc();
+    }
+
+    @Override
+    @Transactional(rollbackOn = PostNotFoundException.class)
+    public List<Post> getJobOfferByOfferorAndByPubblicationDateBetweenAndSkill(User offeror, Date firstDate, Date lastDate, String skill) throws PostNotFoundException {
+        try {
+            Structure jobOffer = structureRepository.findByTitle("job offer");
+            List<Post> postFoundList = postRepository.findByStructureAndUserAndPubblicationDateBetween(jobOffer, offeror, firstDate, lastDate);
+            if (postFoundList.isEmpty()) {
+                throw new PostNotFoundException();
+            }
+            // TODO: implementare logica filtraggio skill con estrazione da JSON data e ricerca tramite skill ricevuta come perametro
+            return postFoundList;
+        } catch (Exception e) {
+            throw new PostNotFoundException();
+        }
     }
 
     @Override

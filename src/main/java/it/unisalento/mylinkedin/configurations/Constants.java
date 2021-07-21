@@ -91,6 +91,8 @@ public interface Constants {
 
     String URI_NOTIFICATIONTOKEN = "/notificationToken";
 
+    String URI_GETFILTEREDJOBOFFER = "/getByOfferorAndByPubblicationDateBetweenAndSkill/{offerorId}/{firstDate}/{lastDate}/{skillIdentifier}";
+
     //UserRestController
     String URI_USER = "/user";
 

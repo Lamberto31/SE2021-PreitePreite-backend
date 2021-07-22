@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -265,5 +266,33 @@ public class RegisteredUserRestController {
         UserInterestedPost userInterestedPostSaved = postService.saveUserInterestedPost(userInterestedPost);
 
         return new PostDTO().convertToDto(post);
+    }
+
+    @GetMapping(value = Constants.URI_POST+Constants.URI_GETFILTEREDJOBOFFER, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PostDTO> getFilteredJobOffer(@PathVariable("offerorId") int offerorId, @PathVariable("firstDate") String firstDate, @PathVariable("lastDate") String lastDate, @PathVariable("skillIdentifier") String skillIdentifier) throws UserNotFoundException, PostNotFoundException, ParseException {
+        User offeror = null;
+        if (offerorId != 0) {
+            offeror = userService.getById(offerorId);
+        }
+
+        Date dateFirstDate = null;
+        if (!firstDate.equals("null")) {
+            dateFirstDate = Constants.SIMPLE_DATE_FORMAT_ONLYDATE.parse(firstDate);
+        }
+
+        Date dateLastDate = null;
+        if (!lastDate.equals("null")) {
+            dateLastDate = Constants.SIMPLE_DATE_FORMAT_ONLYDATE.parse(lastDate);
+        }
+        if (skillIdentifier.equals("null")) {
+            skillIdentifier = null;
+        }
+
+        List<Post> postList = postService.getJobOfferByOfferorAndByPubblicationDateBetweenAndSkill(offeror, dateFirstDate, dateLastDate, skillIdentifier);
+        List<PostDTO> postDTOList = new ArrayList<>();
+        for(Post post: postList) {
+            postDTOList.add(new PostDTO().convertToDto(post));
+        }
+        return postDTOList;
     }
 }

@@ -40,6 +40,8 @@ public interface Constants {
     //Formato data
     String DATE_FORMAT = "dd/MM/yyyy HH:mm";
     SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT);
+    String DATE_FORMAT_ONLYDATE = "dd-MM-yyyy";
+    SimpleDateFormat SIMPLE_DATE_FORMAT_ONLYDATE = new SimpleDateFormat(DATE_FORMAT_ONLYDATE);
     String timezone = "Europe/Rome";
 
 
@@ -90,6 +92,8 @@ public interface Constants {
     String URI_GETBYSTRUCTURE = "/getByStructure/{structureId}";
 
     String URI_NOTIFICATIONTOKEN = "/notificationToken";
+
+    String URI_GETFILTEREDJOBOFFER = "/getByOfferorAndByPubblicationDateBetweenAndSkill/{offerorId}/{firstDate}/{lastDate}/{skillIdentifier}";
 
     //UserRestController
     String URI_USER = "/user";

@@ -1,5 +1,7 @@
 package it.unisalento.mylinkedin.service.serviceimpl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dao.*;
 import it.unisalento.mylinkedin.entities.*;
@@ -11,7 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class PostServiceImpl implements IPostService {
@@ -125,6 +131,76 @@ public class PostServiceImpl implements IPostService {
     @Transactional
     public List<Post> getAllOrderByPubblicationDateDesc() {
         return postRepository.findAllByOrderByPubblicationDateDesc();
+    }
+
+    @Override
+    @Transactional(rollbackOn = PostNotFoundException.class)
+    public List<Post> getJobOfferByOfferorAndByPubblicationDateBetweenAndSkill(User offeror, Date firstDate, Date lastDate, String skillIdentifier) throws PostNotFoundException {
+        try {
+            Structure jobOffer = structureRepository.findByTitle("job offer");
+            List<Post> postFoundList = postRepository.findByStructureAndIsHidden(jobOffer, false);
+            List<Post> postFilteredList = new ArrayList<>(postFoundList);
+
+            if (postFoundList.isEmpty()) {
+                throw new PostNotFoundException();
+            }
+
+            boolean userFilter = offeror != null;
+            boolean dateFilter = (firstDate != null || lastDate != null);
+            boolean skillFilter = skillIdentifier != null;
+
+            if (dateFilter) {
+                if (firstDate == null) {
+                    firstDate = Constants.SIMPLE_DATE_FORMAT_ONLYDATE.parse("00-00-0000");
+                } else if (lastDate == null) {
+                    lastDate = Constants.SIMPLE_DATE_FORMAT_ONLYDATE.parse(Constants.SIMPLE_DATE_FORMAT_ONLYDATE.format(new Date()));
+                }
+                lastDate.setTime(lastDate.getTime() + TimeUnit.HOURS.toMillis(23) + TimeUnit.MINUTES.toMillis(59) + TimeUnit.SECONDS.toMillis(59));
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            for (Post post: postFoundList) {
+
+                if (userFilter && post.getUser().getId() != offeror.getId()) {
+                    postFilteredList.remove(post);
+                    continue;
+                }
+
+                if(dateFilter) {
+                    if (!firstDate.before(post.getPubblicationDate())) {
+                        postFilteredList.remove(post);
+                        continue;
+                    } else if (!lastDate.after(post.getPubblicationDate())) {
+                        postFilteredList.remove(post);
+                        continue;
+                    }
+                }
+
+                if (skillFilter) {
+                    List<Post.Attributevalue> postDataList = mapper.readValue(post.getData(), new TypeReference<>() {
+                    });
+
+                    for (Post.Attributevalue postData: postDataList){
+                        if (postData.getType().equals("skills")) {
+                           List<Post.Skill> postDataSkillList = mapper.readValue(postData.getValue(), new TypeReference<>() {
+                           });
+
+                            for (Post.Skill postDataSkill: postDataSkillList) {
+                                if (!postDataSkill.getIdentifier().equals(skillIdentifier)) {
+                                    postFilteredList.remove(post);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (postFilteredList.isEmpty()) {
+                throw new PostNotFoundException();
+            }
+            return postFilteredList;
+        } catch (Exception e) {
+            throw new PostNotFoundException();
+        }
     }
 
     @Override

@@ -6,6 +6,7 @@ import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.post.*;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 
+import java.util.Date;
 import java.util.List;
 
 public interface IPostService {
@@ -26,6 +27,8 @@ public interface IPostService {
     User getUser(Post post) throws UserNotFoundException;
 
     List<Post> getAllOrderByPubblicationDateDesc();
+
+    List<Post> getJobOfferByOfferorAndByPubblicationDateBetweenAndSkill(User offeror, Date firstDate, Date lastDate, String skill) throws PostNotFoundException;
 
 
     //STRUCTURE

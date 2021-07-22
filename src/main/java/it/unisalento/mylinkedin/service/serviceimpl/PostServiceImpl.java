@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class PostServiceImpl implements IPostService {
@@ -148,9 +149,10 @@ public class PostServiceImpl implements IPostService {
             boolean dateFilter = firstDate != null;
             boolean skillFilter = skillIdentifier != null;
 
+            if (dateFilter) {
+                lastDate.setTime(lastDate.getTime() + TimeUnit.HOURS.toMillis(23) + TimeUnit.MINUTES.toMillis(59) + TimeUnit.SECONDS.toMillis(59));
+            }
 
-            Timestamp firstDateTs = new Timestamp(firstDate.getTime());
-            Timestamp lastDateTs = new Timestamp(lastDate.getTime());
             ObjectMapper mapper = new ObjectMapper();
             for (Post post: postFoundList) {
 
@@ -159,17 +161,24 @@ public class PostServiceImpl implements IPostService {
                     continue;
                 }
 
-                if (dateFilter && (!firstDateTs.before(post.getPubblicationDate()) || !lastDateTs.after(post.getPubblicationDate()))) {
-                    postFilteredList.remove(post);
-                    continue;
+                if(dateFilter) {
+                    if (!firstDate.before(post.getPubblicationDate())) {
+                        postFilteredList.remove(post);
+                        continue;
+                    } else if (!lastDate.after(post.getPubblicationDate())) {
+                        postFilteredList.remove(post);
+                        continue;
+                    }
                 }
 
                 if (skillFilter) {
-                    List<Post.Attributevalue> postDataList = mapper.readValue(post.getData(), new TypeReference<List<Post.Attributevalue>>(){});
+                    List<Post.Attributevalue> postDataList = mapper.readValue(post.getData(), new TypeReference<>() {
+                    });
 
                     for (Post.Attributevalue postData: postDataList){
                         if (postData.getType().equals("skills")) {
-                           List<Post.Skill> postDataSkillList = mapper.readValue(postData.getValue(), new TypeReference<List<Post.Skill>>(){});
+                           List<Post.Skill> postDataSkillList = mapper.readValue(postData.getValue(), new TypeReference<>() {
+                           });
 
                             for (Post.Skill postDataSkill: postDataSkillList) {
                                 if (!postDataSkill.getIdentifier().equals(skillIdentifier)) {

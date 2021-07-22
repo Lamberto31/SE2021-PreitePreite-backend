@@ -146,10 +146,15 @@ public class PostServiceImpl implements IPostService {
             }
 
             boolean userFilter = offeror != null;
-            boolean dateFilter = firstDate != null;
+            boolean dateFilter = (firstDate != null || lastDate != null);
             boolean skillFilter = skillIdentifier != null;
 
             if (dateFilter) {
+                if (firstDate == null) {
+                    firstDate = Constants.SIMPLE_DATE_FORMAT_ONLYDATE.parse("00-00-0000");
+                } else if (lastDate == null) {
+                    lastDate = Constants.SIMPLE_DATE_FORMAT_ONLYDATE.parse(Constants.SIMPLE_DATE_FORMAT_ONLYDATE.format(new Date()));
+                }
                 lastDate.setTime(lastDate.getTime() + TimeUnit.HOURS.toMillis(23) + TimeUnit.MINUTES.toMillis(59) + TimeUnit.SECONDS.toMillis(59));
             }
 

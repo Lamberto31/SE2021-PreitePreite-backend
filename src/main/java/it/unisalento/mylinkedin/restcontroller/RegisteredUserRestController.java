@@ -242,8 +242,14 @@ public class RegisteredUserRestController {
     @PostMapping(value=Constants.URI_NOTIFICATIONTOKEN+Constants.URI_SAVE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public NotificationTokenDTO saveNotificationToken(@RequestBody @Valid NotificationTokenDTO notificationTokenDTO) throws NotificationTokenSavingException {
         NotificationToken notificationToken = new NotificationToken().convertToEntity(notificationTokenDTO);
-        NotificationToken notificationTokenSaved = userService.saveNotificationToken(notificationToken);
-        notificationTokenDTO.setId(notificationTokenSaved.getId());
+
+        try {
+            NotificationToken notificationTokenFound = userService.getNotificationTokenByToken(notificationToken.getToken());
+        } catch (NotificationTokenNotFoundException e) {
+            NotificationToken notificationTokenSaved = userService.saveNotificationToken(notificationToken);
+            notificationTokenDTO.setId(notificationTokenSaved.getId());
+            return notificationTokenDTO;
+        }
         return notificationTokenDTO;
     }
 

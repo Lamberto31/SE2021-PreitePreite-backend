@@ -12,4 +12,6 @@ import java.util.List;
 public interface UserInterestedPostRepository extends JpaRepository<UserInterestedPost, Integer> {
     @Query("select u.user from UserInterestedPost u where u.post.id= :postId")
     List<User> findUserByPost(int postId);
+
+    List<UserInterestedPost> findByIsAlreadyNotified(boolean alreadyNotified);
 }

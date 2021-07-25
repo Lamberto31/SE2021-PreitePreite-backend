@@ -4,6 +4,7 @@ package it.unisalento.mylinkedin.service.iservice;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.post.*;
+import it.unisalento.mylinkedin.exception.user.NotificationNotSentException;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 
 import java.util.Date;
@@ -87,4 +88,6 @@ public interface IPostService {
     UserInterestedPost deleteUserInterestedPost(UserInterestedPost userInterestedPost) throws UserInterestedPostNotFoundException;
 
     List<User> getUserByInterestedPost(Post post) throws UserNotFoundException;
+
+    void updateUserInterestedPostIsNotified() throws UserInterestedPostNotFoundException, NotificationNotSentException;
 }

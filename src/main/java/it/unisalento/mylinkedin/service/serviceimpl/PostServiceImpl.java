@@ -7,10 +7,12 @@ import it.unisalento.mylinkedin.dao.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.post.*;
+import it.unisalento.mylinkedin.exception.user.NotificationNotSentException;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -449,6 +451,47 @@ public class PostServiceImpl implements IPostService {
             return userFoundList;
         } catch (Exception e) {
             throw new UserNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = UserInterestedPostNotFoundException.class)
+    @Scheduled()
+    public void updateUserInterestedPostIsNotified() throws UserInterestedPostNotFoundException, NotificationNotSentException {
+        List<UserInterestedPost> userInterestedPostList = userInterestedPostRepository.findByIsNotified(false);
+
+        HashMap<User, List<Post>> notificationList = new HashMap<>();
+
+        // Costruzione lista con utenti e post da notificare
+        for (UserInterestedPost userInterestedPost: userInterestedPostList) {
+
+            Optional<Post> post = postRepository.findById(userInterestedPost.getPost().getId());
+            if (post.isEmpty()) {
+                throw new UserInterestedPostNotFoundException();
+            }
+
+            User user = post.get().getUser();
+            if (notificationList.containsKey(user)) {
+                List<Post> notifications = notificationList.get(user);
+                notifications.add(post.get());
+            } else {
+                notificationList.put(user, Arrays.asList(post.get()));
+            }
+        }
+
+        // Costruzione ed invio bulk notification
+        for (User user : notificationList.keySet()) {
+            String notificationTitle = "Today some users have shown interest on your post!";
+            String notificationBody = "Here is the list of posts:";
+            List<User> notificationUserList = new ArrayList<>(Collections.singletonList(user));
+            for (Post post: notificationList.get(user)) {
+                notificationBody = notificationBody.concat(System.getProperty("line.separator"));
+                notificationBody = notificationBody.concat("- "+ post.getTitle());
+            }
+            userService.sendAwsPushNotification(notificationTitle, notificationBody, notificationUserList);
+        }
+        for (UserInterestedPost userInterestedPost: userInterestedPostList) {
+            userInterestedPostRepository.updateIsNotified(true, userInterestedPost.getId());
         }
     }
 }

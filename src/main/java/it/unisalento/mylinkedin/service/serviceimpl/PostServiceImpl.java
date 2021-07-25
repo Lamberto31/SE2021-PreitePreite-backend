@@ -456,7 +456,7 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     @Transactional(rollbackOn = UserInterestedPostNotFoundException.class)
-    @Scheduled()
+    @Scheduled(cron = "0 0 18 * * MON-FRI")
     public void updateUserInterestedPostIsNotified() throws UserInterestedPostNotFoundException, NotificationNotSentException {
         List<UserInterestedPost> userInterestedPostList = userInterestedPostRepository.findByIsNotified(false);
 

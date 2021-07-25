@@ -129,6 +129,8 @@ public class IPostServiceTest {
         this.structure.setDescription("testDescription");
         this.structure.setUserCanPublish(Constants.CAN_PUBLISH_BOTH);
 
+        this.post.setStructure(structure);
+
         when(structureRepository.save(refEq(structure))).thenReturn(structure);
 
         this.wrongStructure = new Structure();
@@ -206,12 +208,16 @@ public class IPostServiceTest {
         //UserInterestedPost
         this.correctUserInterested = new User();
         this.correctUserInterested.setId(2);
+        this.correctUserInterested.setName("testName");
+        this.correctUserInterested.setSurname("testSurname");
+
 
         this.userInterestedPost = new UserInterestedPost();
         this.userInterestedPost.setUser(correctUserInterested);
         this.userInterestedPost.setPost(post);
 
         when(userInterestedPostRepository.save(refEq(userInterestedPost))).thenReturn(userInterestedPost);
+        when(postRepository.findById(userInterestedPost.getPost().getId())).thenReturn(java.util.Optional.ofNullable(post));
 
         this.wrongUserInterestedPost = new UserInterestedPost();
         this.wrongUserInterestedPost.setUser(user);

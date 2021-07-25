@@ -9,14 +9,12 @@ import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.post.*;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
+import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -39,6 +37,9 @@ public class PostServiceImpl implements IPostService {
 
     @Autowired
     UserInterestedPostRepository userInterestedPostRepository;
+
+    @Autowired
+    IUserService userService;
 
 
     @Override
@@ -402,7 +403,19 @@ public class PostServiceImpl implements IPostService {
             }
         }
         try {
-            return userInterestedPostRepository.save(userInterestedPost);
+            UserInterestedPost userInterestedPostSaved = userInterestedPostRepository.save(userInterestedPost);
+
+            Optional<Post> post = postRepository.findById(userInterestedPostSaved.getPost().getId());
+            if (post.isEmpty()) {
+                throw new UserInterestedPostSavingException();
+            }
+
+            String notificationTitle = "New user is interested in your post!";
+            String notificationBody = "User "+ newUserInterested.getName() + newUserInterested.getSurname() +" is interested in your "+ post.get().getStructure().getTitle() +"! ";
+            User notificationUser = post.get().getUser();
+            List<User> notificationUserList = new ArrayList<>(Collections.singletonList(notificationUser));
+            userService.sendAwsPushNotification(notificationTitle, notificationBody, notificationUserList);
+            return userInterestedPostSaved;
         } catch (Exception e) {
             throw new UserInterestedPostSavingException();
         }

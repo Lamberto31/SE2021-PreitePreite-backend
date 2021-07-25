@@ -19,5 +19,5 @@ public interface UserInterestedPostRepository extends JpaRepository<UserInterest
 
     @Modifying
     @Query("update UserInterestedPost u set u.isNotified = :isNotified where u.id = :id")
-    void updateIsHidden(@Param("isNotified") boolean isNotified, @Param("id") int id);
+    void updateIsNotified(@Param("isNotified") boolean isNotified, @Param("id") int id);
 }

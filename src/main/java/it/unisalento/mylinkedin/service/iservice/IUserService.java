@@ -100,4 +100,6 @@ public interface IUserService {
     NotificationToken getNotificationTokenByToken(String token) throws  NotificationTokenNotFoundException;
 
     NotificationToken saveAwsEndpointArn(NotificationToken notificationToken) throws NotificationTokenSavingException;
+
+    List<User> sendAwsPushNotification(String title, String body, List<User> userList) throws NotificationNotSentException;
 }

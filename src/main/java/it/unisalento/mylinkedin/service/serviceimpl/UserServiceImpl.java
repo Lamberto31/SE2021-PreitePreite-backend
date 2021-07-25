@@ -476,4 +476,25 @@ public class UserServiceImpl implements IUserService {
             throw new NotificationTokenSavingException();
         }
     }
+
+    @Override
+    @Transactional(rollbackOn = NotificationNotSentException.class)
+    public List<User> sendAwsPushNotification(String title, String body, List<User> userList) throws NotificationNotSentException {
+        RestTemplate restTemplate = new RestTemplate();
+
+        String uri = Constants.AWS_URI_API + Constants.AWS_URI_PUSHNOTIFICATION;
+
+        try {
+            for (User user: userList) {
+                List<NotificationToken> notificationTokenList = notificationTokenRepository.findByUser(user);
+                for (NotificationToken notificationToken: notificationTokenList) {
+                    String reqBody = "{\"title\": \"" + title + "\",\"body\": \""+ body +"\",\"endpointArn\": \"" + notificationToken.getAwsEndpointArn() +"\"}";
+                    restTemplate.postForObject(uri, reqBody, String.class);
+                }
+            }
+            return userList;
+        } catch (RestClientException e) {
+            throw new NotificationNotSentException();
+        }
+    }
 }

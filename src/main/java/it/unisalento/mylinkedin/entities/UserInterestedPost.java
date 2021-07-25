@@ -6,9 +6,9 @@ import javax.persistence.*;
 public class UserInterestedPost {
     public UserInterestedPost() {}
 
-    public UserInterestedPost(int id, boolean alreadyNotified, User user, Post post) {
+    public UserInterestedPost(int id, boolean isNotified, User user, Post post) {
         this.id = id;
-        this.alreadyNotified = alreadyNotified;
+        this.isNotified = isNotified;
         this.user = user;
         this.post = post;
     }
@@ -16,7 +16,7 @@ public class UserInterestedPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
-    boolean alreadyNotified;
+    boolean isNotified;
 
     @ManyToOne(optional = false)
     User user;
@@ -31,12 +31,12 @@ public class UserInterestedPost {
         this.id = id;
     }
 
-    public boolean isAlreadyNotified() {
-        return alreadyNotified;
+    public boolean isNotified() {
+        return isNotified;
     }
 
-    public void setAlreadyNotified(boolean alreadyNotified) {
-        this.alreadyNotified = alreadyNotified;
+    public void setNotified(boolean alreadyNotified) {
+        this.isNotified = alreadyNotified;
     }
 
     public User getUser() {

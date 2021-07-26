@@ -469,6 +469,9 @@ public class PostServiceImpl implements IPostService {
             if (post.isEmpty()) {
                 throw new UserInterestedPostNotFoundException();
             }
+            if (!post.get().getStructure().getTitle().equals("job offer")) {
+                continue;
+            }
 
             User user = post.get().getUser();
             if (notificationList.containsKey(user)) {

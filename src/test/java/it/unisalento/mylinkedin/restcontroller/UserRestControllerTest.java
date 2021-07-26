@@ -93,7 +93,7 @@ public class UserRestControllerTest {
         this.profileImageDTO = new ProfileImageDTO().convertToDto(profileImage);
 
         when(userServiceMock.saveProfileImage(refEq(profileImage, "imagePath"))).thenReturn(profileImage);
-        when(s3ServiceMock.uploadFile(anyString(),eq(profileImage.getImagePath()))).thenReturn(true);
+        // when(s3ServiceMock.uploadFile(anyString(),eq(profileImage.getImagePath()))).thenReturn(true);
 
         this.profileImageList = new ArrayList<>();
         this.profileImageList.add(profileImage);

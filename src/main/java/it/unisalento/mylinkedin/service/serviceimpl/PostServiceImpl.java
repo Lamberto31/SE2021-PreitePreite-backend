@@ -456,8 +456,9 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     @Transactional(rollbackOn = UserInterestedPostNotFoundException.class)
-    @Scheduled(cron = "0 0 18 * * MON-FRI")
+    @Scheduled(cron = "0 * * ? * * *")
     public void updateUserInterestedPostIsNotified() throws UserInterestedPostNotFoundException, NotificationNotSentException {
+        System.out.println("Sto eseguendo il service schedulato");
         List<UserInterestedPost> userInterestedPostList = userInterestedPostRepository.findByIsNotified(false);
 
         HashMap<User, List<Post>> notificationList = new HashMap<>();

@@ -413,7 +413,7 @@ public class PostServiceImpl implements IPostService {
             }
 
             String notificationTitle = "New user is interested in your post!";
-            String notificationBody = "User "+ newUserInterested.getName() + newUserInterested.getSurname() +" is interested in your "+ post.get().getStructure().getTitle() +"! ";
+            String notificationBody = "User "+ newUserInterested.getName() + " " + newUserInterested.getSurname() +" is interested in your "+ post.get().getStructure().getTitle() +"! ";
             User notificationUser = post.get().getUser();
             List<User> notificationUserList = new ArrayList<>(Collections.singletonList(notificationUser));
             userService.sendAwsPushNotification(notificationTitle, notificationBody, notificationUserList);

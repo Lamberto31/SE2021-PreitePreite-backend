@@ -24,6 +24,7 @@ public class Attribute {
 
     String title;
     String type;
+    Boolean required;
 
     @OneToMany(mappedBy = "attribute", targetEntity = StructureAttribute.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<StructureAttribute> structureAttributeList;
@@ -50,6 +51,14 @@ public class Attribute {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Boolean getRequired() {
+        return required;
+    }
+
+    public void setRequired(Boolean required) {
+        this.required = required;
     }
 
     public List<StructureAttribute> getStructureAttributeList() {

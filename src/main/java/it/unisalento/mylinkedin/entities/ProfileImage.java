@@ -29,7 +29,7 @@ public class ProfileImage {
     @Column(length = 500)
     String description;
     Date pubblicationDate;
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     String imagePath;
 
     @ManyToOne()

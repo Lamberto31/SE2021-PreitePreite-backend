@@ -40,6 +40,8 @@ public interface Constants {
     //Formato data
     String DATE_FORMAT = "dd/MM/yyyy HH:mm";
     SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT);
+    String DATE_FORMAT_ONLYDATE = "dd-MM-yyyy";
+    SimpleDateFormat SIMPLE_DATE_FORMAT_ONLYDATE = new SimpleDateFormat(DATE_FORMAT_ONLYDATE);
     String timezone = "Europe/Rome";
 
 
@@ -89,6 +91,10 @@ public interface Constants {
 
     String URI_GETBYSTRUCTURE = "/getByStructure/{structureId}";
 
+    String URI_NOTIFICATIONTOKEN = "/notificationToken";
+
+    String URI_GETFILTEREDJOBOFFER = "/getByOfferorAndByPubblicationDateBetweenAndSkill/{offerorId}/{firstDate}/{lastDate}/{skillIdentifier}";
+
     //UserRestController
     String URI_USER = "/user";
 
@@ -100,8 +106,25 @@ public interface Constants {
 
     String URI_GETPUBLIC = "/getPublic";
 
+    String URI_GETSHOWN = "/getShown";
+
     String URI_GETBYINTERESTED = "/getByInterested/{postId}";
 
-    // String S3_IMAGEPREFIX = "https://mylinkedinpp-picture.s3.amazonaws.com/";
+  
+    //String S3_IMAGEPREFIX = "https://mylinkedinpp-picture.s3.amazonaws.com/";
 
+    //String S3_USERPROFILEIMAGEDEFAULT = "https://mylinkedinpp-picture.s3.amazonaws.com/UserProfileImageDefault.png";
+
+    //String S3_COMPANYPROFILEIMAGEDEFAULT = "https://mylinkedinpp-picture.s3.amazonaws.com/CompanyProfileImageDefault.jpg";
+
+    String URI_USERINTERESTEDPOSTID = "/userInterestedPost/{userId}/{postId}";
+
+
+    //AWS API GATEWAY REST URI
+
+    String AWS_URI_API = "https://9d9g5q4w06.execute-api.us-east-1.amazonaws.com/beta";
+
+    String AWS_URI_PUSHNOTIFICATION = "/pushNotification";
+
+    String AWS_URI_TOKEN = "/token";
 }

@@ -4,8 +4,10 @@ package it.unisalento.mylinkedin.service.iservice;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.post.*;
+import it.unisalento.mylinkedin.exception.user.NotificationNotSentException;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 
+import java.util.Date;
 import java.util.List;
 
 public interface IPostService {
@@ -17,13 +19,17 @@ public interface IPostService {
 
     Post delete(Post post) throws PostNotFoundException;
 
-    List<Post> getByIsPrivate(boolean isPrivate) throws PostNotFoundException;
+    List<Post> getByIsPrivateAndIsHidden(boolean isPrivate, boolean isHidden) throws PostNotFoundException;
+
+    List<Post> getByIsHidden(boolean isHidden) throws PostNotFoundException;
 
     void updateIsHidden(boolean isHidden, int id) throws PostNotFoundException, InvalidValueException;
 
     User getUser(Post post) throws UserNotFoundException;
 
     List<Post> getAllOrderByPubblicationDateDesc();
+
+    List<Post> getJobOfferByOfferorAndByPubblicationDateBetweenAndSkill(User offeror, Date firstDate, Date lastDate, String skill) throws PostNotFoundException;
 
 
     //STRUCTURE
@@ -82,4 +88,6 @@ public interface IPostService {
     UserInterestedPost deleteUserInterestedPost(UserInterestedPost userInterestedPost) throws UserInterestedPostNotFoundException;
 
     List<User> getUserByInterestedPost(Post post) throws UserNotFoundException;
+
+    void updateUserInterestedPostIsNotified() throws UserInterestedPostNotFoundException, NotificationNotSentException;
 }

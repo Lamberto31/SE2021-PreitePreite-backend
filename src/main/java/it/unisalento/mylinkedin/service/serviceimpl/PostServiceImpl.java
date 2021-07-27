@@ -1,18 +1,23 @@
 package it.unisalento.mylinkedin.service.serviceimpl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dao.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.post.*;
-import it.unisalento.mylinkedin.exception.user.MessageNotFoundException;
+import it.unisalento.mylinkedin.exception.user.NotificationNotSentException;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
+import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class PostServiceImpl implements IPostService {
@@ -34,6 +39,9 @@ public class PostServiceImpl implements IPostService {
 
     @Autowired
     UserInterestedPostRepository userInterestedPostRepository;
+
+    @Autowired
+    IUserService userService;
 
 
     @Override
@@ -71,9 +79,23 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     @Transactional(rollbackOn = PostNotFoundException.class)
-    public List<Post> getByIsPrivate(boolean isPrivate) throws PostNotFoundException {
+    public List<Post> getByIsPrivateAndIsHidden(boolean isPrivate, boolean isHidden) throws PostNotFoundException {
         try {
-            List<Post> postFoundList = postRepository.findByIsPrivate(isPrivate);
+            List<Post> postFoundList = postRepository.findByIsPrivateAndIsHiddenOrderByPubblicationDateDesc(isPrivate, isHidden);
+            if (postFoundList.isEmpty()) {
+                throw new PostNotFoundException();
+            }
+            return postFoundList;
+        } catch (Exception e) {
+            throw new PostNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = PostNotFoundException.class)
+    public List<Post> getByIsHidden(boolean isHidden) throws PostNotFoundException {
+        try {
+            List<Post> postFoundList = postRepository.findByIsHiddenOrderByPubblicationDateDesc(isHidden);
             if (postFoundList.isEmpty()) {
                 throw new PostNotFoundException();
             }
@@ -112,6 +134,76 @@ public class PostServiceImpl implements IPostService {
     @Transactional
     public List<Post> getAllOrderByPubblicationDateDesc() {
         return postRepository.findAllByOrderByPubblicationDateDesc();
+    }
+
+    @Override
+    @Transactional(rollbackOn = PostNotFoundException.class)
+    public List<Post> getJobOfferByOfferorAndByPubblicationDateBetweenAndSkill(User offeror, Date firstDate, Date lastDate, String skillIdentifier) throws PostNotFoundException {
+        try {
+            Structure jobOffer = structureRepository.findByTitle("job offer");
+            List<Post> postFoundList = postRepository.findByStructureAndIsHidden(jobOffer, false);
+            List<Post> postFilteredList = new ArrayList<>(postFoundList);
+
+            if (postFoundList.isEmpty()) {
+                throw new PostNotFoundException();
+            }
+
+            boolean userFilter = offeror != null;
+            boolean dateFilter = (firstDate != null || lastDate != null);
+            boolean skillFilter = skillIdentifier != null;
+
+            if (dateFilter) {
+                if (firstDate == null) {
+                    firstDate = Constants.SIMPLE_DATE_FORMAT_ONLYDATE.parse("00-00-0000");
+                } else if (lastDate == null) {
+                    lastDate = Constants.SIMPLE_DATE_FORMAT_ONLYDATE.parse(Constants.SIMPLE_DATE_FORMAT_ONLYDATE.format(new Date()));
+                }
+                lastDate.setTime(lastDate.getTime() + TimeUnit.HOURS.toMillis(23) + TimeUnit.MINUTES.toMillis(59) + TimeUnit.SECONDS.toMillis(59));
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            for (Post post: postFoundList) {
+
+                if (userFilter && post.getUser().getId() != offeror.getId()) {
+                    postFilteredList.remove(post);
+                    continue;
+                }
+
+                if(dateFilter) {
+                    if (!firstDate.before(post.getPubblicationDate())) {
+                        postFilteredList.remove(post);
+                        continue;
+                    } else if (!lastDate.after(post.getPubblicationDate())) {
+                        postFilteredList.remove(post);
+                        continue;
+                    }
+                }
+
+                if (skillFilter) {
+                    List<Post.Attributevalue> postDataList = mapper.readValue(post.getData(), new TypeReference<>() {
+                    });
+
+                    for (Post.Attributevalue postData: postDataList){
+                        if (postData.getType().equals("skills")) {
+                           List<Post.Skill> postDataSkillList = mapper.readValue(postData.getValue(), new TypeReference<>() {
+                           });
+
+                            for (Post.Skill postDataSkill: postDataSkillList) {
+                                if (!postDataSkill.getIdentifier().equals(skillIdentifier)) {
+                                    postFilteredList.remove(post);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (postFilteredList.isEmpty()) {
+                throw new PostNotFoundException();
+            }
+            return postFilteredList;
+        } catch (Exception e) {
+            throw new PostNotFoundException();
+        }
     }
 
     @Override
@@ -304,8 +396,28 @@ public class PostServiceImpl implements IPostService {
     @Override
     @Transactional(rollbackOn = UserInterestedPostSavingException.class)
     public UserInterestedPost saveUserInterestedPost(UserInterestedPost userInterestedPost) throws UserInterestedPostSavingException {
+        User newUserInterested = userInterestedPost.getUser();
+        List<User> UserAlreadyInterestedList = userInterestedPostRepository.findUserByPost(userInterestedPost.getPost().getId());
+
+        for(User userAlreadyInterested: UserAlreadyInterestedList) {
+            if (newUserInterested.getId() == userAlreadyInterested.getId()) {
+                throw new UserInterestedPostSavingException();
+            }
+        }
         try {
-            return userInterestedPostRepository.save(userInterestedPost);
+            UserInterestedPost userInterestedPostSaved = userInterestedPostRepository.save(userInterestedPost);
+
+            Optional<Post> post = postRepository.findById(userInterestedPostSaved.getPost().getId());
+            if (post.isEmpty()) {
+                throw new UserInterestedPostSavingException();
+            }
+
+            String notificationTitle = "New user is interested in your post!";
+            String notificationBody = "User "+ newUserInterested.getName() + " " + newUserInterested.getSurname() +" is interested in your "+ post.get().getStructure().getTitle() +"! ";
+            User notificationUser = post.get().getUser();
+            List<User> notificationUserList = new ArrayList<>(Collections.singletonList(notificationUser));
+            userService.sendAwsPushNotification(notificationTitle, notificationBody, notificationUserList);
+            return userInterestedPostSaved;
         } catch (Exception e) {
             throw new UserInterestedPostSavingException();
         }
@@ -339,6 +451,51 @@ public class PostServiceImpl implements IPostService {
             return userFoundList;
         } catch (Exception e) {
             throw new UserNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = UserInterestedPostNotFoundException.class)
+    @Scheduled(cron = "0 * * ? * * *")
+    public void updateUserInterestedPostIsNotified() throws UserInterestedPostNotFoundException, NotificationNotSentException {
+        System.out.println("Sto eseguendo il service schedulato");
+        List<UserInterestedPost> userInterestedPostList = userInterestedPostRepository.findByIsNotified(false);
+
+        HashMap<User, List<Post>> notificationList = new HashMap<>();
+
+        // Costruzione lista con utenti e post da notificare
+        for (UserInterestedPost userInterestedPost: userInterestedPostList) {
+
+            Optional<Post> post = postRepository.findById(userInterestedPost.getPost().getId());
+            if (post.isEmpty()) {
+                throw new UserInterestedPostNotFoundException();
+            }
+            if (!post.get().getStructure().getTitle().equals("job offer")) {
+                continue;
+            }
+
+            User user = post.get().getUser();
+            if (notificationList.containsKey(user)) {
+                List<Post> notifications = notificationList.get(user);
+                notifications.add(post.get());
+            } else {
+                notificationList.put(user, Arrays.asList(post.get()));
+            }
+        }
+
+        // Costruzione ed invio bulk notification
+        for (User user : notificationList.keySet()) {
+            String notificationTitle = "Today some users have shown interest on your post!";
+            String notificationBody = "Here is the list of posts:";
+            List<User> notificationUserList = new ArrayList<>(Collections.singletonList(user));
+            for (Post post: notificationList.get(user)) {
+                notificationBody = notificationBody.concat(System.getProperty("line.separator"));
+                notificationBody = notificationBody.concat("- "+ post.getTitle());
+            }
+            userService.sendAwsPushNotification(notificationTitle, notificationBody, notificationUserList);
+        }
+        for (UserInterestedPost userInterestedPost: userInterestedPostList) {
+            userInterestedPostRepository.updateIsNotified(true, userInterestedPost.getId());
         }
     }
 }

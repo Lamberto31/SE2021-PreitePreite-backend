@@ -5,9 +5,7 @@ import it.unisalento.mylinkedin.dto.*;
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
 import it.unisalento.mylinkedin.exception.post.*;
-import it.unisalento.mylinkedin.exception.user.MessageNotFoundException;
-import it.unisalento.mylinkedin.exception.user.MessageSavingException;
-import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
+import it.unisalento.mylinkedin.exception.user.*;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -137,6 +136,17 @@ public class RegisteredUserRestController {
         return postDTOList;
     }
 
+    @GetMapping(value = Constants.URI_POST+Constants.URI_GETSHOWN, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PostDTO> getPostPublic() throws PostNotFoundException {
+
+        List<Post> postList = postService.getByIsHidden(false);
+        List<PostDTO> postDTOList = new ArrayList<>();
+        for(Post post: postList) {
+            postDTOList.add(new PostDTO().convertToDto(post));
+        }
+        return postDTOList;
+    }
+
     @GetMapping(value = Constants.URI_POST+Constants.URI_GETBYID, produces = MediaType.APPLICATION_JSON_VALUE)
     public PostDTO getPostById(@PathVariable int id) throws PostNotFoundException {
 
@@ -227,5 +237,68 @@ public class RegisteredUserRestController {
 
         User user = userService.getById(id);
         return new UserDTO().convertToDto(user);
+    }
+
+    @PostMapping(value=Constants.URI_NOTIFICATIONTOKEN+Constants.URI_SAVE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public NotificationTokenDTO saveNotificationToken(@RequestBody @Valid NotificationTokenDTO notificationTokenDTO) throws NotificationTokenSavingException {
+        NotificationToken notificationToken = new NotificationToken().convertToEntity(notificationTokenDTO);
+
+        try {
+            NotificationToken notificationTokenFound = userService.getNotificationTokenByToken(notificationToken.getToken());
+        } catch (NotificationTokenNotFoundException e) {
+            NotificationToken notificationTokenSaved = userService.saveNotificationToken(notificationToken);
+            notificationTokenDTO.setId(notificationTokenSaved.getId());
+            return notificationTokenDTO;
+        }
+        return notificationTokenDTO;
+    }
+
+    @GetMapping(value = Constants.URI_NOTIFICATIONTOKEN+Constants.URI_GETBYID, produces = MediaType.APPLICATION_JSON_VALUE)
+    public NotificationTokenDTO getNotificationTokenById(@PathVariable int id) throws NotificationTokenNotFoundException {
+        NotificationToken notificationToken = userService.getNotificationTokenById(id);
+        return new NotificationTokenDTO().convertToDto(notificationToken);
+    }
+
+    @PostMapping(value=Constants.URI_POST+Constants.URI_SAVE +Constants.URI_USERINTERESTEDPOSTID, produces = MediaType.APPLICATION_JSON_VALUE)
+    public PostDTO saveUserInterestedPost(@PathVariable("userId") int userId, @PathVariable("postId") int postId) throws UserNotFoundException, PostNotFoundException, UserInterestedPostSavingException {
+
+        UserInterestedPost userInterestedPost= new UserInterestedPost();
+        User user = userService.getById(userId);
+        Post post = postService.getById(postId);
+
+        userInterestedPost.setUser(user);
+        userInterestedPost.setPost(post);
+
+        UserInterestedPost userInterestedPostSaved = postService.saveUserInterestedPost(userInterestedPost);
+
+        return new PostDTO().convertToDto(post);
+    }
+
+    @GetMapping(value = Constants.URI_POST+Constants.URI_GETFILTEREDJOBOFFER, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PostDTO> getFilteredJobOffer(@PathVariable("offerorId") int offerorId, @PathVariable("firstDate") String firstDate, @PathVariable("lastDate") String lastDate, @PathVariable("skillIdentifier") String skillIdentifier) throws UserNotFoundException, PostNotFoundException, ParseException {
+        User offeror = null;
+        if (offerorId != 0) {
+            offeror = userService.getById(offerorId);
+        }
+
+        Date dateFirstDate = null;
+        if (!firstDate.equals("null")) {
+            dateFirstDate = Constants.SIMPLE_DATE_FORMAT_ONLYDATE.parse(firstDate);
+        }
+
+        Date dateLastDate = null;
+        if (!lastDate.equals("null")) {
+            dateLastDate = Constants.SIMPLE_DATE_FORMAT_ONLYDATE.parse(lastDate);
+        }
+        if (skillIdentifier.equals("null")) {
+            skillIdentifier = null;
+        }
+
+        List<Post> postList = postService.getJobOfferByOfferorAndByPubblicationDateBetweenAndSkill(offeror, dateFirstDate, dateLastDate, skillIdentifier);
+        List<PostDTO> postDTOList = new ArrayList<>();
+        for(Post post: postList) {
+            postDTOList.add(new PostDTO().convertToDto(post));
+        }
+        return postDTOList;
     }
 }

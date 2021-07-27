@@ -2,7 +2,6 @@ package it.unisalento.mylinkedin.service.iservice;
 
 import it.unisalento.mylinkedin.entities.*;
 import it.unisalento.mylinkedin.exception.InvalidValueException;
-import it.unisalento.mylinkedin.exception.post.PostNotFoundException;
 import it.unisalento.mylinkedin.exception.user.*;
 
 import java.util.List;
@@ -20,6 +19,8 @@ public interface IUserService {
 
 
     //APPLICANT
+    Applicant saveApplicant(Applicant applicant) throws UserSavingException;
+
     List<Applicant> getAllApplicant();
 
     Applicant getApplicantById(int id) throws UserNotFoundException;
@@ -30,8 +31,9 @@ public interface IUserService {
 
 
     //OFFEROR
-    List<Offeror> getAllOfferor();
+    Offeror saveOfferor(Offeror offeror) throws UserSavingException;
 
+    List<Offeror> getAllOfferor();
 
     Offeror getOfferorById(int id) throws UserNotFoundException;
 
@@ -82,4 +84,22 @@ public interface IUserService {
     Company getCompanyById(int id) throws CompanyNotFoundException;
 
     Company deleteCompany(Company company) throws CompanyNotFoundException;
+
+
+    //NOTIFICATION TOKEN
+    List<NotificationToken> getAllNotificationToken();
+
+    NotificationToken saveNotificationToken(NotificationToken notificationToken) throws NotificationTokenSavingException;
+
+    NotificationToken getNotificationTokenById(int id) throws NotificationTokenNotFoundException;
+
+    NotificationToken deleteNotificationToken(NotificationToken notificationToken) throws NotificationTokenNotFoundException;
+
+    List<NotificationToken> getNotificationTokenByUser(User user) throws NotificationTokenNotFoundException;
+
+    NotificationToken getNotificationTokenByToken(String token) throws  NotificationTokenNotFoundException;
+
+    NotificationToken saveAwsEndpointArn(NotificationToken notificationToken) throws NotificationTokenSavingException;
+
+    List<User> sendAwsPushNotification(String title, String body, List<User> userList) throws NotificationNotSentException;
 }

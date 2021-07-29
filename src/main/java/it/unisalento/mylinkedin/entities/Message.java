@@ -1,9 +1,9 @@
 package it.unisalento.mylinkedin.entities;
 
 import it.unisalento.mylinkedin.configurations.Constants;
-import it.unisalento.mylinkedin.dto.CommentDTO;
 import it.unisalento.mylinkedin.dto.MessageDTO;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 
 import javax.persistence.*;
 import java.text.ParseException;
@@ -13,12 +13,13 @@ import java.util.Date;
 public class Message {
     public Message() {}
 
-    public Message(int id, String text, Date pubblicationDate, User sender, User receiver) {
+    public Message(int id, String text, Date pubblicationDate, boolean isRead, User sender, User receiver) {
         this.id = id;
         this.text = text;
         this.pubblicationDate = pubblicationDate;
         this.sender = sender;
         this.receiver = receiver;
+        this.isRead = isRead;
     }
 
     @Id
@@ -26,9 +27,9 @@ public class Message {
     int id;
 
     String text;
-    @Column(unique = true, nullable = false)
     String imagePath;
     Date pubblicationDate;
+    boolean isRead;
 
     @ManyToOne(optional = false)
     User sender;
@@ -67,6 +68,14 @@ public class Message {
         this.pubblicationDate = pubblicationDate;
     }
 
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
+    }
+
     public User getSender() {
         return sender;
     }
@@ -85,6 +94,13 @@ public class Message {
 
     public Message convertToEntity(MessageDTO dto) throws ParseException {
         ModelMapper modelMapper =  new ModelMapper();
+        modelMapper.addMappings(new PropertyMap<MessageDTO, Message>() {
+            @Override
+            protected void configure() {
+                skip(destination.getPubblicationDate());
+            }
+        });
+
         Message entity = modelMapper.map(dto, Message.class);
         try {
             entity.setPubblicationDate(dto.getPubblicationDate(Constants.timezone));

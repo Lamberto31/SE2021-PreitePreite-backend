@@ -53,13 +53,18 @@ public class IUserServiceTest {
     @MockBean
     private CompanyRepository companyRepository;
 
+    @MockBean
+    private NotificationTokenRepository notificationTokenRepository;
+
     private User user;
     private User wrongUser;
     private int correctId;
     private Applicant applicant;
+    private Applicant wrongApplicant;
     private List<Applicant> applicantList;
     private String registeredUserNotFoundStatus;
     private Offeror offeror;
+    private Offeror wrongOfferor;
     private List<Offeror> offerorList;
     private String wrongUserRegisteredStatus;
 
@@ -69,9 +74,20 @@ public class IUserServiceTest {
     private Message message;
     private Message wrongMessage;
     private List<Message> messageList;
+    private boolean isRead;
+    private User user2;
+    private Message message2;
+    private Message message3;
+    private List<Message> messageList2;
+    private List<Message> orderedMessageList;
 
     private Company company;
     private Company wrongCompany;
+
+    private NotificationToken notificationToken;
+    private NotificationToken wrongNotificationToken;
+    private List<NotificationToken> notificationTokenList;
+    private NotificationToken wrongNotificationTokenWithoutToken;
 
     @BeforeEach
     void init() throws ParseException {
@@ -108,6 +124,12 @@ public class IUserServiceTest {
         this.applicant.setDescription("testDescription");
         this.applicant.setStatus(Constants.REGISTRATION_PENDING);
 
+        when(applicantRepository.save(refEq(applicant))).thenReturn(applicant);
+
+        this.wrongApplicant = new Applicant();
+
+        when(applicantRepository.save(refEq(wrongApplicant))).thenThrow(IllegalArgumentException.class);
+
         when(applicantRepository.findById(correctId)).thenReturn(java.util.Optional.ofNullable(applicant));
 
         this.applicantList = new ArrayList<>();
@@ -127,6 +149,12 @@ public class IUserServiceTest {
         this.offeror.setBirthDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
         this.offeror.setDescription("testDescription");
         this.offeror.setStatus(Constants.REGISTRATION_PENDING);
+
+        when(offerorRepository.save(refEq(offeror))).thenReturn(offeror);
+
+        this.wrongOfferor = new Offeror();
+
+        when(offerorRepository.save(refEq(wrongOfferor))).thenThrow(IllegalArgumentException.class);
 
         when(offerorRepository.findById(correctId)).thenReturn(java.util.Optional.ofNullable(offeror));
 
@@ -156,10 +184,20 @@ public class IUserServiceTest {
 
         //Message
 
+        this.user2 = new User();
+        this.user2.setName("testName2");
+        this.user2.setSurname("testSurname2");
+        this.user2.setEmail("emailtest2@test.com");
+        this.user2.setPassword("testPassword2");
+        this.user2.setBirthDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
+        this.user2.setDescription("testDescription2");
+
         this.message = new Message();
         this.message.setText("testName");
         this.message.setImagePath("testImagePath");
-        this.message.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
+        this.message.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 01:00"));
+        this.message.setSender(user);
+        this.message.setReceiver(user2);
 
         when(messageRepository.save(refEq(message))).thenReturn(message);
 
@@ -174,9 +212,44 @@ public class IUserServiceTest {
         this.messageList = new ArrayList<>();
         messageList.add(message);
 
-        when(messageRepository.findBySenderAndReceiver(user, user)).thenReturn(messageList);
+        when(messageRepository.findBySender(user)).thenReturn(messageList);
 
-        //when(messageRepository.findBySenderAndReceiver(wrongUser, wrongUser)).thenThrow(MessageNotFoundException.class);
+        when(messageRepository.findByReceiver(user)).thenReturn(messageList);
+
+        when(messageRepository.findBySenderOrReceiverOrderByPubblicationDateDesc(user, user)).thenReturn(messageList);
+
+        this.isRead = false;
+
+        when(messageRepository.findByReceiverAndIsRead(user, isRead)).thenReturn(messageList);
+
+        this.message2 = new Message();
+        this.message2.setText("testName");
+        this.message2.setImagePath("testImagePath");
+        this.message2.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
+        this.message2.setSender(user2);
+        this.message2.setReceiver(user);
+
+        this.message3 = new Message();
+        this.message3.setText("testName");
+        this.message3.setImagePath("testImagePath");
+        this.message3.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 02:00"));
+        this.message3.setSender(user2);
+        this.message3.setReceiver(user);
+
+        this.messageList2 = new ArrayList<>();
+        messageList2.add(message2);
+        messageList2.add(message3);
+
+        this.orderedMessageList = new ArrayList<>();
+        orderedMessageList.add(message2);
+        orderedMessageList.add(message);
+        orderedMessageList.add(message3);
+
+        when(messageRepository.findBySenderAndReceiver(user, user2)).thenReturn(messageList);
+
+        when(messageRepository.findBySenderAndReceiver(user2, user)).thenReturn(messageList2);
+
+        when(messageRepository.findBySenderAndReceiverAndIsRead(user, user, isRead)).thenReturn(messageList);
 
         //Company
 
@@ -196,6 +269,32 @@ public class IUserServiceTest {
 
         doThrow(new IllegalArgumentException()).when(companyRepository).delete(wrongCompany);
 
+        //NotificationToken
+
+        this.notificationToken = new NotificationToken();
+        this.notificationToken.setToken("testToken");
+        this.notificationToken.setUser(user);
+
+        when(notificationTokenRepository.save(refEq(notificationToken))).thenReturn(notificationToken);
+
+        this.wrongNotificationToken = new NotificationToken();
+        this.wrongNotificationToken.setToken("wrongToken");
+
+        when(notificationTokenRepository.save(refEq(wrongNotificationToken))).thenThrow(IllegalArgumentException.class);
+
+        when(notificationTokenRepository.findById(correctId)).thenReturn(java.util.Optional.ofNullable(notificationToken));
+
+        doThrow(new IllegalArgumentException()).when(notificationTokenRepository).delete(wrongNotificationToken);
+
+        this.notificationTokenList = new ArrayList<>();
+        notificationTokenList.add(notificationToken);
+
+        when(notificationTokenRepository.findByUser(refEq(user))).thenReturn(notificationTokenList);
+
+        when(notificationTokenRepository.findByToken(notificationToken.getToken())).thenReturn(notificationToken);
+
+        this.wrongNotificationTokenWithoutToken = new NotificationToken();
+
     }
 
     @Test
@@ -206,7 +305,7 @@ public class IUserServiceTest {
     @Test
     void saveTest() throws UserSavingException {
         User userSaved = userService.save(user);
-        assertThat(user.equals(userSaved));
+        assertThat(user.equals(userSaved)).isTrue();
     }
 
     @Test
@@ -218,7 +317,7 @@ public class IUserServiceTest {
     @Test
     void getByIdTest() throws UserNotFoundException {
         User userFound = userService.getById(correctId);
-        assertThat(user.equals(userFound));
+        assertThat(user.equals(userFound)).isTrue();
     }
 
     @Test
@@ -230,7 +329,7 @@ public class IUserServiceTest {
     @Test
     void deleteTest() throws UserNotFoundException {
         User userDeleted = userService.delete(user);
-        assertThat(user.equals(userDeleted));
+        assertThat(user.equals(userDeleted)).isTrue();
     }
 
     @Test
@@ -242,7 +341,7 @@ public class IUserServiceTest {
     @Test
     void getByEmailTest() throws UserNotFoundException {
         User userFound = userService.getByEmail(user.getEmail());
-        assertThat(user.equals(userFound));
+        assertThat(user.equals(userFound)).isTrue();
     }
 
     @Test
@@ -252,9 +351,26 @@ public class IUserServiceTest {
     }
 
     @Test
+    void saveApplicantTest() throws UserSavingException {
+        Applicant applicantSaved = userService.saveApplicant(applicant);
+        assertThat(applicant.equals(applicantSaved)).isTrue();
+    }
+
+    @Test
+    void saveApplicantThrowsExTest() {
+        Exception exp = assertThrows(UserSavingException.class, () -> userService.saveApplicant(wrongApplicant));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getAllApplicantTest() {
+        assertThat(userService.getAllApplicant()).isNotNull();
+    }
+
+    @Test
     void getApplicantByIdTest() throws UserNotFoundException {
         Applicant applicantFound = userService.getApplicantById(correctId);
-        assertThat(applicant.equals(applicantFound));
+        assertThat(applicant.equals(applicantFound)).isTrue();
     }
 
     @Test
@@ -266,7 +382,7 @@ public class IUserServiceTest {
     @Test
     void getApplicantByStatusTest() throws UserNotFoundException {
         List<Applicant> applicantFoundList = userService.getApplicantByStatus(applicant.getStatus());
-        assertThat(applicantList.equals(applicantFoundList));
+        assertThat(applicantList.equals(applicantFoundList)).isTrue();
     }
 
     @Test
@@ -276,9 +392,26 @@ public class IUserServiceTest {
     }
 
     @Test
+    void saveOfferorTest() throws UserSavingException {
+        Offeror offerorSaved = userService.saveOfferor(offeror);
+        assertThat(offeror.equals(offerorSaved)).isTrue();
+    }
+
+    @Test
+    void saveOfferorThrowsExTest() {
+        Exception exp = assertThrows(UserSavingException.class, () -> userService.saveOfferor(wrongOfferor));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getAllOfferorTest() {
+        assertThat(userService.getAllOfferor()).isNotNull();
+    }
+
+    @Test
     void getOfferorByIdTest() throws UserNotFoundException {
         Offeror offerorFound = userService.getOfferorById(correctId);
-        assertThat(offeror.equals(offerorFound));
+        assertThat(offeror.equals(offerorFound)).isTrue();
     }
 
     @Test
@@ -290,7 +423,7 @@ public class IUserServiceTest {
     @Test
     void getOfferorByStatusTest() throws UserNotFoundException {
         List<Offeror> offerorFoundList = userService.getOfferorByStatus(offeror.getStatus());
-        assertThat(offerorList.equals(offerorFoundList));
+        assertThat(offerorList.equals(offerorFoundList)).isTrue();
     }
 
     @Test
@@ -342,7 +475,7 @@ public class IUserServiceTest {
     @Test
     void saveProfileImageTest() throws ProfileImageSavingException {
         ProfileImage profileImageSaved = userService.saveProfileImage(profileImage);
-        assertThat(profileImage.equals(profileImageSaved));
+        assertThat(profileImage.equals(profileImageSaved)).isTrue();
     }
 
     @Test
@@ -354,7 +487,7 @@ public class IUserServiceTest {
     @Test
     void getProfileImageByIdTest() throws ProfileImageNotFoundException {
         ProfileImage profileImageFound = userService.getProfileImageById(correctId);
-        assertThat(profileImage.equals(profileImageFound));
+        assertThat(profileImage.equals(profileImageFound)).isTrue();
     }
 
     @Test
@@ -366,7 +499,7 @@ public class IUserServiceTest {
     @Test
     void deleteProfileImageTest() throws ProfileImageNotFoundException {
         ProfileImage profileImageDeleted = userService.deleteProfileImage(profileImage);
-        assertThat(profileImage.equals(profileImageDeleted));
+        assertThat(profileImage.equals(profileImageDeleted)).isTrue();
     }
 
     @Test
@@ -384,7 +517,7 @@ public class IUserServiceTest {
     @Test
     void saveMessageTest() throws MessageSavingException {
         Message messageSaved = userService.saveMessage(message);
-        assertThat(message.equals(messageSaved));
+        assertThat(message.equals(messageSaved)).isTrue();
     }
 
     @Test
@@ -396,7 +529,7 @@ public class IUserServiceTest {
     @Test
     void getMessageByIdTest() throws MessageNotFoundException {
         Message messageFound = userService.getMessageById(correctId);
-        assertThat(message.equals(messageFound));
+        assertThat(message.equals(messageFound)).isTrue();
     }
 
     @Test
@@ -408,7 +541,7 @@ public class IUserServiceTest {
     @Test
     void deleteMessageTest() throws MessageNotFoundException {
         Message messageDeleted = userService.deleteMessage(message);
-        assertThat(message.equals(messageDeleted));
+        assertThat(message.equals(messageDeleted)).isTrue();
     }
 
     @Test
@@ -419,13 +552,84 @@ public class IUserServiceTest {
 
     @Test
     void getMessageBySenderAndReceiverTest() throws MessageNotFoundException {
-        List<Message> messageFoundList = userService.getMessageBySenderAndReceiver(user, user);
-        assertThat(messageList.equals(messageFoundList));
+        List<Message> messageFoundList = userService.getMessageBetweenTwoUser(user, user2);
+        assertThat(orderedMessageList.equals(messageFoundList)).isTrue();
     }
 
     @Test
     void getMessageBySenderAndReceiverThrowsExTest() {
-        Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.getMessageBySenderAndReceiver(wrongUser, wrongUser));
+        Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.getMessageBetweenTwoUser(wrongUser, wrongUser));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getMessageBySenderTest() throws MessageNotFoundException {
+        List<Message> messageFoundList = userService.getMessageBySender(user);
+        assertThat(messageList.equals(messageFoundList)).isTrue();
+    }
+
+    @Test
+    void getMessageBySenderThrowsExTest() {
+        Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.getMessageBySender(wrongUser));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getMessageByReceiverTest() throws MessageNotFoundException {
+        List<Message> messageFoundList = userService.getMessageByReceiver(user);
+        assertThat(messageList.equals(messageFoundList)).isTrue();
+    }
+
+    @Test
+    void getMessageByReceiverThrowsExTest() {
+        Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.getMessageByReceiver(wrongUser));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getMessageSentOrReceivedByUserTest() throws MessageNotFoundException {
+        List<Message> messageFoundList = userService.getMessageSentOrReceivedByUser(user);
+        assertThat(messageList.equals(messageFoundList)).isTrue();
+    }
+
+    @Test
+    void getMessageSentOrReceivedByUserThrowsExTest() {
+        Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.getMessageSentOrReceivedByUser(wrongUser));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getMessageByReceiverAndNotReadTest() throws MessageNotFoundException {
+        List<Message> messageFoundList = userService.getMessageByReceiverAndNotRead(user);
+        assertThat(messageList.equals(messageFoundList)).isTrue();
+    }
+
+    @Test
+    void getMessageByReceiverAndNotReadTestThrowsExTest() {
+        Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.getMessageByReceiverAndNotRead(wrongUser));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void updateMessageIsReadTest() {
+        assertDoesNotThrow(() -> userService.updateMessageIsRead(message.isRead(), correctId));
+    }
+
+    @Test
+    void updateMessageIsReadThrowsExTest() {
+        Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.updateMessageIsRead(message.isRead(), wrongMessage.getId()));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getMessageBySenderAndReceiverAndNotReadTest() throws MessageNotFoundException {
+        List<Message> messageFoundList = userService.getMessageBySenderAndReceiverAndNotRead(user, user);
+        assertThat(messageList.equals(messageFoundList)).isTrue();
+    }
+
+    @Test
+    void getMessageBySenderAndReceiverAndNotReadThrowsExTest() {
+        Exception exp = assertThrows(MessageNotFoundException.class, () -> userService.getMessageBySenderAndReceiverAndNotRead(wrongUser, wrongUser));
         assertThat(exp).isNotNull();
     }
 
@@ -438,7 +642,7 @@ public class IUserServiceTest {
     @Test
     void saveCompanyTest() throws CompanySavingException {
         Company companySaved = userService.saveCompany(company);
-        assertThat(company.equals(companySaved));
+        assertThat(company.equals(companySaved)).isTrue();
     }
 
     @Test
@@ -450,7 +654,7 @@ public class IUserServiceTest {
     @Test
     void getCompanyByIdTest() throws CompanyNotFoundException {
         Company companyFound = userService.getCompanyById(correctId);
-        assertThat(company.equals(companyFound));
+        assertThat(company.equals(companyFound)).isTrue();
     }
 
     @Test
@@ -462,7 +666,7 @@ public class IUserServiceTest {
     @Test
     void deleteCompanyTest() throws CompanyNotFoundException {
         Company companyDeleted = userService.deleteCompany(company);
-        assertThat(company.equals(companyDeleted));
+        assertThat(company.equals(companyDeleted)).isTrue();
     }
 
     @Test
@@ -471,4 +675,83 @@ public class IUserServiceTest {
         assertThat(exp).isNotNull();
     }
 
+    //NotificationToken
+    @Test
+    void getAllNotificationTokenTest() {
+        assertThat(userService.getAllNotificationToken()).isNotNull();
+    }
+
+    @Test
+    void saveNotificationTokenTest() throws NotificationTokenSavingException {
+        NotificationToken notificationTokenSaved = userService.saveNotificationToken(notificationToken);
+        assertThat(notificationToken.equals(notificationTokenSaved)).isTrue();
+    }
+
+    @Test
+    void saveNotificationTokenThrowsExTest() {
+        Exception exp = assertThrows(NotificationTokenSavingException.class, () -> userService.saveNotificationToken(wrongNotificationToken));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getNotificationTokenByIdTest() throws NotificationTokenNotFoundException {
+        NotificationToken NotificationTokenFound = userService.getNotificationTokenById(correctId);
+        assertThat(notificationToken.equals(NotificationTokenFound)).isTrue();
+    }
+
+    @Test
+    void getNotificationTokenByIdThrowsExTest() {
+        Exception exp = assertThrows(NotificationTokenNotFoundException.class, () -> userService.getNotificationTokenById(wrongNotificationToken.getId()));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void deleteNotificationTokenTest() throws NotificationTokenNotFoundException {
+        NotificationToken NotificationTokenDeleted = userService.deleteNotificationToken(notificationToken);
+        assertThat(notificationToken.equals(NotificationTokenDeleted)).isTrue();
+    }
+
+    @Test
+    void deleteNotificationTokenThrowsExTest() {
+        Exception exp = assertThrows(NotificationTokenNotFoundException.class, () -> userService.deleteNotificationToken(wrongNotificationToken));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getNotificationTokenByUserTest() throws NotificationTokenNotFoundException {
+        List<NotificationToken> NotificationTokenFoundList = userService.getNotificationTokenByUser(user);
+        assertThat(notificationTokenList.equals(NotificationTokenFoundList)).isTrue();
+    }
+
+    @Test
+    void getNotificationTokenByUserThrowsExTest() {
+        Exception exp = assertThrows(NotificationTokenNotFoundException.class, () -> userService.getNotificationTokenByUser(wrongUser));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getNotificationTokenByTokenTest() throws NotificationTokenNotFoundException {
+        NotificationToken NotificationTokenFound = userService.getNotificationTokenByToken(notificationToken.getToken());
+        assertThat(notificationToken.equals(NotificationTokenFound)).isTrue();
+    }
+
+    @Test
+    void getNotificationTokenByTokenThrowsExTest() {
+        Exception exp = assertThrows(NotificationTokenNotFoundException.class, () -> userService.getNotificationTokenByToken(wrongNotificationToken.getToken()));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void saveAwsEndpointArnTest() throws NotificationTokenSavingException {
+        NotificationToken notificationTokenWithEndpointArn = userService.saveAwsEndpointArn(notificationToken);
+        assertThat(notificationTokenWithEndpointArn.getId()).isEqualTo(notificationToken.getId());
+        assertThat(notificationTokenWithEndpointArn.getToken()).isEqualTo(notificationToken.getToken());
+        assertThat(notificationTokenWithEndpointArn.getUser()).isEqualTo(notificationToken.getUser());
+    }
+
+    @Test
+    void saveAwsEndpointArnThrowsExTest() {
+        Exception exp = assertThrows(NotificationTokenSavingException.class, () -> userService.saveAwsEndpointArn(wrongNotificationTokenWithoutToken));
+        assertThat(exp).isNotNull();
+    }
 }

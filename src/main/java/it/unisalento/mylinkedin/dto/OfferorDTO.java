@@ -1,12 +1,10 @@
 package it.unisalento.mylinkedin.dto;
 
 import it.unisalento.mylinkedin.configurations.Constants;
-import it.unisalento.mylinkedin.entities.Applicant;
 import it.unisalento.mylinkedin.entities.Offeror;
 import it.unisalento.mylinkedin.validators.CheckValueInListConstraint;
 import org.modelmapper.ModelMapper;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -15,6 +13,16 @@ public class OfferorDTO extends UserDTO{
     String registrationDate;
     @CheckValueInListConstraint(feasibleList = {Constants.REGISTRATION_PENDING, Constants.REGISTRATION_ACCEPTED, Constants.REGISTRATION_BLOCKED})
     String status;
+
+    CompanyDTO company;
+
+    public String getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(String registrationDate) {
+        this.registrationDate = registrationDate;
+    }
 
     public Date getRegistrationDate(String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
@@ -40,6 +48,14 @@ public class OfferorDTO extends UserDTO{
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public CompanyDTO getCompany() {
+        return company;
+    }
+
+    public void setCompany(CompanyDTO company) {
+        this.company = company;
     }
 
     public OfferorDTO convertToDto(Offeror entity) {

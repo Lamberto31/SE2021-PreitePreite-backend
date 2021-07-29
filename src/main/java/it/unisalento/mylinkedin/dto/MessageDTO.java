@@ -2,11 +2,9 @@ package it.unisalento.mylinkedin.dto;
 
 import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.entities.Message;
-import it.unisalento.mylinkedin.entities.User;
 import it.unisalento.mylinkedin.validators.AtLeastOneNotNullConstraint;
 import org.modelmapper.ModelMapper;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -17,6 +15,18 @@ public class MessageDTO {
     String text;
     String imagePath;
     String pubblicationDate;
+    boolean isRead;
+
+    UserDTO sender;
+    UserDTO receiver;
+
+    public String getPubblicationDate() {
+        return pubblicationDate;
+    }
+
+    public void setPubblicationDate(String pubblicationDate) {
+        this.pubblicationDate = pubblicationDate;
+    }
 
     public Date getPubblicationDate(String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
@@ -58,6 +68,30 @@ public class MessageDTO {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
+    }
+
+    public UserDTO getSender() {
+        return sender;
+    }
+
+    public void setSender(UserDTO sender) {
+        this.sender = sender;
+    }
+
+    public UserDTO getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(UserDTO receiver) {
+        this.receiver = receiver;
     }
 
     public MessageDTO convertToDto(Message entity) {

@@ -1,11 +1,10 @@
 package it.unisalento.mylinkedin.dto;
 
-import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.entities.Attribute;
-import it.unisalento.mylinkedin.entities.User;
 import org.modelmapper.ModelMapper;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class AttributeDTO {
 
@@ -14,6 +13,8 @@ public class AttributeDTO {
     String title;
     @NotBlank
     String type;
+    @NotNull
+    Boolean required;
 
     public int getId() {
         return id;
@@ -37,6 +38,14 @@ public class AttributeDTO {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Boolean getRequired() {
+        return required;
+    }
+
+    public void setRequired(Boolean required) {
+        this.required = required;
     }
 
     public AttributeDTO convertToDto(Attribute entity) {

@@ -1,12 +1,9 @@
 package it.unisalento.mylinkedin.entities;
 
-import it.unisalento.mylinkedin.configurations.Constants;
-import it.unisalento.mylinkedin.dto.CommentDTO;
 import it.unisalento.mylinkedin.dto.StructureDTO;
 import org.modelmapper.ModelMapper;
 
 import javax.persistence.*;
-import java.text.ParseException;
 import java.util.List;
 
 @Entity

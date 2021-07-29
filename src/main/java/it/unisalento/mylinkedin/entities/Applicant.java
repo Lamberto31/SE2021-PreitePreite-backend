@@ -2,8 +2,8 @@ package it.unisalento.mylinkedin.entities;
 
 import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dto.ApplicantDTO;
-import it.unisalento.mylinkedin.dto.OfferorDTO;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -18,8 +18,8 @@ public class Applicant extends User{
 
     public Applicant() {}
 
-    public Applicant(int id, String name, String surname, String email, String password, Date birthDate, String description, List<ProfileImage> profileImage, List<Message> sentMessageList, List<Message> receivedMessageList, List<Comment> commentList, List<UserInterestedPost> userInterestedPostList, List<Post> postList, Date registrationDate, String status, String fixedAttributes) {
-        super(id, name, surname, email, password, birthDate, description, profileImage, sentMessageList, receivedMessageList, commentList, userInterestedPostList, postList);
+    public Applicant(int id, String name, String surname, String email, String password, Date birthDate, String description, List<ProfileImage> profileImage, List<Message> sentMessageList, List<Message> receivedMessageList, List<Comment> commentList, List<UserInterestedPost> userInterestedPostList, List<Post> postList, List<NotificationToken> notificationTokenList ,Date registrationDate, String status, String fixedAttributes) {
+        super(id, name, surname, email, password, birthDate, description, profileImage, sentMessageList, receivedMessageList, commentList, userInterestedPostList, postList, notificationTokenList);
         this.registrationDate = registrationDate;
         this.status = status;
         this.fixedAttributes = fixedAttributes;
@@ -57,6 +57,14 @@ public class Applicant extends User{
 
     public Applicant convertToEntity(ApplicantDTO dto) throws ParseException {
         ModelMapper modelMapper =  new ModelMapper();
+        modelMapper.addMappings(new PropertyMap<ApplicantDTO, Applicant>() {
+            @Override
+            protected void configure() {
+                skip(destination.getBirthDate());
+                skip(destination.getRegistrationDate());
+            }
+        });
+
         Applicant entity = modelMapper.map(dto, Applicant.class);
         try {
             entity.setBirthDate(dto.getBirthDate(Constants.timezone));

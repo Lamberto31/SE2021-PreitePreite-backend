@@ -1,12 +1,9 @@
 package it.unisalento.mylinkedin.entities;
 
-import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dto.AttributeDTO;
-import it.unisalento.mylinkedin.dto.UserDTO;
 import org.modelmapper.ModelMapper;
 
 import javax.persistence.*;
-import java.text.ParseException;
 import java.util.List;
 
 @Entity
@@ -27,6 +24,7 @@ public class Attribute {
 
     String title;
     String type;
+    Boolean required;
 
     @OneToMany(mappedBy = "attribute", targetEntity = StructureAttribute.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<StructureAttribute> structureAttributeList;
@@ -53,6 +51,14 @@ public class Attribute {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Boolean getRequired() {
+        return required;
+    }
+
+    public void setRequired(Boolean required) {
+        this.required = required;
     }
 
     public List<StructureAttribute> getStructureAttributeList() {

@@ -8,8 +8,12 @@ import it.unisalento.mylinkedin.exception.user.*;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -35,6 +39,9 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     CompanyRepository companyRepository;
+
+    @Autowired
+    NotificationTokenRepository notificationTokenRepository;
 
 
     @Override
@@ -81,6 +88,23 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional(rollbackOn = UserSavingException.class)
+    public Applicant saveApplicant(Applicant applicant) throws UserSavingException {
+        try {
+            return applicantRepository.save(applicant);
+        } catch (Exception e) {
+            throw new UserSavingException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<Applicant> getAllApplicant() {
+        return applicantRepository.findAll();
+    }
+
+    @Override
+    @Transactional(rollbackOn = UserNotFoundException.class)
     public Applicant getApplicantById(int id) throws UserNotFoundException {
         return applicantRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
@@ -100,6 +124,23 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    @Transactional(rollbackOn = UserSavingException.class)
+    public Offeror saveOfferor(Offeror offeror) throws UserSavingException {
+        try {
+            return offerorRepository.save(offeror);
+        } catch (Exception e) {
+            throw new UserSavingException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<Offeror> getAllOfferor() {
+        return offerorRepository.findAll();
+    }
+
+    @Override
+    @Transactional(rollbackOn = UserNotFoundException.class)
     public Offeror getOfferorById(int id) throws UserNotFoundException {
         return offerorRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
@@ -221,9 +262,95 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public List<Message> getMessageBySenderAndReceiver(User sender, User receiver) throws MessageNotFoundException {
+    @Transactional(rollbackOn = MessageNotFoundException.class)
+    public List<Message> getMessageBetweenTwoUser(User user1, User user2) throws MessageNotFoundException {
         try {
-            List<Message> messageFoundList = messageRepository.findBySenderAndReceiver(sender, receiver);
+            List<Message> message1to2FoundList = messageRepository.findBySenderAndReceiver(user1, user2);
+            List<Message> message2to1FoundList = messageRepository.findBySenderAndReceiver(user2, user1);
+            if (message1to2FoundList.isEmpty() && message2to1FoundList.isEmpty()) {
+                throw new MessageNotFoundException();
+            }
+            List<Message> messageFoundList = new ArrayList<>(message1to2FoundList);
+            messageFoundList.addAll(message2to1FoundList);
+            messageFoundList.sort(Comparator.comparing(Message::getPubblicationDate));
+            return messageFoundList;
+        } catch (Exception e) {
+            throw new MessageNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = MessageNotFoundException.class)
+    public List<Message> getMessageBySender(User sender) throws MessageNotFoundException {
+        try {
+            List<Message> messageFoundList = messageRepository.findBySender(sender);
+            if (messageFoundList.isEmpty()) {
+                throw new MessageNotFoundException();
+            }
+            return messageFoundList;
+        } catch (Exception e) {
+            throw new MessageNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = MessageNotFoundException.class)
+    public List<Message> getMessageByReceiver(User receiver) throws MessageNotFoundException {
+        try {
+            List<Message> messageFoundList = messageRepository.findByReceiver(receiver);
+            if (messageFoundList.isEmpty()) {
+                throw new MessageNotFoundException();
+            }
+            return messageFoundList;
+        } catch (Exception e) {
+            throw new MessageNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = MessageNotFoundException.class)
+    public List<Message> getMessageSentOrReceivedByUser(User user) throws MessageNotFoundException {
+        try {
+            List<Message> messageFoundList = messageRepository.findBySenderOrReceiverOrderByPubblicationDateDesc(user, user);
+            if (messageFoundList.isEmpty()) {
+                throw new MessageNotFoundException();
+            }
+            return messageFoundList;
+        } catch (Exception e) {
+            throw new MessageNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = MessageNotFoundException.class)
+    public List<Message> getMessageByReceiverAndNotRead(User receiver) throws MessageNotFoundException {
+        try {
+            List<Message> messageFoundList = messageRepository.findByReceiverAndIsRead(receiver, false);
+            if (messageFoundList.isEmpty()) {
+                throw new MessageNotFoundException();
+            }
+            return messageFoundList;
+        } catch (Exception e) {
+            throw new MessageNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = MessageNotFoundException.class)
+    public void updateMessageIsRead(boolean isRead, int id) throws MessageNotFoundException {
+        try {
+            messageRepository.findById(id).orElseThrow(MessageNotFoundException::new);
+            messageRepository.updateIsRead(isRead, id);
+        } catch (MessageNotFoundException e) {
+            throw new MessageNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = MessageNotFoundException.class)
+    public List<Message> getMessageBySenderAndReceiverAndNotRead(User sender, User receiver) throws MessageNotFoundException {
+        try {
+            List<Message> messageFoundList = messageRepository.findBySenderAndReceiverAndIsRead(sender, receiver, false);
             if (messageFoundList.isEmpty()) {
                 throw new MessageNotFoundException();
             }
@@ -263,6 +390,111 @@ public class UserServiceImpl implements IUserService {
             return company;
         } catch (Exception e) {
             throw new CompanyNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<NotificationToken> getAllNotificationToken() {
+        return notificationTokenRepository.findAll();
+    }
+
+    @Override
+    @Transactional(rollbackOn = NotificationTokenSavingException.class)
+    public NotificationToken saveNotificationToken(NotificationToken notificationToken) throws NotificationTokenSavingException {
+        try {
+            notificationToken = saveAwsEndpointArn(notificationToken);
+            return notificationTokenRepository.save(notificationToken);
+        } catch (Exception e) {
+            throw new NotificationTokenSavingException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = NotificationTokenNotFoundException.class)
+    public NotificationToken getNotificationTokenById(int id) throws NotificationTokenNotFoundException {
+        return notificationTokenRepository.findById(id).orElseThrow(NotificationTokenNotFoundException::new);
+    }
+
+    @Override
+    @Transactional(rollbackOn = NotificationTokenNotFoundException.class)
+    public NotificationToken deleteNotificationToken(NotificationToken notificationToken) throws NotificationTokenNotFoundException {
+        try {
+            notificationTokenRepository.delete(notificationToken);
+            return notificationToken;
+        } catch (Exception e) {
+            throw new NotificationTokenNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = NotificationTokenNotFoundException.class)
+    public List<NotificationToken> getNotificationTokenByUser(User user) throws NotificationTokenNotFoundException {
+        try {
+            List<NotificationToken> notificationTokenFoundList = notificationTokenRepository.findByUser(user);
+            if (notificationTokenFoundList.isEmpty()) {
+                throw new NotificationTokenNotFoundException();
+            }
+            return notificationTokenFoundList;
+        } catch (Exception e) {
+            throw new NotificationTokenNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = NotificationTokenNotFoundException.class)
+    public NotificationToken getNotificationTokenByToken(String token) throws NotificationTokenNotFoundException {
+        try {
+            NotificationToken notificationTokenFound = notificationTokenRepository.findByToken(token);
+            if (notificationTokenFound == null) {
+                throw new NotificationTokenNotFoundException();
+            }
+            return notificationTokenFound;
+        } catch (Exception e) {
+            throw new NotificationTokenNotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = NotificationTokenSavingException.class)
+    public NotificationToken saveAwsEndpointArn(NotificationToken notificationToken) throws NotificationTokenSavingException {
+        RestTemplate restTemplate = new RestTemplate();
+
+        String uri = Constants.AWS_URI_API + Constants.AWS_URI_PUSHNOTIFICATION +Constants.AWS_URI_TOKEN;
+
+        try {
+            if ( notificationToken.getToken() == null) {
+                throw new NotificationTokenSavingException();
+            }
+            String reqBody = "{\"token\":\"" + notificationToken.getToken() + "\"}";
+
+            NotificationToken result = restTemplate.postForObject(uri, reqBody, NotificationToken.class);
+            assert result != null : "Result is null";
+            notificationToken.setAwsEndpointArn(result.getAwsEndpointArn());
+            return notificationToken;
+        } catch (Exception e) {
+            throw new NotificationTokenSavingException();
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = NotificationNotSentException.class)
+    public List<User> sendAwsPushNotification(String title, String body, List<User> userList) throws NotificationNotSentException {
+        RestTemplate restTemplate = new RestTemplate();
+
+        String uri = Constants.AWS_URI_API + Constants.AWS_URI_PUSHNOTIFICATION;
+
+        try {
+            for (User user: userList) {
+                List<NotificationToken> notificationTokenList = notificationTokenRepository.findByUser(user);
+                for (NotificationToken notificationToken: notificationTokenList) {
+                    String reqBody = "{\"title\": \"" + title + "\",\"body\": \""+ body +"\",\"endpointArn\": \"" + notificationToken.getAwsEndpointArn() +"\"}";
+                    restTemplate.postForObject(uri, reqBody, String.class);
+                }
+            }
+            return userList;
+        } catch (RestClientException e) {
+            throw new NotificationNotSentException();
         }
     }
 }

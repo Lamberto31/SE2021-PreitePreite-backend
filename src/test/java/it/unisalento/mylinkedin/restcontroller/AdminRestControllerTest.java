@@ -5,10 +5,7 @@ import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dto.AttributeDTO;
 import it.unisalento.mylinkedin.dto.StructureDTO;
 import it.unisalento.mylinkedin.entities.*;
-import it.unisalento.mylinkedin.exception.post.AttributeNotFoundException;
-import it.unisalento.mylinkedin.exception.post.AttributeSavingException;
-import it.unisalento.mylinkedin.exception.post.StructureNotFoundException;
-import it.unisalento.mylinkedin.exception.post.StructureSavingException;
+import it.unisalento.mylinkedin.exception.post.*;
 import it.unisalento.mylinkedin.exception.user.UserNotFoundException;
 import it.unisalento.mylinkedin.service.iservice.IPostService;
 import it.unisalento.mylinkedin.service.iservice.IUserService;
@@ -19,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -54,10 +52,11 @@ public class AdminRestControllerTest {
     private Applicant applicant;
     private Offeror offeror;
     private Post post;
+    private StructureAttribute structureAttribute;
 
 
     @BeforeEach
-    void init() throws UserNotFoundException, ParseException, StructureSavingException, StructureNotFoundException, AttributeSavingException, AttributeNotFoundException {
+    void init() throws UserNotFoundException, ParseException, StructureSavingException, StructureNotFoundException, AttributeSavingException, AttributeNotFoundException, StructureAttributeSavingException {
 
         this.user = new User();
         this.user.setId(1);
@@ -69,6 +68,8 @@ public class AdminRestControllerTest {
         this.user.setDescription("testDescription");
 
         when(userServiceMock.getById(user.getId())).thenReturn(user);
+
+        when(userServiceMock.getByEmail(user.getEmail())).thenReturn(user);
 
         this.structureDTO = new StructureDTO();
         this.structureDTO.setId(1);
@@ -86,6 +87,7 @@ public class AdminRestControllerTest {
         this.attributeDTO.setId(1);
         this.attributeDTO.setTitle("testTitle");
         this.attributeDTO.setType("testType");
+        this.attributeDTO.setRequired(true);
 
         this.attribute = new Attribute().convertToEntity(attributeDTO);
 
@@ -122,9 +124,24 @@ public class AdminRestControllerTest {
         this.post.setHidden(true);
         this.post.setPrivate(true);
         this.post.setData("testData");
+
+        this.structureAttribute = new StructureAttribute();
+        this.structureAttribute.setStructure(structure);
+        this.structureAttribute.setAttribute(attribute);
+
+        when(postServiceMock.saveStructureAttribute(structureAttribute)).thenReturn(structureAttribute);
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
+    void adminLoginTest() throws Exception {
+        mockMvc.perform(get(Constants.URI_ADMIN+Constants.URI_LOGIN, user.getEmail())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
     void deleteTest() throws Exception {
         mockMvc.perform(delete(Constants.URI_ADMIN+Constants.URI_DELETE, user.getId())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -132,6 +149,7 @@ public class AdminRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void getApplicantByStatusTest() throws Exception {
         mockMvc.perform(get(Constants.URI_ADMIN+Constants.URI_APPLICANT+Constants.URI_GETBYSTATUS, Constants.REGISTRATION_PENDING)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -139,14 +157,15 @@ public class AdminRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void getOfferorByStatusTest() throws Exception {
         mockMvc.perform(get(Constants.URI_ADMIN+Constants.URI_OFFEROR+Constants.URI_GETBYSTATUS, Constants.REGISTRATION_PENDING)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
-    //TODO: Test updateStatusRegistration perchè dobbiamo fare put
     @Test
+    @WithMockUser(roles = "ADMIN")
     void updateApplicantStatusRegistrationTest() throws Exception {
         mockMvc.perform(put(Constants.URI_ADMIN +Constants.URI_APPLICANT + Constants.URI_UPDATESTATUSREGISTRATION, applicant.getId(), applicant.getStatus())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -154,14 +173,15 @@ public class AdminRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void updateOfferorStatusRegistrationTest() throws Exception {
         mockMvc.perform(put(Constants.URI_ADMIN +Constants.URI_OFFEROR + Constants.URI_UPDATESTATUSREGISTRATION, offeror.getId(), offeror.getStatus())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
-    //TODO: Test updateIsHidden perchè dobbiamo fare put
     @Test
+    @WithMockUser(roles = "ADMIN")
     void updatePostIsHiddenTest() throws Exception {
         mockMvc.perform(put(Constants.URI_ADMIN +Constants.URI_POST + Constants.URI_UPDATEISHIDDEN, post.getId(), post.isHidden())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -169,6 +189,7 @@ public class AdminRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void getAllStructureTest() throws Exception {
         mockMvc.perform(get(Constants.URI_ADMIN+Constants.URI_STRUCTURE+Constants.URI_GETALL)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -176,6 +197,7 @@ public class AdminRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void saveStructureTest() throws Exception {
         mockMvc.perform(post(Constants.URI_ADMIN + Constants.URI_STRUCTURE + Constants.URI_SAVE)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -184,6 +206,7 @@ public class AdminRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void getStructureByIdTest() throws Exception {
         mockMvc.perform(get(Constants.URI_ADMIN+Constants.URI_STRUCTURE+Constants.URI_GETBYID, structure.getId())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -191,6 +214,7 @@ public class AdminRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void deleteStructureTest() throws Exception {
         mockMvc.perform(delete(Constants.URI_ADMIN+Constants.URI_STRUCTURE+Constants.URI_DELETE, structure.getId())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -198,6 +222,7 @@ public class AdminRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void getAllAttributeTest() throws Exception {
         mockMvc.perform(get(Constants.URI_ADMIN+Constants.URI_ATTRIBUTE+Constants.URI_GETALL)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -205,6 +230,7 @@ public class AdminRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void saveAttributeTest() throws Exception {
         mockMvc.perform(post(Constants.URI_ADMIN + Constants.URI_ATTRIBUTE + Constants.URI_SAVE)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -213,8 +239,33 @@ public class AdminRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void deleteAttributeTest() throws Exception {
         mockMvc.perform(delete(Constants.URI_ADMIN+Constants.URI_ATTRIBUTE+Constants.URI_DELETE, attribute.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void getAllApplicantTest() throws Exception {
+        mockMvc.perform(get(Constants.URI_ADMIN+Constants.URI_APPLICANT+Constants.URI_GETALL)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void getAllOfferorTest() throws Exception {
+        mockMvc.perform(get(Constants.URI_ADMIN+Constants.URI_OFFEROR+Constants.URI_GETALL)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void saveStructureAttributeTest() throws Exception {
+        mockMvc.perform(post(Constants.URI_ADMIN + Constants.URI_STRUCTURE + Constants.URI_SAVE + Constants.URI_STRUCTUREATTRIBUTEID, structure.getId(), attribute.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

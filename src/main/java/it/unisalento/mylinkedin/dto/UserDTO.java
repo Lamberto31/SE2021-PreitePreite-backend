@@ -8,7 +8,6 @@ import org.modelmapper.ModelMapper;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -37,6 +36,14 @@ public class UserDTO {
     String emailToVerify;
     @NotBlank
     String passwordToVerify;
+
+    public String getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(String birthDate) {
+        this.birthDate = birthDate;
+    }
 
     public Date getBirthDate(String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));

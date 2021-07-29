@@ -1,9 +1,9 @@
 package it.unisalento.mylinkedin.entities;
 
 import it.unisalento.mylinkedin.configurations.Constants;
-import it.unisalento.mylinkedin.dto.CommentDTO;
 import it.unisalento.mylinkedin.dto.ProfileImageDTO;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 
 import javax.persistence.*;
 import java.text.ParseException;
@@ -29,7 +29,7 @@ public class ProfileImage {
     @Column(length = 500)
     String description;
     Date pubblicationDate;
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     String imagePath;
 
     @ManyToOne()
@@ -87,6 +87,13 @@ public class ProfileImage {
 
     public ProfileImage convertToEntity(ProfileImageDTO dto) throws ParseException {
         ModelMapper modelMapper =  new ModelMapper();
+        modelMapper.addMappings(new PropertyMap<ProfileImageDTO, ProfileImage>() {
+            @Override
+            protected void configure() {
+                skip(destination.getPubblicationDate());
+            }
+        });
+
         ProfileImage entity = modelMapper.map(dto, ProfileImage.class);
         try {
             entity.setPubblicationDate(dto.getPubblicationDate(Constants.timezone));

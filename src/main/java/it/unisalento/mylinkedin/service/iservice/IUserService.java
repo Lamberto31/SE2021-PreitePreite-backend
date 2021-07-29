@@ -19,6 +19,10 @@ public interface IUserService {
 
 
     //APPLICANT
+    Applicant saveApplicant(Applicant applicant) throws UserSavingException;
+
+    List<Applicant> getAllApplicant();
+
     Applicant getApplicantById(int id) throws UserNotFoundException;
 
     List<Applicant> getApplicantByStatus(String status) throws UserNotFoundException ;
@@ -27,6 +31,10 @@ public interface IUserService {
 
 
     //OFFEROR
+    Offeror saveOfferor(Offeror offeror) throws UserSavingException;
+
+    List<Offeror> getAllOfferor();
+
     Offeror getOfferorById(int id) throws UserNotFoundException;
 
     List<Offeror> getOfferorByStatus(String status) throws UserNotFoundException;
@@ -53,7 +61,19 @@ public interface IUserService {
 
     Message deleteMessage(Message message) throws MessageNotFoundException;
 
-    List<Message> getMessageBySenderAndReceiver(User sender, User receiver) throws MessageNotFoundException;
+    List<Message> getMessageBetweenTwoUser(User user1, User user2) throws MessageNotFoundException;
+
+    List<Message> getMessageBySender(User sender) throws MessageNotFoundException;
+
+    List<Message> getMessageByReceiver(User receiver) throws MessageNotFoundException;
+
+    List<Message> getMessageSentOrReceivedByUser(User user) throws MessageNotFoundException;
+
+    List<Message> getMessageByReceiverAndNotRead(User receiver) throws MessageNotFoundException;
+
+    void updateMessageIsRead(boolean isRead, int id) throws MessageNotFoundException;
+
+    List<Message> getMessageBySenderAndReceiverAndNotRead(User sender, User receiver) throws MessageNotFoundException;
 
 
     //COMPANY
@@ -64,4 +84,22 @@ public interface IUserService {
     Company getCompanyById(int id) throws CompanyNotFoundException;
 
     Company deleteCompany(Company company) throws CompanyNotFoundException;
+
+
+    //NOTIFICATION TOKEN
+    List<NotificationToken> getAllNotificationToken();
+
+    NotificationToken saveNotificationToken(NotificationToken notificationToken) throws NotificationTokenSavingException;
+
+    NotificationToken getNotificationTokenById(int id) throws NotificationTokenNotFoundException;
+
+    NotificationToken deleteNotificationToken(NotificationToken notificationToken) throws NotificationTokenNotFoundException;
+
+    List<NotificationToken> getNotificationTokenByUser(User user) throws NotificationTokenNotFoundException;
+
+    NotificationToken getNotificationTokenByToken(String token) throws  NotificationTokenNotFoundException;
+
+    NotificationToken saveAwsEndpointArn(NotificationToken notificationToken) throws NotificationTokenSavingException;
+
+    List<User> sendAwsPushNotification(String title, String body, List<User> userList) throws NotificationNotSentException;
 }

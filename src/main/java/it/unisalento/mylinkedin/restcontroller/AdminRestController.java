@@ -28,6 +28,13 @@ public class AdminRestController {
     @Autowired
     IPostService postService;
 
+    @GetMapping(value = Constants.URI_LOGIN)
+    public ResponseEntity<UserDTO> adminLogin(@PathVariable("email") String email) throws UserNotFoundException {
+        User user = userService.getByEmail(email);
+        UserDTO userDTO = new UserDTO().convertToDto(user);
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
+    }
+
     @DeleteMapping(value = Constants.URI_DELETE)
     public ResponseEntity<UserDTO> delete(@PathVariable("id") int id) throws UserNotFoundException {
         User user = userService.getById(id);
@@ -132,5 +139,38 @@ public class AdminRestController {
         return new ResponseEntity<>(attributeDTO, HttpStatus.OK);
     }
 
+    @GetMapping(value = Constants.URI_APPLICANT+Constants.URI_GETALL, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ApplicantDTO> getAllApplicant() {
+        List<Applicant> userList = userService.getAllApplicant();
+        List<ApplicantDTO> userDTOList = new ArrayList<>();
+        for(Applicant applicant: userList) {
+            userDTOList.add(new ApplicantDTO().convertToDto(applicant));
+        }
+        return userDTOList;
+    }
 
+    @GetMapping(value = Constants.URI_OFFEROR+Constants.URI_GETALL, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<OfferorDTO> getAllOfferor() {
+        List<Offeror> userList = userService.getAllOfferor();
+        List<OfferorDTO> userDtoList = new ArrayList<>();
+        for(Offeror offeror: userList) {
+            userDtoList.add(new OfferorDTO().convertToDto(offeror));
+        }
+        return userDtoList;
+    }
+
+    @PostMapping(value=Constants.URI_STRUCTURE+Constants.URI_SAVE +Constants.URI_STRUCTUREATTRIBUTEID, produces = MediaType.APPLICATION_JSON_VALUE)
+    public StructureDTO saveStructureAttribute(@PathVariable("structureId") int structureId, @PathVariable("attributeId") int attributeId) throws StructureAttributeSavingException, StructureNotFoundException, AttributeNotFoundException {
+
+        StructureAttribute structureAttribute= new StructureAttribute();
+        Structure structure = postService.getStructureById(structureId);
+        Attribute attribute = postService.getAttributeById(attributeId);
+
+        structureAttribute.setStructure(structure);
+        structureAttribute.setAttribute(attribute);
+
+        StructureAttribute structureAttributeSaved = postService.saveStructureAttribute(structureAttribute);
+
+        return new StructureDTO().convertToDto(structure);
+    }
 }

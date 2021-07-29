@@ -2,11 +2,9 @@ package it.unisalento.mylinkedin.dto;
 
 import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.entities.ProfileImage;
-import it.unisalento.mylinkedin.entities.User;
 import org.modelmapper.ModelMapper;
 
 import javax.validation.constraints.NotBlank;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -17,6 +15,17 @@ public class ProfileImageDTO {
     String pubblicationDate;
     @NotBlank
     String imagePath;
+
+    UserDTO user;
+    CompanyDTO company;
+
+    public String getPubblicationDate() {
+        return pubblicationDate;
+    }
+
+    public void setPubblicationDate(String pubblicationDate) {
+        this.pubblicationDate = pubblicationDate;
+    }
 
     public Date getPubblicationDate(String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
@@ -58,6 +67,22 @@ public class ProfileImageDTO {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public UserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserDTO user) {
+        this.user = user;
+    }
+
+    public CompanyDTO getCompany() {
+        return company;
+    }
+
+    public void setCompany(CompanyDTO company) {
+        this.company = company;
     }
 
     public ProfileImageDTO convertToDto(ProfileImage entity) {

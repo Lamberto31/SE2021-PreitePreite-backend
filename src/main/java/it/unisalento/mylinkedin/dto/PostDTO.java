@@ -5,18 +5,29 @@ import it.unisalento.mylinkedin.entities.Post;
 import org.modelmapper.ModelMapper;
 
 import javax.validation.constraints.NotBlank;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.TimeZone;
 
 public class PostDTO {
 
     int id;
+    String title;
     String pubblicationDate;
     boolean isHidden;
     boolean isPrivate;
     @NotBlank
     String data; //JSON
+
+    StructureDTO structure;
+    UserDTO user;
+
+    public String getPubblicationDate() {
+        return pubblicationDate;
+    }
+
+    public void setPubblicationDate(String pubblicationDate) {
+        this.pubblicationDate = pubblicationDate;
+    }
 
     public Date getPubblicationDate(String timezone) {
         Constants.SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(timezone));
@@ -44,6 +55,14 @@ public class PostDTO {
         this.id = id;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public boolean isHidden() {
         return isHidden;
     }
@@ -66,6 +85,22 @@ public class PostDTO {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public StructureDTO getStructure() {
+        return structure;
+    }
+
+    public void setStructure(StructureDTO structure) {
+        this.structure = structure;
+    }
+
+    public UserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserDTO user) {
+        this.user = user;
     }
 
     public PostDTO convertToDto(Post entity) {

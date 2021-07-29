@@ -1,7 +1,9 @@
 package it.unisalento.mylinkedin.modelmapper;
 
 import it.unisalento.mylinkedin.configurations.Constants;
+import it.unisalento.mylinkedin.dto.CompanyDTO;
 import it.unisalento.mylinkedin.dto.OfferorDTO;
+import it.unisalento.mylinkedin.entities.Company;
 import it.unisalento.mylinkedin.entities.Offeror;
 import org.junit.jupiter.api.Test;
 
@@ -26,6 +28,11 @@ public class OfferorModelmapperUnitTest {
         offeror.setRegistrationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
         offeror.setStatus(Constants.REGISTRATION_PENDING);
 
+        Company company = new Company();
+        company.setId(1);
+
+        offeror.setCompany(company);
+
         OfferorDTO offerorDTO = new OfferorDTO().convertToDto(offeror);
 
         assertEquals(offeror.getId(), offerorDTO.getId());
@@ -37,6 +44,8 @@ public class OfferorModelmapperUnitTest {
         assertEquals(offeror.getDescription(), offerorDTO.getDescription());
         assertEquals(offeror.getRegistrationDate(), offerorDTO.getRegistrationDate(Constants.timezone));
         assertEquals(offeror.getStatus(), offerorDTO.getStatus());
+        assertEquals(offeror.getCompany().getId(), offerorDTO.getCompany().getId());
+
     }
 
     @Test
@@ -54,6 +63,11 @@ public class OfferorModelmapperUnitTest {
         offerorDTO.setRegistrationDate(date, Constants.timezone);
         offerorDTO.setStatus(Constants.REGISTRATION_PENDING);
 
+        CompanyDTO company = new CompanyDTO();
+        company.setId(1);
+
+        offerorDTO.setCompany(company);
+
         Offeror offeror = new Offeror().convertToEntity(offerorDTO);
 
         assertEquals(offeror.getId(), offerorDTO.getId());
@@ -65,5 +79,7 @@ public class OfferorModelmapperUnitTest {
         assertEquals(offeror.getDescription(), offerorDTO.getDescription());
         assertEquals(offeror.getRegistrationDate(), offerorDTO.getRegistrationDate(Constants.timezone));
         assertEquals(offeror.getStatus(), offerorDTO.getStatus());
+        assertEquals(offeror.getCompany().getId(), offerorDTO.getCompany().getId());
+
     }
 }

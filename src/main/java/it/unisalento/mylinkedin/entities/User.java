@@ -3,6 +3,7 @@ package it.unisalento.mylinkedin.entities;
 import it.unisalento.mylinkedin.configurations.Constants;
 import it.unisalento.mylinkedin.dto.UserDTO;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 
 import javax.persistence.*;
 import java.text.ParseException;
@@ -17,7 +18,7 @@ public class User {
 
     public User() {}
 
-    public User(int id, String name, String surname, String email, String password, Date birthDate, String description, List<ProfileImage> profileImage, List<Message> sentMessageList, List<Message> receivedMessageList, List<Comment> commentList, List<UserInterestedPost> userInterestedPostList, List<Post> postList) {
+    public User(int id, String name, String surname, String email, String password, Date birthDate, String description, List<ProfileImage> profileImage, List<Message> sentMessageList, List<Message> receivedMessageList, List<Comment> commentList, List<UserInterestedPost> userInterestedPostList, List<Post> postList, List<NotificationToken> notificationTokenList) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -31,6 +32,7 @@ public class User {
         this.commentList = commentList;
         this.userInterestedPostList = userInterestedPostList;
         this.postList = postList;
+        this.notificationTokenList = notificationTokenList;
     }
 
     @Id
@@ -63,6 +65,17 @@ public class User {
     List<UserInterestedPost> userInterestedPostList;
     @OneToMany(mappedBy = "user", targetEntity = Post.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Post> postList;
+    @OneToMany(mappedBy = "user", targetEntity = NotificationToken.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    List<NotificationToken> notificationTokenList;
+
+    @Transient
+    public String getType() {
+        try {
+            return this.getClass().getAnnotation(DiscriminatorValue.class).value();
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     public int getId() {
         return id;
@@ -168,8 +181,23 @@ public class User {
         this.postList = postList;
     }
 
+    public List<NotificationToken> getNotificationTokenList() {
+        return notificationTokenList;
+    }
+
+    public void setNotificationTokenList(List<NotificationToken> notificationTokenList) {
+        this.notificationTokenList = notificationTokenList;
+    }
+
     public User convertToEntity(UserDTO dto) throws ParseException {
         ModelMapper modelMapper =  new ModelMapper();
+        modelMapper.addMappings(new PropertyMap<UserDTO, User>() {
+            @Override
+            protected void configure() {
+                skip(destination.getBirthDate());
+            }
+        });
+
         User entity = modelMapper.map(dto, User.class);
         try {
             entity.setBirthDate(dto.getBirthDate(Constants.timezone));

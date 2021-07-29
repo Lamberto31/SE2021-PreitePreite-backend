@@ -79,12 +79,15 @@ public class IPostServiceTest {
     private UserInterestedPost wrongUserInterestedPost;
     private User user;
     private List<User> userList;
+    private User correctUserInterested;
+    private UserInterestedPost wrongUserInterestedPost1;
 
     @BeforeEach
     void init() throws ParseException {
 
         //Post
         this.post = new Post();
+        this.post.setId(1);
         this.post.setPubblicationDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
         this.post.setHidden(true);
         this.post.setPrivate(true);
@@ -104,13 +107,29 @@ public class IPostServiceTest {
         this.postList = new ArrayList<>();
         postList.add(post);
 
-        when(postRepository.findByIsPrivate(post.isPrivate())).thenReturn(postList);
+        when(postRepository.findByIsPrivateAndIsHiddenOrderByPubblicationDateDesc(post.isPrivate(), post.isHidden())).thenReturn(postList);
+
+        when(postRepository.findByIsHiddenOrderByPubblicationDateDesc( post.isHidden())).thenReturn(postList);
+
+        this.user = new User();
+        this.user.setId(1);
+        this.user.setName("testName");
+        this.user.setSurname("testSurname");
+        this.user.setEmail("emailtest@test.com");
+        this.user.setPassword("testPassword");
+        this.user.setBirthDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
+        this.user.setDescription("testDescription");
+
+        when(postRepository.findUserById(correctId)).thenReturn(user);
 
         //Structure
         this.structure = new Structure();
+        this.structure.setId(1);
         this.structure.setTitle("testTitle");
         this.structure.setDescription("testDescription");
         this.structure.setUserCanPublish(Constants.CAN_PUBLISH_BOTH);
+
+        this.post.setStructure(structure);
 
         when(structureRepository.save(refEq(structure))).thenReturn(structure);
 
@@ -184,24 +203,25 @@ public class IPostServiceTest {
         this.attributeList = new ArrayList<>();
         attributeList.add(attribute);
 
-        when(structureAttributeRepository.findAttributeByStructure(structure)).thenReturn(attributeList);
+        when(structureAttributeRepository.findAttributeByStructure(structure.getId())).thenReturn(attributeList);
 
         //UserInterestedPost
-        this.user = new User();
-        this.user.setName("testName");
-        this.user.setSurname("testSurname");
-        this.user.setEmail("emailtest@test.com");
-        this.user.setPassword("testPassword");
-        this.user.setBirthDate(Constants.SIMPLE_DATE_FORMAT.parse("01/01/2000 00:00"));
-        this.user.setDescription("testDescription");
+        this.correctUserInterested = new User();
+        this.correctUserInterested.setId(2);
+        this.correctUserInterested.setName("testName");
+        this.correctUserInterested.setSurname("testSurname");
+
 
         this.userInterestedPost = new UserInterestedPost();
-        this.userInterestedPost.setUser(user);
+        this.userInterestedPost.setUser(correctUserInterested);
         this.userInterestedPost.setPost(post);
 
         when(userInterestedPostRepository.save(refEq(userInterestedPost))).thenReturn(userInterestedPost);
+        when(postRepository.findById(userInterestedPost.getPost().getId())).thenReturn(java.util.Optional.ofNullable(post));
 
         this.wrongUserInterestedPost = new UserInterestedPost();
+        this.wrongUserInterestedPost.setUser(user);
+        this.wrongUserInterestedPost.setPost(wrongPost);
 
         when(userInterestedPostRepository.save(refEq(wrongUserInterestedPost))).thenThrow(IllegalArgumentException.class);
 
@@ -212,7 +232,11 @@ public class IPostServiceTest {
         this.userList = new ArrayList<>();
         userList.add(user);
 
-        when(userInterestedPostRepository.findUserByPost(post)).thenReturn(userList);
+        when(userInterestedPostRepository.findUserByPost(correctId)).thenReturn(userList);
+
+        this.wrongUserInterestedPost1 = new UserInterestedPost();
+        this.wrongUserInterestedPost1.setUser(user);
+        this.wrongUserInterestedPost1.setPost(post);
     }
 
     //Post
@@ -224,7 +248,7 @@ public class IPostServiceTest {
     @Test
     void saveTest() throws PostSavingException {
         Post postSaved = postService.save(post);
-        assertThat(post.equals(postSaved));
+        assertThat(post.equals(postSaved)).isTrue();
     }
 
     @Test
@@ -236,7 +260,7 @@ public class IPostServiceTest {
     @Test
     void getByIdTest() throws PostNotFoundException {
         Post postFound = postService.getById(correctId);
-        assertThat(post.equals(postFound));
+        assertThat(post.equals(postFound)).isTrue();
     }
 
     @Test
@@ -248,7 +272,7 @@ public class IPostServiceTest {
     @Test
     void deleteTest() throws PostNotFoundException {
         Post postDeleted = postService.delete(post);
-        assertThat(post.equals(postDeleted));
+        assertThat(post.equals(postDeleted)).isTrue();
     }
 
     @Test
@@ -258,14 +282,26 @@ public class IPostServiceTest {
     }
 
     @Test
-    void getByIsPrivateTest() throws PostNotFoundException{
-        List<Post> postFoundList = postService.getByIsPrivate(post.isPrivate());
-        assertThat(postList.equals(postFoundList));
+    void getByIsPrivateAndIsHiddenTest() throws PostNotFoundException{
+        List<Post> postFoundList = postService.getByIsPrivateAndIsHidden(post.isPrivate(), post.isHidden());
+        assertThat(postList.equals(postFoundList)).isTrue();
     }
 
     @Test
-    void getByIsPrivateThrowsExTest() {
-        Exception exp = assertThrows(PostNotFoundException.class, () -> postService.getByIsPrivate(postNotFoundIsPrivate));
+    void getByIsPrivateAndIsHiddenThrowsExTest() {
+        Exception exp = assertThrows(PostNotFoundException.class, () -> postService.getByIsPrivateAndIsHidden(postNotFoundIsPrivate, postNotFoundIsPrivate));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getByIsHiddenTest() throws PostNotFoundException{
+        List<Post> postFoundList = postService.getByIsHidden(post.isHidden());
+        assertThat(postList.equals(postFoundList)).isTrue();
+    }
+
+    @Test
+    void getByIsHiddenThrowsExTest() {
+        Exception exp = assertThrows(PostNotFoundException.class, () -> postService.getByIsHidden(postNotFoundIsPrivate));
         assertThat(exp).isNotNull();
     }
 
@@ -280,6 +316,24 @@ public class IPostServiceTest {
         assertThat(exp).isNotNull();
     }
 
+    @Test
+    void getUserByPostTest() throws UserNotFoundException {
+        User userFound = postService.getUser(post);
+        assertThat(user.equals(userFound)).isTrue();
+    }
+
+    @Test
+    void getUserByPostThrowsExTest() {
+        Exception exp = assertThrows(UserNotFoundException.class, () -> postService.getUser(wrongPost));
+        assertThat(exp).isNotNull();
+    }
+
+    @Test
+    void getAllOrderByPubblicationDateDescTest() {
+        assertThat(postService.getAllOrderByPubblicationDateDesc()).isNotNull();
+    }
+
+
     //Structure
     @Test
     void getAllStructureTest() {
@@ -289,7 +343,7 @@ public class IPostServiceTest {
     @Test
     void saveStructureTest() throws StructureSavingException {
         Structure structureSaved = postService.saveStructure(structure);
-        assertThat(structure.equals(structureSaved));
+        assertThat(structure.equals(structureSaved)).isTrue();
     }
 
     @Test
@@ -301,7 +355,7 @@ public class IPostServiceTest {
     @Test
     void getStructureByIdTest() throws StructureNotFoundException {
         Structure structureFound = postService.getStructureById(correctId);
-        assertThat(structure.equals(structureFound));
+        assertThat(structure.equals(structureFound)).isTrue();
     }
 
     @Test
@@ -313,7 +367,7 @@ public class IPostServiceTest {
     @Test
     void deleteStructureTest() throws StructureNotFoundException {
         Structure structureDeleted = postService.deleteStructure(structure);
-        assertThat(structure.equals(structureDeleted));
+        assertThat(structure.equals(structureDeleted)).isTrue();
     }
 
     @Test
@@ -325,7 +379,7 @@ public class IPostServiceTest {
     @Test
     void getStructureByUserCanPublishTest() throws StructureNotFoundException, InvalidValueException {
         List<Structure> structureFoundList = postService.getStructureByUserCanPublish(structure.getUserCanPublish());
-        assertThat(structureList.equals(structureFoundList));
+        assertThat(structureList.equals(structureFoundList)).isTrue();
     }
 
     @Test
@@ -349,7 +403,7 @@ public class IPostServiceTest {
     @Test
     void saveAttributeTest() throws AttributeSavingException {
         Attribute attributeSaved = postService.saveAttribute(attribute);
-        assertThat(attribute.equals(attributeSaved));
+        assertThat(attribute.equals(attributeSaved)).isTrue();
     }
 
     @Test
@@ -361,7 +415,7 @@ public class IPostServiceTest {
     @Test
     void getAttributeByIdTest() throws AttributeNotFoundException {
         Attribute attributeFound = postService.getAttributeById(correctId);
-        assertThat(attribute.equals(attributeFound));
+        assertThat(attribute.equals(attributeFound)).isTrue();
     }
 
     @Test
@@ -373,7 +427,7 @@ public class IPostServiceTest {
     @Test
     void deleteAttributeTest() throws AttributeNotFoundException {
         Attribute attributeDeleted = postService.deleteAttribute(attribute);
-        assertThat(attribute.equals(attributeDeleted));
+        assertThat(attribute.equals(attributeDeleted)).isTrue();
     }
 
     @Test
@@ -391,7 +445,7 @@ public class IPostServiceTest {
     @Test
     void saveCommentTest() throws CommentSavingException {
         Comment commentSaved = postService.saveComment(comment);
-        assertThat(comment.equals(commentSaved));
+        assertThat(comment.equals(commentSaved)).isTrue();
     }
 
     @Test
@@ -403,7 +457,7 @@ public class IPostServiceTest {
     @Test
     void getCommentByIdTest() throws CommentNotFoundException {
         Comment commentFound = postService.getCommentById(correctId);
-        assertThat(comment.equals(commentFound));
+        assertThat(comment.equals(commentFound)).isTrue();
     }
 
     @Test
@@ -415,7 +469,7 @@ public class IPostServiceTest {
     @Test
     void deleteCommentTest() throws CommentNotFoundException {
         Comment commentDeleted = postService.deleteComment(comment);
-        assertThat(comment.equals(commentDeleted));
+        assertThat(comment.equals(commentDeleted)).isTrue();
     }
 
     @Test
@@ -427,7 +481,7 @@ public class IPostServiceTest {
     @Test
     void getCommentByPostTest() throws CommentNotFoundException {
         List<Comment> commentFoundList = postService.getCommentByPost(post);
-        assertThat(commentList.equals(commentFoundList));
+        assertThat(commentList.equals(commentFoundList)).isTrue();
     }
 
     @Test
@@ -445,7 +499,7 @@ public class IPostServiceTest {
     @Test
     void saveStructureAttributeTest() throws StructureAttributeSavingException {
         StructureAttribute structureAttributeSaved = postService.saveStructureAttribute(structureAttribute);
-        assertThat(structureAttribute.equals(structureAttributeSaved));
+        assertThat(structureAttribute.equals(structureAttributeSaved)).isTrue();
     }
 
     @Test
@@ -457,7 +511,7 @@ public class IPostServiceTest {
     @Test
     void getStructureAttributeByIdTest() throws StructureAttributeNotFoundException {
         StructureAttribute structureAttributeFound = postService.getStructureAttributeById(correctId);
-        assertThat(structureAttribute.equals(structureAttributeFound));
+        assertThat(structureAttribute.equals(structureAttributeFound)).isTrue();
     }
 
     @Test
@@ -469,7 +523,7 @@ public class IPostServiceTest {
     @Test
     void deleteStructureAttributeTest() throws StructureAttributeNotFoundException {
         StructureAttribute structureAttributeDeleted = postService.deleteStructureAttribute(structureAttribute);
-        assertThat(structureAttribute.equals(structureAttributeDeleted));
+        assertThat(structureAttribute.equals(structureAttributeDeleted)).isTrue();
     }
 
     @Test
@@ -481,7 +535,7 @@ public class IPostServiceTest {
     @Test
     void getAttributeByStructureTest() throws AttributeNotFoundException{
         List<Attribute> attributeFoundList = postService.getAttributeByStructure(structure);
-        assertThat(attributeList.equals(attributeFoundList));
+        assertThat(attributeList.equals(attributeFoundList)).isTrue();
     }
 
     @Test
@@ -499,7 +553,13 @@ public class IPostServiceTest {
     @Test
     void saveUserInterestedPostTest() throws UserInterestedPostSavingException {
         UserInterestedPost userInterestedPostSaved = postService.saveUserInterestedPost(userInterestedPost);
-        assertThat(userInterestedPost.equals(userInterestedPostSaved));
+        assertThat(userInterestedPost.equals(userInterestedPostSaved)).isTrue();
+    }
+
+    @Test
+    void saveUserInterestedPostThrowsAlreadyExTest() {
+        Exception exp = assertThrows(UserInterestedPostSavingException.class, () -> postService.saveUserInterestedPost(wrongUserInterestedPost1));
+        assertThat(exp).isNotNull();
     }
 
     @Test
@@ -511,7 +571,7 @@ public class IPostServiceTest {
     @Test
     void getUserInterestedPostByIdTest() throws UserInterestedPostNotFoundException {
         UserInterestedPost userInterestedPostFound = postService.getUserInterestedPostById(correctId);
-        assertThat(userInterestedPost.equals(userInterestedPostFound));
+        assertThat(userInterestedPost.equals(userInterestedPostFound)).isTrue();
     }
 
     @Test
@@ -523,7 +583,7 @@ public class IPostServiceTest {
     @Test
     void deleteUserInterestedPostTest() throws UserInterestedPostNotFoundException {
         UserInterestedPost userInterestedPostDeleted = postService.deleteUserInterestedPost(userInterestedPost);
-        assertThat(userInterestedPostDeleted.equals(userInterestedPostDeleted));
+        assertThat(userInterestedPost.equals(userInterestedPostDeleted)).isTrue();
     }
 
     @Test
@@ -535,7 +595,7 @@ public class IPostServiceTest {
     @Test
     void getUserByInterestedPostTest() throws UserNotFoundException{
         List<User> userFoundList = postService.getUserByInterestedPost(post);
-        assertThat(userList.equals(userFoundList));
+        assertThat(userList.equals(userFoundList)).isTrue();
     }
 
     @Test

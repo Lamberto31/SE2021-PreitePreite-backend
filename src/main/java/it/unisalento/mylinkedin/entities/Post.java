@@ -1,9 +1,9 @@
 package it.unisalento.mylinkedin.entities;
 
 import it.unisalento.mylinkedin.configurations.Constants;
-import it.unisalento.mylinkedin.dto.CommentDTO;
 import it.unisalento.mylinkedin.dto.PostDTO;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 
 import javax.persistence.*;
 import java.text.ParseException;
@@ -31,6 +31,8 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
 
+    @Column(nullable = false)
+    String title;
     Date pubblicationDate;
     @Column(nullable = false)
     boolean isHidden;
@@ -54,6 +56,14 @@ public class Post {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Date getPubblicationDate() {
@@ -122,6 +132,13 @@ public class Post {
 
     public Post convertToEntity(PostDTO dto) throws ParseException {
         ModelMapper modelMapper =  new ModelMapper();
+        modelMapper.addMappings(new PropertyMap<PostDTO, Post>() {
+            @Override
+            protected void configure() {
+                skip(destination.getPubblicationDate());
+            }
+        });
+
         Post entity = modelMapper.map(dto, Post.class);
         try {
             entity.setPubblicationDate(dto.getPubblicationDate(Constants.timezone));
@@ -130,4 +147,71 @@ public class Post {
         }
         return entity;
     }
+
+    public static class Attributevalue {
+
+        public Attributevalue() {}
+
+        String title;
+        String value;
+        String type;
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+    }
+
+    public static class Skill {
+
+        public Skill() {}
+
+        String identifier;
+        String area;
+        String level;
+
+        public String getIdentifier() {
+            return identifier;
+        }
+
+        public void setIdentifier(String identifier) {
+            this.identifier = identifier;
+        }
+
+        public String getArea() {
+            return area;
+        }
+
+        public void setArea(String area) {
+            this.area = area;
+        }
+
+        public String getLevel() {
+            return level;
+        }
+
+        public void setLevel(String level) {
+            this.level = level;
+        }
+    }
+
 }

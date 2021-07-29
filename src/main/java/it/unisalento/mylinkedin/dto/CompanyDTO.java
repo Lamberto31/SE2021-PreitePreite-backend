@@ -1,7 +1,5 @@
 package it.unisalento.mylinkedin.dto;
 
-import it.unisalento.mylinkedin.configurations.Constants;
-import it.unisalento.mylinkedin.entities.Comment;
 import it.unisalento.mylinkedin.entities.Company;
 import org.modelmapper.ModelMapper;
 
